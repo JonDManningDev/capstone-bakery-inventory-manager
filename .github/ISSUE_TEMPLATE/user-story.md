@@ -1,13 +1,11 @@
 ---
 name: User Story
 about: Template for filling info for features based on user stories
-title: 'US ##'
+title: US-## - Name
 labels: ''
 assignees: ''
 
 ---
-
-# US Label (replace me)
 
 ## Description:
 
