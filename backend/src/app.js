@@ -6,6 +6,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+const employeesRouter = require("../src/employees/employees.router");
+
 const errorHandler = require("./errors/errorHandler");
 const notFound = require("./errors/notFound");
 
@@ -17,6 +19,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routers:
+
+app.use("/employees", employeesRouter);
 
 // Error Handlers:
 

@@ -1,6 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
+import { useAlerts } from "../../../context/AlertsContext";
+import { handleInputChange } from "../../../utils/handleInputChange";
+import { modalCloser } from "../../../utils/modalCloser";
 
 export function LoginModal() {
+  // Manually control focus to prevent aria errors.
   useEffect(() => {
     const modal = document.getElementById("loginModal");
     if (!modal) return;
@@ -26,6 +31,50 @@ export function LoginModal() {
     };
   }, []);
 
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const { login } = useAuth();
+  const { addAlert } = useAlerts();
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    try {
+      // This route returns a login token, if successful
+      const baseUrl = process.env.REACT_APP_API_BASE_URL;
+      const response = await fetch(`${baseUrl}/employees/login`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const json = await response.json();
+
+      if (response.ok) {
+        // Store the token locally, then use it to retrieve user info
+        await login(json.token);
+
+        // Close the modal
+        modalCloser("loginModal");
+
+        // Reset form
+        setFormData({ email: "", password: "" });
+      } else {
+        addAlert(json.message || "Login failed.", "danger", "login-failure");
+      }
+    } catch (error) {
+      addAlert(
+        "There was an error during login: " + error.message,
+        "danger",
+        "login-failure"
+      );
+      console.error(error);
+    }
+  }
+
   return (
     <div
       className="modal fade"
@@ -48,27 +97,39 @@ export function LoginModal() {
               aria-label="Close"
             ></button>
           </div>
-          <div className="modal-body bg-light-subtle">
-            <div className="m-3">
-              <label htmlFor="loginEmailAddress" className="form-label">
-                Email Address
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="loginEmailAddress"
-                placeholder="employee@example.com"
-              ></input>
-            </div>
-            <div className="m-3">
-              <label htmlFor="loginPassword" className="form-label">
-                Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="loginPassword"
-              ></input>
+          <form onSubmit={handleSubmit}>
+            <div className="modal-body bg-light-subtle">
+              <div className="m-3">
+                <label htmlFor="loginEmailAddress" className="form-label">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="loginEmailAddress"
+                  name="email"
+                  value={formData.email}
+                  onChange={(event) =>
+                    handleInputChange(event, formData, setFormData)
+                  }
+                  placeholder="employee@example.com"
+                ></input>
+              </div>
+              <div className="m-3">
+                <label htmlFor="loginPassword" className="form-label">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="loginPassword"
+                  name="password"
+                  value={formData.password}
+                  onChange={(event) =>
+                    handleInputChange(event, formData, setFormData)
+                  }
+                ></input>
+              </div>
             </div>
             <div className="modal-footer">
               <button type="submit" className="btn btn-primary">
@@ -82,7 +143,7 @@ export function LoginModal() {
                 Close
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

@@ -1,8 +1,13 @@
 import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../../../context/AuthContext";
 
-export function LoginButton({ user, setUser }) {
+export function LoginButton() {
+  const { user, logout } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
+
   const loginRef = useRef(null);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (loginRef.current && !loginRef.current.contains(event.target)) {
@@ -28,26 +33,38 @@ export function LoginButton({ user, setUser }) {
         <i className="bi bi-person-circle ms-3"></i>
       </button>
       <ul className={`dropdown-menu${isOpen ? " show" : ""}`}>
-        <li>
-          <button
-            type="button"
-            className="btn"
-            data-bs-toggle="modal"
-            data-bs-target="#loginModal"
-          >
-            Log In
-          </button>
-        </li>
-        <li>
-          <button
-            type="button"
-            className="btn"
-            data-bs-toggle="modal"
-            data-bs-target="#registerModal"
-          >
-            Register
-          </button>
-        </li>
+        {user.employeeId ? (
+          <>
+            <li>
+              <button type="button" className="btn" onClick={() => logout()}>
+                Log Out
+              </button>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <button
+                type="button"
+                className="btn"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal"
+              >
+                Log In
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className="btn"
+                data-bs-toggle="modal"
+                data-bs-target="#registerModal"
+              >
+                Register
+              </button>
+            </li>
+          </>
+        )}
       </ul>
     </div>
   );

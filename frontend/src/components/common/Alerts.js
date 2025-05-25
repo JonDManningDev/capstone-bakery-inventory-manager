@@ -1,7 +1,7 @@
-import { useAlerts } from "./AlertsContext";
+import { useAlerts } from "../../context/AlertsContext";
 
 export function Alerts() {
-    const { alerts, removeAlert } = useAlerts();
+  const { alerts, removeAlert } = useAlerts();
 
   if (!alerts || alerts.length === 0) return null;
 
