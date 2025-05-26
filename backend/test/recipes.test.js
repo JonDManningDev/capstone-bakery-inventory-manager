@@ -28,27 +28,24 @@ describe("API: Recipes resource", () => {
       expect(response.status).toBe(200);
       expect(response.body.data).toBeDefined();
       expect(response.body.data.length).toBeGreaterThan(0);
-
       const [recipe] = response.body.data;
-      expect(recipe.id).toBeDefined();
+      expect(recipe.recipe_id).toBeDefined();
       expect(recipe.title).toBeDefined();
       expect(recipe.image_url).toBeDefined();
       expect(recipe.description).toBeDefined();
     });
   });
-
   describe("GET /recipes/:recipeId", () => {
     it("returns a specific recipe based on the given ID", async () => {
       const existingRecipe = await db("recipes").first();
       const response = await request(app)
-        .get(`/recipes/${existingRecipe.id}`)
+        .get(`/recipes/${existingRecipe.recipe_id}`)
         .set("Accept", "application/json");
-
       expect(response.status).toBe(200);
       expect(response.body.data).toBeDefined();
 
       const recipe = response.body.data;
-      expect(recipe.id).toBeDefined();
+      expect(recipe.recipe_id).toBeDefined();
       expect(recipe.title).toBeDefined();
       expect(recipe.image_url).toBeDefined();
       expect(recipe.description).toBeDefined();
@@ -64,7 +61,6 @@ describe("API: Recipes resource", () => {
       expect(response.body.error).toBeDefined();
     });
   });
-
   describe("POST /recipes", () => {
     it("allows for the creation of a new recipe", async () => {
       const response = await request(app)
@@ -77,17 +73,14 @@ describe("API: Recipes resource", () => {
             description: "Recipe description.",
           },
         });
-
       expect(response.status).toBe(201);
       expect(response.body.data).toBeDefined();
-
       const recipe = response.body.data;
-      expect(recipe.id).toBeDefined();
+      expect(recipe.recipe_id).toBeDefined();
       expect(recipe.title).toBeDefined();
       expect(recipe.image_url).toBeDefined();
       expect(recipe.description).toBeDefined();
     });
-
     it("returns an error if the `title` is missing", async () => {
       const response = await request(app)
         .post(`/recipes`)
@@ -103,14 +96,13 @@ describe("API: Recipes resource", () => {
       expect(response.body.data).not.toBeDefined();
       expect(response.body.error).toBeDefined();
     });
-
     it("returns an error if the `image_url` is missing", async () => {
       const response = await request(app)
         .post(`/recipes`)
         .set("Accept", "application/json")
         .send({
           data: {
-            title: "Recipe Name",
+            name: "Recipe Name",
             description: "Recipe description.",
           },
         });
@@ -119,7 +111,6 @@ describe("API: Recipes resource", () => {
       expect(response.body.data).not.toBeDefined();
       expect(response.body.error).toBeDefined();
     });
-
     it("returns an error if the `description` is missing", async () => {
       const response = await request(app)
         .post(`/recipes`)
@@ -127,7 +118,6 @@ describe("API: Recipes resource", () => {
         .send({
           data: {
             title: "Recipe Name",
-            image_url: "https://exampleimage.com/image.png",
           },
         });
 
@@ -136,25 +126,22 @@ describe("API: Recipes resource", () => {
       expect(response.body.error).toBeDefined();
     });
   });
-
   describe("DELETE /recipes/:recipeId", () => {
     it("deletes a specific recipe based on the given ID", async () => {
       const existingRecipe = await db("recipes").first();
       const response = await request(app)
-        .del(`/recipes/${existingRecipe.id}`)
+        .del(`/recipes/${existingRecipe.recipe_id}`)
         .set("Accept", "application/json");
-
       expect(response.status).toBe(200);
       expect(response.body.data).toBeDefined();
-
       const recipe = response.body.data;
-      expect(recipe.id).toBeDefined();
+      expect(recipe.recipe_id).toBeDefined();
       expect(recipe.title).toBeDefined();
       expect(recipe.image_url).toBeDefined();
       expect(recipe.description).toBeDefined();
 
       const sameRecipe = await db("recipes")
-        .where({ id: existingRecipe.id })
+        .where({ recipe_id: existingRecipe.recipe_id })
         .first();
       expect(sameRecipe).not.toBeDefined();
     });
