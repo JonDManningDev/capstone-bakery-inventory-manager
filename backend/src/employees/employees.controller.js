@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 // Validation Middleware:
 
 async function validateLogin(req, res, next) {
-    const { email, password } = req.body;
+    const { email, password } = req.body.data;
 
     if (!email || !password) {
       return next({
@@ -39,7 +39,7 @@ async function validateLogin(req, res, next) {
 }
 
 async function validateRegistration(req, res, next) {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body.data;
 
   if (!firstName || !lastName || !email || !password) {
     return next({
@@ -50,7 +50,7 @@ async function validateRegistration(req, res, next) {
   }
 
   const allowedFields = ["firstName", "lastName", "email", "password"];
-  const extraFields = Object.keys(req.body).filter(
+  const extraFields = Object.keys(req.body.data).filter(
     (key) => !allowedFields.includes(key)
   );
   if (extraFields.length > 0) {

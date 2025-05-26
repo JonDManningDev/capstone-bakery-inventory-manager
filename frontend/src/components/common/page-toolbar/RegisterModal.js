@@ -69,10 +69,12 @@ export function RegisterModal() {
       const response = await fetch(`${baseUrl}/employees`, {
         method: "POST",
         body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
+          data: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+          },
         }),
         headers: { "Content-Type": "application/json" },
       });
@@ -94,10 +96,9 @@ export function RegisterModal() {
           confirmEmail: "",
           password: "",
           confirmPassword: "",
-        });
-      } else {
+        });      } else {
         addAlert(
-          json.message || "Registration failed.",
+          json.error || "Registration failed.",
           "danger",
           "register-failure"
         );

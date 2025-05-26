@@ -47,7 +47,7 @@ export function LoginModal() {
       const baseUrl = process.env.REACT_APP_API_BASE_URL;
       const response = await fetch(`${baseUrl}/employees/login`, {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ data: formData }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -59,11 +59,11 @@ export function LoginModal() {
 
         // Close the modal
         modalCloser("loginModal");
-
+        
         // Reset form
         setFormData({ email: "", password: "" });
       } else {
-        addAlert(json.message || "Login failed.", "danger", "login-failure");
+        addAlert(json.error || "Login failed.", "danger", "login-failure");
       }
     } catch (error) {
       addAlert(
