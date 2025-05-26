@@ -5,7 +5,7 @@ import { RegisterModal } from "./components/common/page-toolbar/RegisterModal";
 import { PageToolbar } from "./components/common/page-toolbar/PageToolbar";
 import { Alerts } from "./components/common/Alerts";
 import { Header } from "./components/common/Header";
-import { Home } from "./components/Home"
+import { Home } from "./components/Home";
 import { BakesList } from "./components/bakes/BakesList";
 import { RecipesList } from "./components/recipes/RecipesList";
 import { RecipesCreate } from "./components/recipes/RecipesCreate";
