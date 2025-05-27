@@ -7,7 +7,7 @@ import { Alerts } from "./components/common/Alerts";
 import { Header } from "./components/common/Header";
 import { Home } from "./components/Home";
 import { BakesList } from "./components/bakes/BakesList";
-import { RecipesList } from "./components/recipes/RecipesList";
+import { RecipesView } from "./components/recipes/RecipesView";
 import { RecipesCreate } from "./components/recipes/RecipesCreate";
 import { IngredientsList } from "./components/ingredients/IngredientsList"
 import { IngredientsCreate } from "./components/ingredients/IngredientsCreate";
@@ -23,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/bakes" element={<BakesList />} />
-        <Route path="/recipes" element={<RecipesList />} />
+        <Route path="/recipes" element={<RecipesView />} />
         <Route path="/recipes/new" element={<RecipesCreate />} />
         <Route path="/ingredients" element={<IngredientsList />} />
         <Route path="/ingredients/new" element={<IngredientsCreate />} />

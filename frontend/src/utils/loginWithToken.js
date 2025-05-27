@@ -32,7 +32,7 @@ export async function loginWithToken(token, setUser, addAlert) {
     });
 
     // If there's an issue, alert the user
-    addAlert(error.message, "danger");
+    addAlert(error.message, "danger", "loginWithToken-failure");
     console.error(error);
   }
 }

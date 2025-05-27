@@ -2,6 +2,7 @@
 // It also contains the useEffect() that automatically logs a returning user back in.
 
 import { createContext, useContext, useState, useEffect } from "react";
+
 import { loginWithToken } from "../utils/loginWithToken";
 import { useAlerts } from "./AlertsContext";
 
@@ -42,6 +43,7 @@ export function AuthProvider({ children }) {
       );
       addAlert("Successfully logged in!", "success", "login-success");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Manual logins

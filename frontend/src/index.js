@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
 import { AlertsProvider } from "./context/AlertsContext";
 import { AuthProvider } from "./context/AuthContext";
+import { RecipesProvider } from "./context/RecipesContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -12,7 +13,9 @@ root.render(
     <Router>
       <AlertsProvider>
         <AuthProvider>
-          <App />
+          <RecipesProvider>
+            <App />
+          </RecipesProvider>
         </AuthProvider>
       </AlertsProvider>
     </Router>
