@@ -3,14 +3,7 @@ import { useEffect } from "react";
 import { RecipesListing } from "./RecipesListing";
 import { useRecipes } from "../../context/RecipesContext";
 
-export function RecipesList() {
-  const { recipes, getRecipes } = useRecipes();
-
-  // Automatically fetch recipes and load into state on component load
-  useEffect(() => {
-    getRecipes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+export function RecipesList({ recipes }) {
 
   // Sort by alphabetical order
   const recipesSorted = recipes.sort((a, b) =>

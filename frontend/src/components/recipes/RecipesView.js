@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
 
+import { useRecipes } from "../../context/RecipesContext"; 
 import { RecipesList } from "./RecipesList";
+import { useEffect } from "react";
 
 export function RecipesView() {
+  const { recipes, getRecipes } = useRecipes();
+
+  useEffect(() => {
+    getRecipes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recipes]);
+
   return (
     // Component container
     <div className="container py-4 my-4 border rounded">
@@ -16,7 +25,7 @@ export function RecipesView() {
         </div>
       </div>
       {/* Lower container */}
-      <RecipesList />
+      <RecipesList recipes={recipes} />
     </div>
   );
 }

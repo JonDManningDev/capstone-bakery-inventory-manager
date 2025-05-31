@@ -13,7 +13,12 @@ async function addRecipeIngredient(req, res, next) {
 
 async function create(req, res, next) {}
 
-async function destroyRecipe(req, res, next) {}
+async function destroyRecipe(req, res, next) {
+    const { recipeId } = req.params;
+    await service.deleteRecipe(recipeId);
+    return res.sendStatus(204);
+}
+    
 
 async function destroyRecipeIngredient(req, res, next) {
   const { recipeId, ingredientId } = req.params;

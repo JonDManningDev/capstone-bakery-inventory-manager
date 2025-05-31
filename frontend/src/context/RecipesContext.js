@@ -87,7 +87,7 @@ export function RecipesProvider({ children }) {
     }
   }
 
-  async function deleteRecipe(recipeId) {
+  async function deleteRecipe(recipeId, title) {
     try {
       const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
         method: "DELETE",
@@ -102,7 +102,7 @@ export function RecipesProvider({ children }) {
       }
 
       return addAlert(
-        `Successfully deleted recipe with id ${recipeId}.`,
+        `Successfully deleted recipe ${title}.`,
         "info",
         "deleteRecipe-success"
       );
