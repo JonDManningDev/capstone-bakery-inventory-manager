@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 import { useRecipes } from "../../context/RecipesContext";
 import { useIngredients } from "../../context/IngredientsContext";
@@ -9,17 +9,13 @@ import { AddIngredientForm } from "./AddIngredientForm";
 import { getIngredientShortages } from "../../utils/getIngredientShortages";
 
 export function RecipeView() {
-  const {
-    ingredients,
-    ingredient,
-    getIngredient,
-    getIngredients,
-    setIngredient,
-  } = useIngredients();
-  const { recipe, getRecipeById, addRecipeIngredient } = useRecipes();
+  const { ingredients, getIngredients } = useIngredients();
+  const { recipe, getRecipeById, addRecipeIngredient, deleteRecipe } =
+    useRecipes();
   const { units, conversions } = useUnits();
   const { title, description, image_url } = recipe;
   const { recipeId } = useParams();
+  const navigate = useNavigate();
 
   // Keeps track of ingredient shortages that would prevent baking the recipe
   const [shortages, setShortages] = useState([]);
@@ -28,7 +24,7 @@ export function RecipeView() {
   useEffect(() => {
     getRecipeById(recipeId);
   }, [recipe]);
-  
+
   // Automatically fetch the ingredients records and load into state on component load
   useEffect(() => {
     getIngredients();
@@ -40,12 +36,12 @@ export function RecipeView() {
       getIngredientShortages(recipe, ingredients, conversions, setShortages);
     }
   }, [recipe, ingredients, conversions]);
-  
+
   // Update the bake button state based on shortages
   useEffect(() => {
     const bakeButton = document.getElementById("recipeViewBake");
     if (!bakeButton) return;
-    
+
     if (shortages && shortages.length > 0) {
       if (!bakeButton.classList.contains("disabled")) {
         bakeButton.classList.add("disabled");
@@ -56,6 +52,14 @@ export function RecipeView() {
       }
     }
   }, [shortages]);
+
+  async function handleDelete(recipe_id, title) {
+    const message = `Are you sure you want to delete the recipe ${title}?`;
+    if (window.confirm(message)) {
+      deleteRecipe(recipe_id, title);
+        navigate("/recipes");
+    }
+  }
 
   return (
     // Component container
@@ -82,7 +86,12 @@ export function RecipeView() {
           >
             Edit Recipe
           </Link>
-          <button className="btn btn-danger mx-1">Delete Recipe</button>
+          <button
+            className="btn btn-danger mx-1"
+            onClick={() => handleDelete(recipe.recipe_id, recipe.title)}
+          >
+            Delete Recipe
+          </button>
         </div>
       </div>
       {/* Description and Ingredients */}
@@ -92,7 +101,8 @@ export function RecipeView() {
           className="col-12 col-md-4 bg-secondary-subtle rounded mb-2 mb-md-0"
         >
           <p className="lead">{description}</p>
-        </div>        <div
+        </div>{" "}
+        <div
           id="editIngredients"
           className="col-12 col-md-7 border rounded bg-white mt-2 mt-md-0"
         >
@@ -100,13 +110,21 @@ export function RecipeView() {
           {shortages && shortages.length > 0 && (
             <div className="alert alert-warning mt-3 mx-3">
               <h5 className="alert-heading">Ingredient Shortages</h5>
-              <p>The following ingredients need to be replenished before baking:</p>
+              <p>
+                The following ingredients need to be replenished before baking:
+              </p>
               <ul className="list-group list-group-flush mb-3">
                 {shortages.map((shortage, index) => (
-                  <li key={index} className="list-group-item list-group-item-warning">
+                  <li
+                    key={index}
+                    className="list-group-item list-group-item-warning"
+                  >
                     <strong>{shortage.name}:</strong> {shortage.issue}
                     {shortage.available !== undefined && (
-                      <span> (Current stock: {shortage.available} {shortage.unit})</span>
+                      <span>
+                        {" "}
+                        (Current stock: {shortage.available} {shortage.unit})
+                      </span>
                     )}
                   </li>
                 ))}
