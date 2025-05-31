@@ -7,7 +7,9 @@ const cors = require("cors");
 const app = express();
 
 const employeesRouter = require("./employees/employees.router");
+const ingredientsRouter = require("./ingredients/ingredients.router");
 const recipesRouter = require("./recipes/recipes.router");
+const unitsRouter = require("./units/units.router");
 
 const errorHandler = require("./errors/errorHandler");
 const notFound = require("./errors/notFound");
@@ -22,7 +24,9 @@ app.use(express.json());
 // Routers:
 
 app.use("/employees", employeesRouter);
+app.use("/ingredients", ingredientsRouter);
 app.use("/recipes", recipesRouter);
+app.use("/units", unitsRouter);
 
 // Error Handlers:
 

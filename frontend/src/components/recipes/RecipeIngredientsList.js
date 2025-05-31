@@ -1,0 +1,25 @@
+import { RecipeIngredientsListing } from "./RecipeIngredientsListing";
+
+export function RecipeIngredientsList({ recipe }) {
+  const { ingredients } = recipe;
+
+  const ingredientsSorted = ingredients.sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
+  );
+
+  const ingredientsList = ingredients.map((ingredient) => {
+    return (
+      <RecipeIngredientsListing
+        key={ingredient.ingredient_id}
+        recipeId={recipe.recipe_id}
+        name={ingredient.name}
+        title={recipe.title}
+        amount_needed={ingredient.amount_needed}
+        unit={ingredient.unit}
+        ingredientId={ingredient.ingredient_id}
+      />
+    );
+  });
+
+  return <div>{ingredientsList}</div>;
+}
