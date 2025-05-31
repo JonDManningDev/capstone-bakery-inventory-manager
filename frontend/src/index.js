@@ -5,7 +5,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
 import { AlertsProvider } from "./context/AlertsContext";
 import { AuthProvider } from "./context/AuthContext";
+import { UnitsProvider } from "./context/UnitsContext";
 import { RecipesProvider } from "./context/RecipesContext";
+import { IngredientsProvider } from "./context/IngredientsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -13,9 +15,13 @@ root.render(
     <Router>
       <AlertsProvider>
         <AuthProvider>
-          <RecipesProvider>
-            <App />
-          </RecipesProvider>
+          <UnitsProvider>
+            <RecipesProvider>
+              <IngredientsProvider>
+                <App />
+              </IngredientsProvider>
+            </RecipesProvider>
+          </UnitsProvider>
         </AuthProvider>
       </AlertsProvider>
     </Router>

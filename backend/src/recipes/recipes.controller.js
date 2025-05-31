@@ -1,29 +1,52 @@
 const service = require("./recipes.service");
 const asyncHandler = require("../errors/asyncHandler");
-
-// Validation Middleware:
+const middleware = require("./recipes.middleware");
+const ingredientsMiddleware = require("../ingredients/ingredients.middleware");
 
 // Route Functions:
 
-async function create(req, res, next) {
-
+async function addRecipeIngredient(req, res, next) {
+    const { recipeId, ingredientId } = req.params;
+    const newIngredient = req.body.data;
+    return res.json({ data: await service.addRecipeIngredient(recipeId, ingredientId, newIngredient)});
 }
 
-async function destroy(req, res, next) {
+async function create(req, res, next) {}
 
+async function destroyRecipe(req, res, next) {}
+
+async function destroyRecipeIngredient(req, res, next) {
+  const { recipeId, ingredientId } = req.params;
+  await service.deleteRecipeIngredient(recipeId, ingredientId);
+  return res.sendStatus(204);
 }
 
 async function list(req, res, next) {
-    return res.json({ data: await service.list() });
+  return res.json({ data: await service.list() });
 }
 
 async function read(req, res, next) {
-
+  return res.json({ data: res.locals.recipe });
 }
 
 module.exports = {
-    create: asyncHandler(create),
-    delete: asyncHandler(destroy),
-    list: asyncHandler(list),
-    read: asyncHandler(read),
-}
+  addRecipeIngredient: [
+    asyncHandler(middleware.recipeExists),
+    asyncHandler(ingredientsMiddleware.ingredientExists),
+    asyncHandler(middleware.recipeIngredientExists),
+    asyncHandler(addRecipeIngredient),
+  ],
+  create: asyncHandler(create),
+  deleteRecipe: [
+    asyncHandler(middleware.recipeExists),
+    asyncHandler(destroyRecipe),
+  ],
+  deleteRecipeIngredient: [
+    asyncHandler(middleware.recipeExists),
+    asyncHandler(ingredientsMiddleware.ingredientExists),
+    asyncHandler(middleware.recipeIngredientExists),
+    asyncHandler(destroyRecipeIngredient),
+  ],
+  list: asyncHandler(list),
+  read: [asyncHandler(middleware.recipeExists), asyncHandler(read)],
+};
