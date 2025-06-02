@@ -6,6 +6,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+const bakesRouter = require("./bakes/bakes.router");
 const employeesRouter = require("./employees/employees.router");
 const ingredientsRouter = require("./ingredients/ingredients.router");
 const recipesRouter = require("./recipes/recipes.router");
@@ -23,6 +24,7 @@ app.use(express.json());
 
 // Routers:
 
+app.use("/bakes", bakesRouter);
 app.use("/employees", employeesRouter);
 app.use("/ingredients", ingredientsRouter);
 app.use("/recipes", recipesRouter);

@@ -18,7 +18,7 @@ export function UnitsProvider({ children }) {
       if (!response.ok) {
         const json = await response.json();
         throw new Error(
-          response.error ||
+          json.error ||
             "There was an error in the server response for GET /units/conversions"
         );
       }
@@ -58,6 +58,7 @@ export function UnitsProvider({ children }) {
   useEffect(() => {
     getUnits();
     getConversions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

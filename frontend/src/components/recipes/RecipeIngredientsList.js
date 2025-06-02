@@ -7,7 +7,7 @@ export function RecipeIngredientsList({ recipe }) {
     a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
   );
 
-  const ingredientsList = ingredients.map((ingredient) => {
+  const ingredientsList = ingredientsSorted.map((ingredient) => {
     return (
       <RecipeIngredientsListing
         key={ingredient.ingredient_id}

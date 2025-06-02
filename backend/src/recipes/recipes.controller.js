@@ -6,9 +6,8 @@ const ingredientsMiddleware = require("../ingredients/ingredients.middleware");
 // Route Functions:
 
 async function addRecipeIngredient(req, res, next) {
-    const { recipeId, ingredientId } = req.params;
     const newIngredient = req.body.data;
-    return res.json({ data: await service.addRecipeIngredient(recipeId, ingredientId, newIngredient)});
+    return res.json({ data: await service.addRecipeIngredient(newIngredient)});
 }
 
 async function create(req, res, next) {}

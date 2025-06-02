@@ -8,10 +8,8 @@ export function RegisterModal() {
   // Manually control focus to prevent aria errors.
   useEffect(() => {
     const modal = document.getElementById("registerModal");
-    if (!modal) return;
-
-    const modalFocusHandler = () => {
-      const input = document.getElementById("emailAddress");
+    if (!modal) return;    const modalFocusHandler = () => {
+      const input = document.getElementById("registerEmailAddress");
       input?.focus();
     };
 

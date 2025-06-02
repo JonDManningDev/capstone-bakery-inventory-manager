@@ -1,7 +1,4 @@
-import { useEffect } from "react";
-
 import { RecipesListing } from "./RecipesListing";
-import { useRecipes } from "../../context/RecipesContext";
 
 export function RecipesList({ recipes }) {
 

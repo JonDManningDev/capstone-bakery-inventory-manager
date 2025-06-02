@@ -28,9 +28,9 @@ export function AddIngredientForm({
     const name = match.name;
 
     // Add the ingredient record to the recipe_ingredients table
-    addRecipeIngredient(recipeId, ingredientId, formData, title, name);
+    await addRecipeIngredient(recipeId, ingredientId, formData, title, name);
     // Fetch the updated recipe to refresh component state
-    getRecipeById(recipeId);
+    await getRecipeById(recipeId);
   }
 
   return (

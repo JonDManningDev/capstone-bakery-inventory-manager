@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
 import { AlertsProvider } from "./context/AlertsContext";
 import { AuthProvider } from "./context/AuthContext";
+import { BakesProvider } from "./context/BakesContext";
 import { UnitsProvider } from "./context/UnitsContext";
 import { RecipesProvider } from "./context/RecipesContext";
 import { IngredientsProvider } from "./context/IngredientsContext";
@@ -18,7 +19,9 @@ root.render(
           <UnitsProvider>
             <RecipesProvider>
               <IngredientsProvider>
-                <App />
+                <BakesProvider>
+                  <App />
+                </BakesProvider>
               </IngredientsProvider>
             </RecipesProvider>
           </UnitsProvider>

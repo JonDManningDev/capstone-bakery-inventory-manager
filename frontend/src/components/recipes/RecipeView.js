@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
+import { useAlerts } from "../../context/AlertsContext";
+import { useAuth } from "../../context/AuthContext";
+import { useBakes } from "../../context/BakesContext";
 import { useRecipes } from "../../context/RecipesContext";
 import { useIngredients } from "../../context/IngredientsContext";
 import { useUnits } from "../../context/UnitsContext";
@@ -9,7 +12,11 @@ import { AddIngredientForm } from "./AddIngredientForm";
 import { getIngredientShortages } from "../../utils/getIngredientShortages";
 
 export function RecipeView() {
-  const { ingredients, getIngredients } = useIngredients();
+  const { addAlert } = useAlerts();
+  const { user } = useAuth();
+  const { createBake } = useBakes();
+  const { ingredients, getIngredients, subtractBakeIngredients } =
+    useIngredients();
   const { recipe, getRecipeById, addRecipeIngredient, deleteRecipe } =
     useRecipes();
   const { units, conversions } = useUnits();
@@ -19,15 +26,16 @@ export function RecipeView() {
 
   // Keeps track of ingredient shortages that would prevent baking the recipe
   const [shortages, setShortages] = useState([]);
-
-  // Automatically fetch the recipe and load into state on component load
+  
   useEffect(() => {
     getRecipeById(recipeId);
-  }, [recipe]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recipeId]);
 
-  // Automatically fetch the ingredients records and load into state on component load
+  
   useEffect(() => {
     getIngredients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Check for ingredient shortages that would prevent baking the recipe
@@ -40,7 +48,6 @@ export function RecipeView() {
   // Update the bake button state based on shortages
   useEffect(() => {
     const bakeButton = document.getElementById("recipeViewBake");
-    if (!bakeButton) return;
 
     if (shortages && shortages.length > 0) {
       if (!bakeButton.classList.contains("disabled")) {
@@ -56,9 +63,22 @@ export function RecipeView() {
   async function handleDelete(recipe_id, title) {
     const message = `Are you sure you want to delete the recipe ${title}?`;
     if (window.confirm(message)) {
-      deleteRecipe(recipe_id, title);
-        navigate("/recipes");
+      await deleteRecipe(recipe_id, title);
+      return navigate("/recipes");
     }
+  }
+
+  async function handleBake(recipeId, employeeId, title) {
+    if (!employeeId) {
+      return addAlert(
+        "You must log in before beginning a bake!",
+        "danger",
+        "handleBake-failure"
+      );
+    }
+    await createBake(recipeId, employeeId, title);
+    await subtractBakeIngredients(recipeId);
+    await getIngredients();
   }
 
   return (
@@ -76,7 +96,11 @@ export function RecipeView() {
           <h2 className="ps-3">{title}</h2>
         </div>
         <div className="col d-flex justify-content-end p-2">
-          <button id="recipeViewBake" className="btn btn-primary mx-1">
+          <button
+            id="recipeViewBake"
+            className="btn btn-primary mx-1"
+            onClick={() => handleBake(recipeId, user.employeeId, title)}
+          >
             Bake Recipe
           </button>
           <Link

@@ -1,4 +1,5 @@
 const service = require("./recipes.service");
+const asyncHandler = require("../errors/asyncHandler");
 
 /**
  * Checks if a recipe exists by ID and attaches it to res.locals
@@ -54,6 +55,6 @@ function recipeIngredientExists(req, res, next) {
 }
 
 module.exports = {
-  recipeExists,
-  recipeIngredientExists,
+  recipeExists: asyncHandler(recipeExists),
+  recipeIngredientExists: asyncHandler(recipeIngredientExists),
 };

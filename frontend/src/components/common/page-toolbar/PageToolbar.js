@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ToolbarDropdown } from "./ToolbarDropdown";
 import { LoginButton } from "./LoginButton";
 
-export function PageToolbar({ user, setUser }) {
+export function PageToolbar() {
   const location = useLocation();
 
   const homeLink = () => {
@@ -67,10 +67,9 @@ export function PageToolbar({ user, setUser }) {
                 { to: "ingredients/new", label: "Create Ingredient" },
               ]}
             />
-            <li className="nav-item">{bakesLink()}</li>
-          </ul>
+            <li className="nav-item">{bakesLink()}</li>          </ul>
         </div>
-        <LoginButton user={user} setUser={setUser} />
+        <LoginButton />
       </div>
     </nav>
   );
