@@ -1,4 +1,5 @@
 const service = require("./employees.service");
+const asyncHandler = require("../errors/asyncHandler");
 const bcrypt = require("bcrypt");
 
 /**
@@ -105,6 +106,6 @@ async function validateRegistration(req, res, next) {
 }
 
 module.exports = {
-  validateLogin,
-  validateRegistration,
+  validateLogin: asyncHandler(validateLogin),
+  validateRegistration: asyncHandler(validateRegistration),
 };

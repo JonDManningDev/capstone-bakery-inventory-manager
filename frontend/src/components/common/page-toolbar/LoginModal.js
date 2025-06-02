@@ -11,7 +11,7 @@ export function LoginModal() {
     if (!modal) return;
 
     const modalFocusHandler = () => {
-      const input = document.getElementById("emailAddress");
+      const input = document.getElementById("loginEmailAddress");
       input?.focus();
     };
 
@@ -43,34 +43,14 @@ export function LoginModal() {
     event.preventDefault();
 
     try {
-      // This route returns a login token, if successful
-      const baseUrl = process.env.REACT_APP_API_BASE_URL;
-      const response = await fetch(`${baseUrl}/employees/login`, {
-        method: "POST",
-        body: JSON.stringify({ data: formData }),
-        headers: { "Content-Type": "application/json" },
-      });
+      await login(formData);
 
-      const json = await response.json();
+      // Close the modal
+      modalCloser("loginModal");
 
-      if (response.ok) {
-        // Store the token locally, then use it to retrieve user info
-        await login(json.token);
-
-        // Close the modal
-        modalCloser("loginModal");
-        
-        // Reset form
-        setFormData({ email: "", password: "" });
-      } else {
-        addAlert(json.error || "Login failed.", "danger", "login-failure");
-      }
+      // Reset form
+      setFormData({ email: "", password: "" });
     } catch (error) {
-      addAlert(
-        "There was an error during login: " + error.message,
-        "danger",
-        "login-failure"
-      );
       console.error(error);
     }
   }

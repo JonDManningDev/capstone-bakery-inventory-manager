@@ -19,6 +19,15 @@ exports.seed = async function (knex) {
   // Insert seed entries
   await knex("employees").insert([
     {
+      first_name: "Guest",
+      last_name: "Employee",
+      email: "guest@notreal.net",
+      password_hash:
+        "$2b$10$MZ3PZv4jcgwH0dpK5JorC.twF./4rUQK7Mw9tPQkgu0Kum2aefi.e", // password: guest123
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
       first_name: "John",
       last_name: "Baker",
       email: "john.baker@maevesbakery.com",

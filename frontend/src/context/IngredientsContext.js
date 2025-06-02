@@ -28,8 +28,8 @@ export function IngredientsProvider({ children }) {
 
       setIngredient(ingredientRecords);
     } catch (error) {
-        addAlert(error.message, "danger", "getIngredient-failure");
-        console.error(error);
+      addAlert(error.message, "danger", "getIngredient-failure");
+      console.error(error);
     }
   }
 
@@ -54,9 +54,30 @@ export function IngredientsProvider({ children }) {
     }
   }
 
+  async function subtractBakeIngredients(recipeId) {
+    try {
+      const response = await fetch(`${baseUrl}/ingredients/bake/${recipeId}`, {
+        method: "PUT",
+      });
+
+      if (!response.ok) {
+        const json = await response.json();
+        throw new Error(
+          json.error ||
+            "There was an error in the server response for PUT :/ingredients"
+        );
+      }
+
+      return
+    } catch (error) {
+        addAlert(error.message, "danger", "subtractBakeIngredients-failure");
+        console.error(error);
+    }
+  }
+
   return (
     <IngredientsContext.Provider
-      value={{ ingredients, getIngredients, ingredient, getIngredient }}
+      value={{ ingredients, getIngredients, ingredient, getIngredient, subtractBakeIngredients }}
     >
       {children}
     </IngredientsContext.Provider>

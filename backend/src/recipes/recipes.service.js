@@ -2,9 +2,8 @@ const knex = require("../db/connection");
 
 const tableName = "recipes";
 
-function addRecipeIngredient(recipeId, ingredientId, newIngredient) {
+function addRecipeIngredient(newIngredient) {
   return knex("recipe_ingredients")
-    .where({ recipe_id: recipeId }, { ingredient_id: ingredientId })
     .insert(newIngredient);
 }
 
@@ -29,7 +28,6 @@ async function read(recipeId) {
     .where({ recipe_id: recipeId })
     .first();
 
-  // Trigger the rejection in the validation middleware if no recipe exists
   if (!recipe) {
     return null;
   }
