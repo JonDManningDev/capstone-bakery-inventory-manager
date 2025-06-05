@@ -6,7 +6,7 @@ export function Alerts() {
   if (!alerts || alerts.length === 0) return null;
 
   return (
-    <div className="container alerts-container">
+    <div className="container alerts-container mt-3">
       {alerts.map((alert) => (
         <div
           key={alert.id}

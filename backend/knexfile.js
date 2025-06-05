@@ -33,7 +33,9 @@ module.exports = {
     pool: { min: 1, max: 5 },
     connection: {
       connectionString: DATABASE_URL,
-      ssl: true,
+      ssl: {
+        rejectUnauthorized: false, // This allows self-signed certificates
+      },
     },
     migrations: {
       directory: path.join(__dirname, "src", "db", "migrations"),

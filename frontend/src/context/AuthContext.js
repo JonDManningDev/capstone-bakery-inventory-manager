@@ -1,7 +1,7 @@
 // This context file provides login/logout logic and the user state wherever needed in the app.
 // It also contains the useEffect() that automatically logs a returning user back in.
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 
 import { useAlerts } from "./AlertsContext";
 
@@ -17,47 +17,67 @@ export function AuthProvider({ children }) {
   const { addAlert, setAlerts } = useAlerts();
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
+  // Track our automatic login attempts.
+  // The app will first attempt to fetch user data if there is an existing token in localStorage.
+  // If that fails, it will then attempt to log in as the Guest user and obtain its info.
+  // This makes demoing the app easier, so that registering a new user is not required.
+  const autoLoginAttemptedRef = useRef(false);
+  const guestLoginAttemptedRef = useRef(false);
+
   useEffect(() => {
-    console.log(user);
+    console.log("User state updated:", user);
   }, [user]);
 
-  // Automatically logs in on app load if a valid token is present in localStorage.
+  // Attempt auto-login
   useEffect(() => {
-    autoLogin();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Auto-login with guest credentials for demo purposes
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const attemptGuestLogin = setTimeout(() => {
-      if (!token) {
-        const guestCredentials = {
-          email: "guest@notreal.net",
-          password: "guest123",
-        };
-        login(guestCredentials);
-        addAlert("You have been logged in as Guest for demonstration purposes.", "info", "attemptGuestLogin-success");
-      }
-    }, 1000); // Delay to ensure autoLogin completes first
-
-    return () => {
-      clearTimeout(attemptGuestLogin);
-    };
+    if (!autoLoginAttemptedRef.current) {
+      autoLoginAttemptedRef.current = true;
+      autoLogin().then(() => {
+        // After auto-login completes, check if we need to do Guest login
+        setTimeout(() => {
+          const token = localStorage.getItem("token");
+          if (!token && !guestLoginAttemptedRef.current) {
+            guestLoginAttemptedRef.current = true;
+            const guestCredentials = {
+              email: "guest@notreal.net",
+              password: "guest123",
+            };
+            login(guestCredentials);
+            addAlert(
+              "You have been logged in as Guest for demonstration purposes.",
+              "info",
+              "guest-login-success"
+            );
+          }
+        }, 1000);
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function autoLogin() {
     try {
+      console.log("Attempting auto-login...");
       const token = localStorage.getItem("token");
 
       if (token) {
+        console.log(
+          "Token found in localStorage, attempting to get user data..."
+        );
         const userFromToken = await getUser(token);
         setUser(userFromToken);
         setAlerts((current) =>
           current.filter((alert) => alert.type !== "no-login")
         );
-        addAlert("Logged in with existing user token!", "success", "login-success");
+        addAlert(
+          "Logged in with existing user token!",
+          "success",
+          "login-success"
+        );
+        return true;
+      } else {
+        console.log("No token found in localStorage during auto-login");
+        return false;
       }
     } catch (error) {
       // If there is an error, make sure the token gets cleaned up.
@@ -70,12 +90,13 @@ export function AuthProvider({ children }) {
         lastName: null,
         email: null,
       });
-
-      console.error(error);
+      return false;
     }
   }
+
   async function getLoginToken(formData) {
     try {
+      console.log(`Attempting to get login token for ${formData.email}...`);
       const response = await fetch(`${baseUrl}/employees/login`, {
         method: "POST",
         body: JSON.stringify({ data: formData }),
@@ -98,7 +119,7 @@ export function AuthProvider({ children }) {
       return json.token;
     } catch (error) {
       addAlert(error.message, "danger", "getLoginToken-failure");
-      console.error(error);
+      console.error("Error getting login token:", error);
       throw error;
     }
   }
@@ -118,6 +139,7 @@ export function AuthProvider({ children }) {
       );
 
       addAlert("Successfully logged in!", "success", "login-success");
+      return true;
     } catch (error) {
       // If there is an error, make sure the token gets cleaned up.
       localStorage.removeItem("token");
@@ -129,12 +151,13 @@ export function AuthProvider({ children }) {
         lastName: null,
         email: null,
       });
-
-      console.error("Login error:", error);
+      return false;
     }
   }
+
   async function getUser(token) {
     try {
+      console.log("Attempting to get user data with token...");
       const response = await fetch(`${baseUrl}/employees/me`, {
         method: "GET",
         headers: {
@@ -152,14 +175,16 @@ export function AuthProvider({ children }) {
 
       const json = await response.json();
       const userFromToken = json.data;
+      console.log("Successfully retrieved user data:", userFromToken);
 
       return userFromToken;
     } catch (error) {
       addAlert(error.message, "danger", "getUser-failure");
-      console.error(error);
+      console.error("Error getting user data:", error);
       throw error;
     }
   }
+
   function logout() {
     localStorage.removeItem("token");
     setUser({

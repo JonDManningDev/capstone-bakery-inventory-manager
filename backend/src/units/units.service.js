@@ -1,25 +1,18 @@
 const knex = require("../db/connection");
 
 const tableName = "unit_conversions";
+
 // Instead of hitting the database every time we need to do a unit conversion, we just request the whole table once and load it into memory
 // It gets loaded by loadConversionCache()
 let conversionMap = null;
 // Add a graph representation of the conversions for multi-step conversion
 let conversionGraph = null;
 
-/**
- * Gets the conversion factor between two units, potentially using multiple conversion steps
- * @param {string} from_unit - Unit to convert from
- * @param {string} to_unit - Unit to convert to
- * @returns {number} - The conversion factor
- */
 function getConversionFactor(from_unit, to_unit) {
-  // If units are the same, return 1 (no conversion needed)
   if (from_unit === to_unit) {
     return 1;
   }
 
-  // Handle null or undefined inputs
   if (!from_unit || !to_unit) {
     throw new Error(
       `Invalid units: from_unit=${from_unit}, to_unit=${to_unit}`
@@ -138,24 +131,30 @@ async function listUnits() {
 
 // This loads the unit_conversions table into memory as conversionMap
 async function loadConversionCache() {
-  const records = await listConversions();
-  conversionMap = new Map();
-  conversionGraph = new Map();
+  try {
+    const records = await listConversions();
+    conversionMap = new Map();
+    conversionGraph = new Map();
 
-  for (const row of records) {
-    // Build the direct conversion map
-    const key = `${row.from_unit}->${row.to_unit}`;
-    conversionMap.set(key, row.factor);
+    for (const row of records) {
+      // Build the direct conversion map
+      const key = `${row.from_unit}->${row.to_unit}`;
+      conversionMap.set(key, row.factor);
 
-    // Build the conversion graph
-    if (!conversionGraph.has(row.from_unit)) {
-      conversionGraph.set(row.from_unit, []);
+      // Build the conversion graph
+      if (!conversionGraph.has(row.from_unit)) {
+        conversionGraph.set(row.from_unit, []);
+      }
+      conversionGraph.get(row.from_unit).push(row.to_unit);
     }
-    conversionGraph.get(row.from_unit).push(row.to_unit);
-  }
 
-  console.log(`Loaded ${conversionMap.size} unit conversions into memory`);
-  console.log(`Built conversion graph with ${conversionGraph.size} units`);
+    console.log(`Loaded ${conversionMap.size} unit conversions into memory`);
+    console.log(`Built conversion graph with ${conversionGraph.size} units`);
+  } catch (error) {
+    console.error(
+      `Error loading conversion cache from database: ${error.message}`
+    );
+  }
 }
 
 // Export the ability to refresh the conversions table cache, if it ever changes
