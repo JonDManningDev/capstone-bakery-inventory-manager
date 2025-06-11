@@ -151,6 +151,7 @@ export function RegisterModal() {
                       handleInputChange(event, formData, setFormData)
                     }
                     placeholder="Enter your first name"
+                    required
                   ></input>
                 </div>
                 <div className="m-3">
@@ -167,6 +168,7 @@ export function RegisterModal() {
                       handleInputChange(event, formData, setFormData)
                     }
                     placeholder="Enter your last name"
+                    required
                   ></input>
                 </div>
               </div>
@@ -186,6 +188,7 @@ export function RegisterModal() {
                       handleInputChange(event, formData, setFormData)
                     }
                     placeholder="employee@example.com"
+                    required
                   ></input>
                 </div>
                 <div className="m-3">
@@ -201,6 +204,7 @@ export function RegisterModal() {
                     onChange={(event) =>
                       handleInputChange(event, formData, setFormData)
                     }
+                    required
                   ></input>
                 </div>
               </div>
@@ -219,6 +223,7 @@ export function RegisterModal() {
                     onChange={(event) =>
                       handleInputChange(event, formData, setFormData)
                     }
+                    required
                   ></input>
                 </div>
                 <div className="m-3">
@@ -234,6 +239,7 @@ export function RegisterModal() {
                     onChange={(event) =>
                       handleInputChange(event, formData, setFormData)
                     }
+                    required
                   ></input>
                 </div>
               </div>

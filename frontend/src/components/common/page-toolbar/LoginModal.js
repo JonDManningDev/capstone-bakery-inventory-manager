@@ -37,7 +37,6 @@ export function LoginModal() {
   });
 
   const { login } = useAuth();
-  const { addAlert } = useAlerts();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -93,6 +92,7 @@ export function LoginModal() {
                     handleInputChange(event, formData, setFormData)
                   }
                   placeholder="employee@example.com"
+                  required
                 ></input>
               </div>
               <div className="m-3">
@@ -108,6 +108,7 @@ export function LoginModal() {
                   onChange={(event) =>
                     handleInputChange(event, formData, setFormData)
                   }
+                  required
                 ></input>
               </div>
             </div>

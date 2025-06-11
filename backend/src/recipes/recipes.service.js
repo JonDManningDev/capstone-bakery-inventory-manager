@@ -3,12 +3,13 @@ const knex = require("../db/connection");
 const tableName = "recipes";
 
 function addRecipeIngredient(newIngredient) {
-  return knex("recipe_ingredients")
-    .insert(newIngredient);
+  return knex("recipe_ingredients").insert(newIngredient);
 }
 
-function list() {
-  return knex(tableName).select("*");
+async function create(newRecipe) {
+  const newRecords = await knex(tableName).insert(newRecipe).returning("*");
+
+  return newRecords[0];
 }
 
 function destroyRecipe(recipeId) {
@@ -19,6 +20,10 @@ function destroyRecipeIngredient(recipeId, ingredientId) {
   return knex("recipe_ingredients")
     .where({ recipe_id: recipeId, ingredient_id: ingredientId })
     .del();
+}
+
+function list() {
+  return knex(tableName).select("*");
 }
 
 async function read(recipeId) {
@@ -48,10 +53,23 @@ async function read(recipeId) {
   };
 }
 
+function readByTitle(title) {
+  return knex(tableName).select("*").where({ title }).first();
+}
+
+async function update(recipeId, updates) {
+  const updatedRecords = await knex(tableName).where({ recipe_id: recipeId }).update(updates).returning('*');
+  
+  return updatedRecords[0];
+}
+
 module.exports = {
   addRecipeIngredient,
+  create,
   deleteRecipe: destroyRecipe,
   deleteRecipeIngredient: destroyRecipeIngredient,
   list,
   read,
+  readByTitle,
+  update,
 };

@@ -20,19 +20,18 @@ export function RecipeView() {
   const { recipe, getRecipeById, addRecipeIngredient, deleteRecipe } =
     useRecipes();
   const { units, conversions } = useUnits();
-  const { title, description, image_url } = recipe;
+  const { title, description, image_url} = recipe;
   const { recipeId } = useParams();
   const navigate = useNavigate();
 
   // Keeps track of ingredient shortages that would prevent baking the recipe
   const [shortages, setShortages] = useState([]);
-  
+
   useEffect(() => {
     getRecipeById(recipeId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipeId]);
 
-  
   useEffect(() => {
     getIngredients();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,24 +94,20 @@ export function RecipeView() {
           ></img>
           <h2 className="ps-3">{title}</h2>
         </div>
-        <div className="col d-flex justify-content-end p-2">
-          <button
+        <div className="col d-flex justify-content-end p-2">          <button
             id="recipeViewBake"
             className="btn btn-primary mx-1"
             onClick={() => handleBake(recipeId, user.employeeId, title)}
           >
-            Bake Recipe
-          </button>
-          <Link
-            to="/recipes/:recipeId/edit"
+            Bake Recipe          </button>          <Link
+            to={`/recipes/${recipeId}/edit`}
             role="button"
             className="btn btn-info mx-1"
           >
             Edit Recipe
-          </Link>
-          <button
+          </Link>          <button
             className="btn btn-danger mx-1"
-            onClick={() => handleDelete(recipe.recipe_id, recipe.title)}
+            onClick={() => handleDelete(recipeId, title)}
           >
             Delete Recipe
           </button>

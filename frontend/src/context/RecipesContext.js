@@ -57,34 +57,24 @@ export function RecipesProvider({ children }) {
     }
   }
 
-  async function createRecipe(formData) {
-    try {
-      const response = await fetch(`${baseUrl}/recipes`, {
-        method: "POST",
-        body: JSON.stringify({ data: formData }),
-        headers: { "Content-Type": "application/json" },
-      });
+  async function createNewRecipe(formData) {
+    const response = await fetch(`${baseUrl}/recipes`, {
+      method: "POST",
+      body: JSON.stringify({ data: formData }),
+      headers: { "Content-Type": "application/json" },
+    });
 
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for POST /recipes"
-        );
-      }
-
+    if (!response.ok) {
       const json = await response.json();
-      const recipeRecord = json.data;
-
-      return addAlert(
-        `Successfully created new recipe: ${recipeRecord.title}!`,
-        "success",
-        "createRecipe-success"
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for POST /recipes"
       );
-    } catch (error) {
-      addAlert(error.message, "danger", "createRecipe-failure");
-      console.error(error);
     }
+
+    const json = await response.json();
+    const recipeRecord = json.data;
+    return recipeRecord;
   }
 
   async function deleteRecipe(recipeId, title) {
@@ -139,7 +129,27 @@ export function RecipesProvider({ children }) {
       console.error(error);
     }
   }
-  
+
+  async function editRecipeById(recipeId, formData) {
+    const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
+      method: "PUT",
+      body: JSON.stringify({ data: formData }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      const json = await response.json();
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for PUT /recipes/:recipeId"
+      );
+    }
+
+    const json = await response.json();
+    const updatedRecipe = json.data;
+    return updatedRecipe;
+  }
+
   async function getRecipeById(recipeId) {
     try {
       const response = await fetch(`${baseUrl}/recipes/${recipeId}`);
@@ -155,7 +165,8 @@ export function RecipesProvider({ children }) {
       const json = await response.json();
       const recipeRecord = json.data;
 
-      return setRecipe(recipeRecord);
+      setRecipe(recipeRecord);
+      return recipeRecord;
     } catch (error) {
       addAlert(error.message, "danger", "getRecipeById-failure");
       console.error(error);
@@ -189,9 +200,10 @@ export function RecipesProvider({ children }) {
       value={{
         recipes,
         recipe,
+        editRecipeById,
         getRecipes,
         getRecipeById,
-        createRecipe,
+        createNewRecipe,
         deleteRecipe,
         addRecipeIngredient,
         deleteRecipeIngredient,
