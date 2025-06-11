@@ -1,13 +1,11 @@
 import { RecipesListing } from "./RecipesListing";
 
 export function RecipesList({ recipes }) {
-
   // Sort by alphabetical order
   const recipesSorted = recipes.sort((a, b) =>
     a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
-  );  
+  );
 
-  // Transform the recipes into a set (list) of individual entries (listings)
   const recipesList = recipesSorted.map((recipe) => (
     <RecipesListing
       key={recipe.recipe_id}
@@ -17,6 +15,9 @@ export function RecipesList({ recipes }) {
     />
   ));
 
-  // Render the list
-  return <div className="list-group py-4">{recipesList}</div>;
+  return (
+    <div className="list-group py-4">
+      {recipes.length > 0 ? recipesList : <p>No recipes found.</p>}
+    </div>
+  );
 }

@@ -12,7 +12,7 @@ import { Home } from "./components/Home";
 import { BakesList } from "./components/bakes/BakesList";
 import { RecipesView } from "./components/recipes/RecipesView";
 import { RecipeView } from "./components/recipes/RecipeView";
-import { IngredientsList } from "./components/ingredients/IngredientsList";
+import { ViewIngredients } from "./components/ingredients/ViewIngredients";
 import { IngredientsCreate } from "./components/ingredients/IngredientsCreate";
 
 function App() {
@@ -31,7 +31,7 @@ function App() {
         <Route path="/recipes/:recipeId" element={<RecipeView />} />
         <Route path="/recipes/:recipeId/edit" element={<EditRecipe />} />
         <Route path="/recipes/new" element={<CreateRecipe />} />
-        <Route path="/ingredients" element={<IngredientsList />} />
+        <Route path="/ingredients" element={<ViewIngredients />} />
         <Route path="/ingredients/new" element={<IngredientsCreate />} />
       </Routes>
     </>
