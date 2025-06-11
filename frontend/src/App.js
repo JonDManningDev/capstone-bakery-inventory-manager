@@ -14,6 +14,7 @@ import { RecipesView } from "./components/recipes/RecipesView";
 import { RecipeView } from "./components/recipes/RecipeView";
 import { ViewIngredients } from "./components/ingredients/ViewIngredients";
 import { IngredientsCreate } from "./components/ingredients/IngredientsCreate";
+import { ViewIngredient } from "./components/ingredients/ViewIngredient";
 
 function App() {
   return (
@@ -33,6 +34,8 @@ function App() {
         <Route path="/recipes/new" element={<CreateRecipe />} />
         <Route path="/ingredients" element={<ViewIngredients />} />
         <Route path="/ingredients/new" element={<IngredientsCreate />} />
+        <Route path="/ingredients/:ingredientId" element={<ViewIngredient />} />
+
       </Routes>
     </>
   );

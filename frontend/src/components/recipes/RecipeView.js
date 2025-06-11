@@ -141,7 +141,6 @@ export function RecipeView() {
                     <strong>{shortage.name}:</strong> {shortage.issue}
                     {shortage.available !== undefined && (
                       <span>
-                        {" "}
                         (Current stock: {shortage.available} {shortage.unit})
                       </span>
                     )}
