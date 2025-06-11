@@ -22,12 +22,35 @@ function listRecipeIngredients(recipeId) {
     .where({ "ri.recipe_id": recipeId });
 }
 
-function read(ingredientId) {
-  return knex(tableName).where({ ingredient_id: ingredientId }).first();
+async function read(ingredientId) {
+  // Get the ingredient information
+  const ingredient = await knex(tableName)
+    .select("*")
+    .where({ ingredient_id: ingredientId })
+    .first();
+
+  if (!ingredient) {
+    return null;
+  }
+
+  // Get the ingredient's related recipes separately
+  const recipes = await knex("recipe_ingredients as ri")
+    .join("recipes as r", "ri.recipe_id", "r.recipe_id")
+    .select("r.recipe_id", "r.title")
+    .where({ "ri.ingredient_id": ingredientId });
+
+  //Return the combined ingredient object. The value of recipes will be an array of recipe objects.
+  return {
+    ingredient_id: ingredient.ingredient_id,
+    name: ingredient.name,
+    base_unit: ingredient.base_unit,
+    quantity_in_stock: ingredient.quantity_in_stock,
+    recipes,
+  };
 }
 
 async function subtractIngredients(recipeIngredients) {
-    // Convert to same unit and subtract
+  // Convert to same unit and subtract
   const ingredientUpdates = await Promise.all(
     recipeIngredients.map(async (ingredient) => {
       let conversionFactor = 1;
@@ -39,7 +62,7 @@ async function subtractIngredients(recipeIngredients) {
       const convertedAmount = ingredient.amount_needed * conversionFactor;
       const newQuantity = ingredient.quantity_in_stock - convertedAmount;
 
-    // Return a simplified array with only the values needed for the update
+      // Return a simplified array with only the values needed for the update
       return [ingredient.ingredient_id, newQuantity];
     })
   );
@@ -51,7 +74,7 @@ async function subtractIngredients(recipeIngredients) {
     )
     .join(", ");
 
-    // Add the formatted values to a raw SQL query to make all updates in one go
+  // Add the formatted values to a raw SQL query to make all updates in one go
   const rawQuery = `UPDATE ingredients AS i 
   SET quantity_in_stock = v.new_quantity 
   FROM (VALUES ${rawValues}) AS v(ingredient_id, new_quantity) 

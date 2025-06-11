@@ -6,12 +6,12 @@ const IngredientsContext = createContext();
 
 export function IngredientsProvider({ children }) {
   const [ingredients, setIngredients] = useState([]);
-  const [ingredient, setIngredient] = useState({});
+  const [ingredient, setIngredient] = useState({ recipes: [] });
 
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const { addAlert } = useAlerts();
 
-  async function getIngredient(ingredientId) {
+  async function getIngredientById(ingredientId) {
     try {
       const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`);
 
@@ -77,7 +77,7 @@ export function IngredientsProvider({ children }) {
 
   return (
     <IngredientsContext.Provider
-      value={{ ingredients, getIngredients, ingredient, getIngredient, subtractBakeIngredients }}
+      value={{ ingredients, getIngredients, ingredient, getIngredientById, subtractBakeIngredients }}
     >
       {children}
     </IngredientsContext.Provider>
