@@ -4,6 +4,11 @@ const middleware = require("./ingredients.middleware");
 
 // Route Functions:
 
+async function create(req, res, next) {
+  const ingredientData = req.body.data;
+  return res.json({ data: await service.create(ingredientData) });
+}
+
 async function list(req, res, next) {
   return res.json({ data: await service.list() });
 }
@@ -24,9 +29,17 @@ async function subtractIngredients(req, res, next) {
   await service.subtractIngredients(recipeIngredients);
 }
 
+async function update(req, res, next) {
+  const { ingredientId } =  req.params;
+  const updates = req.body.data;
+  return res.json({ data: await service.update(ingredientId, updates) });
+}
+
 module.exports = {
+  create: [asyncHandler(middleware.ingredientExists), asyncHandler(middleware.validateIngredient), asyncHandler(create)],
   list: asyncHandler(list),
   listRecipeIngredients: asyncHandler(listRecipeIngredients),
   read: [asyncHandler(middleware.ingredientExists), asyncHandler(read)],
   subtractIngredients: asyncHandler(subtractIngredients),
+  update: [asyncHandler(middleware.ingredientExists), asyncHandler(middleware.validateIngredient), asyncHandler(update)],
 };

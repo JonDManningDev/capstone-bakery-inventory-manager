@@ -11,6 +11,47 @@ export function IngredientsProvider({ children }) {
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const { addAlert } = useAlerts();
 
+  async function createIngredient(formData) {
+    const response = await fetch(`${baseUrl}/ingredients`, {
+      method: "POST",
+      body: JSON.stringify({ data: formData }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      const json = await response.json();
+      throw new Error(json.error || "There was an error in the server response for POST /ingredients");
+    }
+
+    const json = await response.json();
+    const newIngredient = json.data;
+
+    setIngredient(newIngredient);
+    return newIngredient;
+  }
+
+  async function editIngredientById(ingredientId, formData) {
+    const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`, {
+      method: "PUT",
+      body: JSON.stringify({ data: formData }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      const json = await response.json();
+      throw new Error(json.error || "There was an error in the server response for PUT /ingredients/:ingredientId");
+    }
+
+    const json = await response.json();
+    const updatedIngredient = json.data;
+
+    return updatedIngredient;
+  }
+
   async function getIngredientById(ingredientId) {
     try {
       const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`);
@@ -27,6 +68,7 @@ export function IngredientsProvider({ children }) {
       const ingredientRecords = json.data;
 
       setIngredient(ingredientRecords);
+      return ingredientRecords;
     } catch (error) {
       addAlert(error.message, "danger", "getIngredient-failure");
       console.error(error);
@@ -77,7 +119,7 @@ export function IngredientsProvider({ children }) {
 
   return (
     <IngredientsContext.Provider
-      value={{ ingredients, getIngredients, ingredient, getIngredientById, subtractBakeIngredients }}
+      value={{ createIngredient, editIngredientById, ingredients, getIngredients, ingredient, getIngredientById, subtractBakeIngredients }}
     >
       {children}
     </IngredientsContext.Provider>

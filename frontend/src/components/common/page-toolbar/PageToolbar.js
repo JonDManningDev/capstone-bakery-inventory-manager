@@ -64,7 +64,7 @@ export function PageToolbar() {
               label="Ingredients"
               links={[
                 { to: "/ingredients", label: "View Ingredients" },
-                { to: "ingredients/new", label: "Create Ingredient" },
+                { to: "/ingredients/new", label: "Create Ingredient" },
               ]}
             />
             <li className="nav-item">{bakesLink()}</li>          </ul>

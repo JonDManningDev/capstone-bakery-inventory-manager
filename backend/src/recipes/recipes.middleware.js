@@ -1,11 +1,11 @@
 const service = require("./recipes.service");
 const asyncHandler = require("../errors/asyncHandler");
 
-// Handles checks for creating new recipes (POST), as well as modifying (PUT, DELETE)
+// Handles checks for creating new recipes (POST), as well as modifying/getting existing (GET, PUT, DELETE)
 async function recipeExists(req, res, next) {
   const { recipeId } = req.params;
 
-  // New recipes will not have a recipeId yet
+  // New recipes (POST) will not have a recipeId yet, so check for duplicate title
   if (!recipeId) {
     const { title } = req.body.data;
     const recipe = await service.readByTitle(title);
@@ -19,7 +19,7 @@ async function recipeExists(req, res, next) {
     }
   }
 
-  // Existing recipes should have a recipeId
+  // Existing recipes (GET, PUT, DELETE) should have a recipeId
   const recipe = await service.read(recipeId);
   if (!recipe) {
     return next({

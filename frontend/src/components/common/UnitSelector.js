@@ -1,6 +1,11 @@
+import { useLocation } from "react-router-dom";
+
 import { handleInputChange } from "../../utils/handleInputChange";
 
 export function UnitSelector({ formData, setFormData, units }) {
+  const location = useLocation();
+
+  const inRecipe = location.pathname.includes("recipes");
 
   const unitsList = units.map((unit) => {
     return (
@@ -12,18 +17,18 @@ export function UnitSelector({ formData, setFormData, units }) {
 
   return (
     <>
-      <label htmlFor="unit" className="form-label">
+      <label htmlFor={inRecipe ? "unit" : "ingredient-base-unit"} className="form-label">
         Unit
       </label>
       <select
-        id="unit"
+        id={inRecipe ? "unit" : "ingredient-base-unit"}
         className="form-select"
-        name="unit"
-        value={formData.unit}
+        name={inRecipe ? "unit" : "base_unit"}
+        value={inRecipe ? formData.unit : formData.base_unit}
         onChange={(event) => handleInputChange(event, formData, setFormData)}
-        aria-label="Select unit"
+        aria-label={inRecipe ? "select unit" : "select base unit"}
       >
-        <option value="">-- Select unit --</option>
+        <option value="">{inRecipe ? "-- Select unit --" : "-- Select base unit --"}</option>
         {unitsList}
       </select>
     </>
