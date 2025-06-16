@@ -1,43 +1,43 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { RecipeForm } from "./RecipeForm";
+import { IngredientForm } from "./IngredientForm";
 import { useAlerts } from "../../context/AlertsContext";
-import { useRecipes } from "../../context/RecipesContext";
+import { useIngredients } from "../../context/IngredientsContext";
 
-export function CreateRecipe() {
+export function CreateIngredient() {
   const navigate = useNavigate();
-  const { createNewRecipe } = useRecipes();
+  const { createIngredient } = useIngredients();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    image_url: "",
+    name: "",
+    base_unit: "",
+    quantity_in_stock: 0,
   });
 
   async function handleSubmit(formData, event) {
     try {
       event.preventDefault();
-      const record = await createNewRecipe(formData);
+      const record = await createIngredient(formData);
       addAlert(
-        `Successfully created new recipe: ${record.title}!`,
+        `Successfully created new ingredient: ${record.name}`,
         "success",
-        "createRecipe-success"
+        "createIngredient-success"
       );
-      return navigate(`/recipes/${record.recipe_id}`);
+      return navigate(`/ingredients/${record.ingredient_id}`);
     } catch (error) {
       addAlert(
-        `Failed to create recipe: ${formData.title}`,
+        `Failed to create ingredient: ${formData.name}`,
         "danger",
-        "createRecipe-failure"
+        "createIngredient-failure"
       );
       console.error(error);
     }
   }
 
   return (
-    <RecipeForm
+    <IngredientForm
       handleSubmit={handleSubmit}
       formData={formData}
       setFormData={setFormData}

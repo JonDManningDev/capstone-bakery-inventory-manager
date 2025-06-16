@@ -5,6 +5,11 @@ const getConversionFactor =
 
 const tableName = "ingredients";
 
+async function create(ingredientData) {
+  const newRecords = await knex(tableName).insert(ingredientData).returning('*');
+  return newRecords[0];
+}
+
 function list() {
   return knex(tableName).select("*");
 }
@@ -83,9 +88,17 @@ async function subtractIngredients(recipeIngredients) {
   await knex.raw(rawQuery);
 }
 
+async function update(ingredientId, updates) {
+  const updatedRecords = await knex(tableName).where({ ingredient_id: ingredientId }).update(updates).returning("*");
+  return updatedRecords[0];
+}
+
+
 module.exports = {
+  create,
   list,
   listRecipeIngredients,
   read,
   subtractIngredients,
+  update,
 };

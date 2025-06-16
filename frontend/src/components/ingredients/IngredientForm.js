@@ -1,16 +1,20 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { handleInputChange } from "../../utils/handleInputChange";
+import { UnitSelector } from "../common/UnitSelector";
+import { useUnits } from "../../context/UnitsContext";
 
-// Shared form for creating and editing recipes.
-// FormData (title, description, image_url) is auto-populated with data from existing recipe in parent component (EditRecipe).
+// Shared form for creating and editing ingredients.
+// FormData (name, base_unit, quantity_in_stock) is auto-populated with data from existing ingredient in parent component (EditIngredient).
 // handleSubmit() prop allows flexibility based on editing or creating.
-export function RecipeForm({ handleSubmit, formData, setFormData }) {
+export function IngredientForm({ handleSubmit, formData, setFormData }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   // Used for conditional rendering (editing vs creating)
   const editing = location.pathname.includes("edit");
+
+  const { units } = useUnits();
 
   return (
     <div className="container mt-4">
@@ -18,63 +22,55 @@ export function RecipeForm({ handleSubmit, formData, setFormData }) {
         <div className="col-md-8">
           <div className="card shadow-sm">
             <div className="card-header bg-primary text-white">
-              <h4>{editing ? `Edit ${formData.title}` : "Create New Recipe"}</h4>
+              <h4>
+                {editing ? `Edit ${formData.name}` : "Create New Ingredient"}
+              </h4>
             </div>
             <div className="card-body">
               <form onSubmit={(event) => handleSubmit(formData, event)}>
                 <div className="mb-3">
-                  <label htmlFor="recipe-title" className="form-label">
-                    Recipe Title
+                  <label htmlFor="ingredient-name" className="form-label">
+                    Ingredient Name
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="recipe-title"
-                    name="title"
-                    value={formData.title}
+                    id="ingredient-name"
+                    name="name"
+                    value={formData.name}
                     onChange={(event) =>
                       handleInputChange(event, formData, setFormData)
                     }
-                    placeholder="Enter recipe title"
+                    placeholder="Enter ingredient name"
                     required
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="recipe-description" className="form-label">
-                    Description
-                  </label>
-                  <textarea
-                    className="form-control"
-                    id="recipe-description"
-                    name="description"
-                    value={formData.description}
-                    onChange={(event) =>
-                      handleInputChange(event, formData, setFormData)
-                    }
-                    rows="5"
-                    placeholder="Enter recipe description"
-                    required
-                  ></textarea>
-                  <small className="form-text text-muted">
-                    Provide a description and/or recipe instructions.
-                  </small>
+                  <UnitSelector
+                    units={units}
+                    formData={formData}
+                    setFormData={setFormData}
+                  />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="recipe-image-url" className="form-label">
-                    Image URL
+                  <label
+                    htmlFor="ingredient-quantity-in-stock"
+                    className="form-label"
+                  >
+                    Quantity in Stock
                   </label>
                   <input
-                    type="url"
+                    type="number"
                     className="form-control"
-                    id="recipe-image-url"
-                    name="image_url"
-                    value={formData.image_url}
+                    id="ingredient-quantity-in-stock"
+                    name="quantity_in_stock"
+                    value={formData.quantity_in_stock}
                     onChange={(event) =>
                       handleInputChange(event, formData, setFormData)
                     }
-                    placeholder="Enter URL for recipe image"
+                    placeholder="Enter starting stock quantity"
+                    required
                   />
-                  <small className="form-text text-muted">Optional</small>
                 </div>
                 <div className="d-flex justify-content-between">
                   <button
@@ -85,7 +81,7 @@ export function RecipeForm({ handleSubmit, formData, setFormData }) {
                     Cancel
                   </button>
                   <button className={editing ? "btn btn-primary" : "btn btn-success"} type="submit">
-                    {editing ? "Save Recipe" : "Create Recipe"}
+                    {editing ? "Save Ingredient" : "Create Ingredient"}
                   </button>
                 </div>
               </form>
@@ -96,3 +92,8 @@ export function RecipeForm({ handleSubmit, formData, setFormData }) {
     </div>
   );
 }
+
+// Implement backend functionality for creating and editing ingredients.
+// Test functionality for creating and editing ingredients.
+// Implement all functionality for deleting ingredients ('ingredients' table)
+// Make bakes view

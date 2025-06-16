@@ -22,13 +22,16 @@ export function EditRecipe() {
       try {
         await getRecipeById(recipeId);
       } catch (error) {
+        addAlert("Failed to load recipe.", "danger", "getRecipeById-failure");
         console.error(error);
       }
     }
     loadRecipe(recipeId);
   }, []);
 
+  // Pre-load existing data
   useEffect(() => {
+    if (!recipe.title) return;
     setFormData({
       title: recipe.title,
       description: recipe.description,
@@ -50,7 +53,11 @@ export function EditRecipe() {
         return navigate(`/recipes/${updatedRecord.recipe_id}`);
       }
     } catch (error) {
-      addAlert(error.message, "danger", "editRecipeById-failure");
+      addAlert(
+        `Failed to edit recipe: ${recipe.title}`,
+        "danger",
+        "editRecipeById-failure"
+      );
       console.error(error);
     }
   }
