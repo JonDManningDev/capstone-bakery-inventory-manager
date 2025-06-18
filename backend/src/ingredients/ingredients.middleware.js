@@ -4,7 +4,7 @@ const asyncHandler = require("../errors/asyncHandler");
 // Handles checks for creating new recipes (POST), as well as modifying/getting existing (GET, PUT, DELETE)
 async function ingredientExists(req, res, next) {
   const { ingredientId } = req.params;
-  
+
   // New ingredients (POST) will not have an ingredientId yet, so check for duplicate name
   if (!ingredientId) {
     const { name } = req.body.data;
@@ -14,7 +14,7 @@ async function ingredientExists(req, res, next) {
     } else {
       return next({
         status: 409,
-        message: `Ingredient with name ${name} already exists.`
+        message: `Ingredient with name ${name} already exists.`,
       });
     }
   }
@@ -38,11 +38,11 @@ function validateIngredient(req, res, next) {
   if (!ingredientData) {
     return next({
       status: 400,
-      message: `Ingredient data is required for a ${req.method} request.`
+      message: `Ingredient data is required for a ${req.method} request.`,
     });
   }
 
-  const requiredFields = ["name", "base_unit", "quantity_in_stock"]
+  const requiredFields = ["name", "base_unit", "quantity_in_stock"];
   const invalidFields = [];
   const missingFields = [];
 
@@ -50,19 +50,25 @@ function validateIngredient(req, res, next) {
     if (!requiredFields.includes(field)) invalidFields.push(field);
   }
 
-  if (invalidFields.length > 0) return next({
-    status: 400,
-    message: `Submission contains invalid fields: ${invalidFields.join(", ")}.`
-  });
+  if (invalidFields.length > 0)
+    return next({
+      status: 400,
+      message: `Submission contains invalid fields: ${invalidFields.join(
+        ", "
+      )}.`,
+    });
 
   for (const field of requiredFields) {
     if (!Object.keys(ingredientData).includes(field)) missingFields.push(field);
   }
 
-  if (missingFields.length > 0) return next({
-    status: 400,
-    message: `Submission contains missing fields: ${missingFields.join(", ")}.`
-  });
+  if (missingFields.length > 0)
+    return next({
+      status: 400,
+      message: `Submission contains missing fields: ${missingFields.join(
+        ", "
+      )}.`,
+    });
 
   return next();
 }

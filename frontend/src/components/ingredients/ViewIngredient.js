@@ -1,14 +1,18 @@
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
 import { useIngredients } from "../../context/IngredientsContext";
+import { useRecipes } from "../../context/RecipesContext";
 import { IngredientRecipesList } from "./IngredientRecipesList";
 
 export function ViewIngredient() {
+  const navigate = useNavigate();
   const { ingredientId } = useParams();
-  const { ingredient, getIngredientById } = useIngredients();
+  const { deleteIngredient, ingredient, getIngredientById, setIngredient } =
+    useIngredients();
   const { addAlert } = useAlerts();
+  const { setRecipe } = useRecipes();
   const { name, base_unit, quantity_in_stock } = ingredient;
   useEffect(() => {
     async function loadIngredient() {
@@ -28,7 +32,36 @@ export function ViewIngredient() {
   }, [ingredientId]);
 
   async function handleDelete(ingredientId, name) {
+    try {
+      const message = `Are you sure you want to delete the ingredient ${name}?`;
+      if (window.confirm(message)) {
+        await deleteIngredient(ingredientId);
+        // Reset the recipe and ingredient states to avoid errors from stale/invalid data
+        setRecipe({ ingredients: [] });
+        setIngredient({
+          name: "",
+          base_unit: "",
+          quantity_in_stock: 0,
+        });
+        addAlert(
+          `Successfully deleted ingredient: ${name}.`,
+          "info",
+          "deleteIngredient-success"
+        );
+        return navigate("/ingredients");
+      }
+    } catch (error) {
+      addAlert(
+        `Failed to delete ingredient: ${name}!`,
+        "danger",
+        "deleteIngredient-failure"
+      );
+      console.error("There was an error in deleting the ingredient: ", error);
+    }
+  }
 
+  if (!ingredient.name) {
+    return <h2>{`Ingredient with ID ${ingredientId} not found!`}</h2>;
   }
 
   return (
@@ -61,15 +94,15 @@ export function ViewIngredient() {
           id="inventoryDetails"
           className="col-12 col-md-4 bg-secondary-subtle rounded mb-2 mb-md-0"
         >
-            <h3 className="p-2">Inventory Details</h3>
-            <div className="d-flex justify-content-around">
-                <strong>Base Unit</strong>
-                <p>{base_unit}</p>
-            </div>
-            <div className="d-flex justify-content-around">
-                <strong>Qty in Stock</strong>
-                <p>{`${quantity_in_stock} ${base_unit}`}</p>
-            </div>
+          <h3 className="p-2">Inventory Details</h3>
+          <div className="d-flex justify-content-around">
+            <strong>Base Unit</strong>
+            <p>{base_unit}</p>
+          </div>
+          <div className="d-flex justify-content-around">
+            <strong>Qty in Stock</strong>
+            <p>{`${quantity_in_stock} ${base_unit}`}</p>
+          </div>
         </div>
         <div
           id="recipesWithIngredient"

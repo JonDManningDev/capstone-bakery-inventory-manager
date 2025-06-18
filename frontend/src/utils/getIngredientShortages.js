@@ -23,6 +23,7 @@ export function getIngredientShortages(recipe, ingredients, conversions, setShor
           ...ingredient,
           available: inStock.quantity_in_stock,
           issue: `Insufficient stock: additional ${shortageAmount} ${baseUnit} needed`,
+          baseUnit
         });
       }
     }
