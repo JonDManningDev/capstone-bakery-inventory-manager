@@ -15,12 +15,23 @@ export function RecipeView() {
   const { addAlert } = useAlerts();
   const { user } = useAuth();
   const { createBake } = useBakes();
-  const { ingredients, getIngredients, subtractBakeIngredients } =
-    useIngredients();
-  const { recipe, getRecipeById, addRecipeIngredient, deleteRecipe } =
-    useRecipes();
+  const {
+    ingredient,
+    ingredients,
+    getIngredients,
+    setIngredient,
+    setIngredients,
+    subtractBakeIngredients,
+  } = useIngredients();
+  const {
+    recipe,
+    getRecipeById,
+    addRecipeIngredient,
+    deleteRecipe,
+    setRecipe,
+  } = useRecipes();
   const { units, conversions } = useUnits();
-  const { title, description, image_url} = recipe;
+  const { title, description, image_url } = recipe;
   const { recipeId } = useParams();
   const navigate = useNavigate();
 
@@ -39,7 +50,7 @@ export function RecipeView() {
 
   // Check for ingredient shortages that would prevent baking the recipe
   useEffect(() => {
-    if (recipe?.ingredients && ingredients?.length > 0) {
+    if (recipe?.ingredients) {
       getIngredientShortages(recipe, ingredients, conversions, setShortages);
     }
   }, [recipe, ingredients, conversions]);
@@ -47,6 +58,8 @@ export function RecipeView() {
   // Update the bake button state based on shortages
   useEffect(() => {
     const bakeButton = document.getElementById("recipeViewBake");
+
+    if (!recipe.title) return;
 
     if (shortages && shortages.length > 0) {
       if (!bakeButton.classList.contains("disabled")) {
@@ -63,6 +76,15 @@ export function RecipeView() {
     const message = `Are you sure you want to delete the recipe ${title}?`;
     if (window.confirm(message)) {
       await deleteRecipe(recipe_id, title);
+      // Reset all states that could become stale after the deletion
+      setRecipe({ ingredients: [] });
+      setShortages([]);
+      setIngredient({ name: "", base_unit: "", quantity_in_stock: 0 });
+      addAlert(
+        `Successfully deleted recipe: ${title}.`,
+        "info",
+        "deleteRecipe-success"
+      );
       return navigate("/recipes");
     }
   }
@@ -77,7 +99,12 @@ export function RecipeView() {
     }
     await createBake(recipeId, employeeId, title);
     await subtractBakeIngredients(recipeId);
-    await getIngredients();
+    const updatedInventory = await getIngredients();
+    setIngredients(updatedInventory);
+  }
+
+  if (!recipe.title) {
+    return <h2>{`Recipe with ID ${recipeId} not found!`}</h2>;
   }
 
   return (
@@ -94,18 +121,22 @@ export function RecipeView() {
           ></img>
           <h2 className="ps-3">{title}</h2>
         </div>
-        <div className="col d-flex justify-content-end p-2">          <button
+        <div className="col d-flex justify-content-end p-2">
+          <button
             id="recipeViewBake"
             className="btn btn-primary mx-1"
             onClick={() => handleBake(recipeId, user.employeeId, title)}
           >
-            Bake Recipe          </button>          <Link
+            Bake Recipe
+          </button>
+          <Link
             to={`/recipes/${recipeId}/edit`}
             role="button"
             className="btn btn-info mx-1"
           >
             Edit Recipe
-          </Link>          <button
+          </Link>
+          <button
             className="btn btn-danger mx-1"
             onClick={() => handleDelete(recipeId, title)}
           >
@@ -120,13 +151,13 @@ export function RecipeView() {
           className="col-12 col-md-4 bg-secondary-subtle rounded mb-2 mb-md-0"
         >
           <p className="lead">{description}</p>
-        </div>{" "}
+        </div>
         <div
           id="editIngredients"
           className="col-12 col-md-7 border rounded bg-white mt-2 mt-md-0"
         >
           {/* Ingredient Shortages Alert */}
-          {shortages && shortages.length > 0 && (
+          {shortages.length > 0 && (
             <div className="alert alert-warning mt-3 mx-3">
               <h5 className="alert-heading">Ingredient Shortages</h5>
               <p>
@@ -141,7 +172,8 @@ export function RecipeView() {
                     <strong>{shortage.name}:</strong> {shortage.issue}
                     {shortage.available !== undefined && (
                       <span>
-                        (Current stock: {shortage.available} {shortage.unit})
+                        (Current stock: {shortage.available} {shortage.baseUnit}
+                        )
                       </span>
                     )}
                   </li>

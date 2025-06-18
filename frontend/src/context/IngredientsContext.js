@@ -16,20 +16,38 @@ export function IngredientsProvider({ children }) {
       method: "POST",
       body: JSON.stringify({ data: formData }),
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
 
     if (!response.ok) {
       const json = await response.json();
-      throw new Error(json.error || "There was an error in the server response for POST /ingredients");
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for POST /ingredients"
+      );
     }
 
     const json = await response.json();
     const newIngredient = json.data;
 
-    setIngredient(newIngredient);
     return newIngredient;
+  }
+
+  async function deleteIngredient(ingredientId) {
+    const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      const json = await response.json();
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for DELETE /ingredients/:ingredientId"
+      );
+    }
+
+    return true;
   }
 
   async function editIngredientById(ingredientId, formData) {
@@ -37,13 +55,16 @@ export function IngredientsProvider({ children }) {
       method: "PUT",
       body: JSON.stringify({ data: formData }),
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
 
     if (!response.ok) {
       const json = await response.json();
-      throw new Error(json.error || "There was an error in the server response for PUT /ingredients/:ingredientId");
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for PUT /ingredients/:ingredientId"
+      );
     }
 
     const json = await response.json();
@@ -110,16 +131,25 @@ export function IngredientsProvider({ children }) {
         );
       }
 
-      return
+      return;
     } catch (error) {
-        addAlert(error.message, "danger", "subtractBakeIngredients-failure");
-        console.error(error);
+      addAlert(error.message, "danger", "subtractBakeIngredients-failure");
+      console.error(error);
     }
   }
 
   return (
     <IngredientsContext.Provider
-      value={{ createIngredient, editIngredientById, ingredients, getIngredients, ingredient, getIngredientById, subtractBakeIngredients }}
+      value={{
+        createIngredient,
+        deleteIngredient,
+        editIngredientById,
+        ingredients,
+        getIngredients,
+        ingredient,
+        getIngredientById,
+        subtractBakeIngredients,
+      }}
     >
       {children}
     </IngredientsContext.Provider>

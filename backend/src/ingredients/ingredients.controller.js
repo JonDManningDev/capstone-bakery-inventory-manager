@@ -9,6 +9,12 @@ async function create(req, res, next) {
   return res.json({ data: await service.create(ingredientData) });
 }
 
+async function destroy(req, res, next) {
+  const { ingredientId } = req.params;
+  await service.delete(ingredientId);
+  return res.sendStatus(204);
+}
+
 async function list(req, res, next) {
   return res.json({ data: await service.list() });
 }
@@ -30,16 +36,25 @@ async function subtractIngredients(req, res, next) {
 }
 
 async function update(req, res, next) {
-  const { ingredientId } =  req.params;
+  const { ingredientId } = req.params;
   const updates = req.body.data;
   return res.json({ data: await service.update(ingredientId, updates) });
 }
 
 module.exports = {
-  create: [asyncHandler(middleware.ingredientExists), asyncHandler(middleware.validateIngredient), asyncHandler(create)],
+  create: [
+    asyncHandler(middleware.ingredientExists),
+    asyncHandler(middleware.validateIngredient),
+    asyncHandler(create),
+  ],
+  delete: [asyncHandler(middleware.ingredientExists), asyncHandler(destroy)],
   list: asyncHandler(list),
   listRecipeIngredients: asyncHandler(listRecipeIngredients),
   read: [asyncHandler(middleware.ingredientExists), asyncHandler(read)],
   subtractIngredients: asyncHandler(subtractIngredients),
-  update: [asyncHandler(middleware.ingredientExists), asyncHandler(middleware.validateIngredient), asyncHandler(update)],
+  update: [
+    asyncHandler(middleware.ingredientExists),
+    asyncHandler(middleware.validateIngredient),
+    asyncHandler(update),
+  ],
 };

@@ -188,7 +188,8 @@ export function RecipesProvider({ children }) {
       const json = await response.json();
       const recipesRecords = json.data;
 
-      return setRecipes(recipesRecords);
+      setRecipes(recipesRecords);
+      return recipesRecords;
     } catch (error) {
       addAlert(error.message, "danger", "getRecipes-failure");
       console.error(error);
@@ -200,6 +201,8 @@ export function RecipesProvider({ children }) {
       value={{
         recipes,
         recipe,
+        setRecipe,
+        setRecipes,
         editRecipeById,
         getRecipes,
         getRecipeById,

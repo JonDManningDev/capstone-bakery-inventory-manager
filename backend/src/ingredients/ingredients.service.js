@@ -6,8 +6,14 @@ const getConversionFactor =
 const tableName = "ingredients";
 
 async function create(ingredientData) {
-  const newRecords = await knex(tableName).insert(ingredientData).returning('*');
+  const newRecords = await knex(tableName)
+    .insert(ingredientData)
+    .returning("*");
   return newRecords[0];
+}
+
+function destroy(ingredientId) {
+  return knex(tableName).where({ ingredient_id: ingredientId }).del();
 }
 
 function list() {
@@ -54,6 +60,10 @@ async function read(ingredientId) {
   };
 }
 
+async function readByName(name) {
+  return knex(tableName).where({ name }).select('*').first();
+}
+
 async function subtractIngredients(recipeIngredients) {
   // Convert to same unit and subtract
   const ingredientUpdates = await Promise.all(
@@ -89,16 +99,20 @@ async function subtractIngredients(recipeIngredients) {
 }
 
 async function update(ingredientId, updates) {
-  const updatedRecords = await knex(tableName).where({ ingredient_id: ingredientId }).update(updates).returning("*");
+  const updatedRecords = await knex(tableName)
+    .where({ ingredient_id: ingredientId })
+    .update(updates)
+    .returning("*");
   return updatedRecords[0];
 }
 
-
 module.exports = {
   create,
+  delete: destroy,
   list,
   listRecipeIngredients,
   read,
+  readByName,
   subtractIngredients,
   update,
 };
