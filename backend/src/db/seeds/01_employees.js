@@ -32,7 +32,7 @@ exports.seed = async function (knex) {
       last_name: "Baker",
       email: "john.baker@maevesbakery.com",
       password_hash:
-        "$2a$10$JYTaYQTY5Uh6UVy4YfSh5u1gU1vg3QGbQ4AqKsIDxc.jVgzVfPYlG", // password: bakery123
+        "$2b$10$qO//gOVb1rRtaOsA1kvoFuD1fO4FR7xF579qe4gQIXIVKxy1ROzvO", // password: bakery123
       created_at: new Date(),
       updated_at: new Date(),
     },
@@ -41,7 +41,7 @@ exports.seed = async function (knex) {
       last_name: "Garcia",
       email: "maria.garcia@maevesbakery.com",
       password_hash:
-        "$2a$10$JO/2NFRIl1BYDGDcVmn9pOWxHVL4VlLQCQzrtVHyQQXMCKF9wj4YS", // password: flour456
+        "$2b$10$wlM1RZwU6ky5Egd.KCISWeYT.QzyYb4Nz7ZsZPdLvK2uYufuhx3ni", // password: flour456
       created_at: new Date(),
       updated_at: new Date(),
     },
@@ -50,7 +50,7 @@ exports.seed = async function (knex) {
       last_name: "Chen",
       email: "david.chen@maevesbakery.com",
       password_hash:
-        "$2a$10$MjDC1vXg9YuPTUA5KQhS.eXwxwRCwTdCbmJnhwF6r95BEZRlp7Wj2", // password: sugar789
+        "$2b$10$AskV7xlXFYmRaBLE0E.JQ.erzIkWXbEsMNC0x.QvnmxaF2GUnIt4C", // password: sugar789
       created_at: new Date(),
       updated_at: new Date(),
     },
@@ -59,7 +59,7 @@ exports.seed = async function (knex) {
       last_name: "Johnson",
       email: "sarah.johnson@maevesbakery.com",
       password_hash:
-        "$2a$10$Ep2YGAYs9uyFGZZswgJc7eN8PyD.bAh5fLVt2.CBIkPsbsLSbgvOu", // password: yeast234
+        "$2b$10$7NvKe6opweJ..YWAO1v2z.fRUVARMXK81vknV80nnHIBCZHcg1XH2", // password: yeast234
       created_at: new Date(),
       updated_at: new Date(),
     },
@@ -68,7 +68,7 @@ exports.seed = async function (knex) {
       last_name: "O'Sullivan",
       email: "maeve@maevesbakery.com",
       password_hash:
-        "$2a$10$BFqr6aK7QUMpIXH8oRKWMuxkGX5HpVnQ.IU9dNBjc2mxLUeq1lXZa", // password: owner567
+        "$2b$10$vIC86wlPlZsdDWJctm/Aouth4Eb/C78kmJFKBbayCT3ZBsOPxItmG", // password: owner567
       created_at: new Date(),
       updated_at: new Date(),
     },

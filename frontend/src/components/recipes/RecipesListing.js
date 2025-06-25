@@ -9,7 +9,7 @@ export function RecipesListing({ title, image_url, id }) {
       <img
         src={image_url}
         alt={title}
-        style={{ width: "80px", height: "80px", objectFit: "cover" }}
+        style={{ width: "120px", height: "120px", objectFit: "cover" }}
       />
       <h5 className="mb-0">{title}</h5>
     </Link>

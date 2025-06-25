@@ -5,10 +5,14 @@ import { handleInputChange } from "../../../utils/handleInputChange";
 import { modalCloser } from "../../../utils/modalCloser";
 
 export function RegisterModal() {
+  const { user, getUser, setUser } = useAuth();
+  const { addAlert } = useAlerts();
+
   // Manually control focus to prevent aria errors.
   useEffect(() => {
     const modal = document.getElementById("registerModal");
-    if (!modal) return;    const modalFocusHandler = () => {
+    if (!modal) return;
+    const modalFocusHandler = () => {
       const input = document.getElementById("registerEmailAddress");
       input?.focus();
     };
@@ -37,9 +41,6 @@ export function RegisterModal() {
     password: "",
     confirmPassword: "",
   });
-
-  const { login } = useAuth();
-  const { addAlert } = useAlerts();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -77,16 +78,18 @@ export function RegisterModal() {
         headers: { "Content-Type": "application/json" },
       });
 
+      // Store the token locally, then use it to retrieve user info
       const json = await response.json();
+      const user = await getUser(json.token);
+      setUser(user);
 
-      if (response.ok) {
-        // Store the token locally, then use it to retrieve user info
-        await login(json.token);
-
-        // Close the modal
-        modalCloser("registerModal");
-
-        // Reset form
+      // Alert the successful login, and reset formData
+      if (user) {
+        addAlert(
+          `Successfully registered and logged in as ${user.firstName}!`,
+          "success",
+          "getUser-success"
+        );
         setFormData({
           firstName: "",
           lastName: "",
@@ -94,20 +97,18 @@ export function RegisterModal() {
           confirmEmail: "",
           password: "",
           confirmPassword: "",
-        });      } else {
-        addAlert(
-          json.error || "Registration failed.",
-          "danger",
-          "register-failure"
-        );
+        });
       }
+      // Close the modal
+      modalCloser("registerModal");
+
     } catch (error) {
       addAlert(
-        "There was an error during registration: " + error.message,
+        "There was an error during registration",
         "danger",
         "register-failure"
       );
-      console.error(error);
+      console.error("There was an error during registration: ", error);
     }
   }
 
