@@ -39,17 +39,23 @@ export function PageToolbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-md bg-body-secondary">
+    <nav className="navbar navbar-expand-md sticky-top bg-body-secondary">
       <div className="container-fluid">
+        
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="navContent"
+          data-bs-target="#navContent"
           aria-controls="navContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
-        ></button>
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <a className="navbar-brand" href="#">
+          Maeve's
+        </a>
         <div className="collapse navbar-collapse" id="navContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">{homeLink()}</li>
@@ -67,7 +73,8 @@ export function PageToolbar() {
                 { to: "/ingredients/new", label: "Create Ingredient" },
               ]}
             />
-            <li className="nav-item">{bakesLink()}</li>          </ul>
+            <li className="nav-item">{bakesLink()}</li>
+          </ul>          
         </div>
         <LoginButton />
       </div>
