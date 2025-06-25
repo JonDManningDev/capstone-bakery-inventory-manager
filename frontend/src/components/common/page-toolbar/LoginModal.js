@@ -5,6 +5,9 @@ import { handleInputChange } from "../../../utils/handleInputChange";
 import { modalCloser } from "../../../utils/modalCloser";
 
 export function LoginModal() {
+  const { addAlert } = useAlerts();
+  const { login, user } = useAuth();
+
   // Manually control focus to prevent aria errors.
   useEffect(() => {
     const modal = document.getElementById("loginModal");
@@ -35,8 +38,6 @@ export function LoginModal() {
     email: "",
     password: "",
   });
-
-  const { login } = useAuth();
 
   async function handleSubmit(event) {
     event.preventDefault();

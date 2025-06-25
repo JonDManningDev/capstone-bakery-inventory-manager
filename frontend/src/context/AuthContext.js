@@ -24,10 +24,6 @@ export function AuthProvider({ children }) {
   const autoLoginAttemptedRef = useRef(false);
   const guestLoginAttemptedRef = useRef(false);
 
-  useEffect(() => {
-    console.log("User state updated:", user);
-  }, [user]);
-
   // Attempt auto-login
   useEffect(() => {
     if (!autoLoginAttemptedRef.current) {
@@ -137,8 +133,14 @@ export function AuthProvider({ children }) {
       setAlerts((current) =>
         current.filter((alert) => alert.type !== "no-login")
       );
+      if (userFromToken) {
+        addAlert(
+          `Successfully logged in as ${userFromToken.firstName}!`,
+          "success",
+          "login-success"
+        );
+      }
 
-      addAlert("Successfully logged in!", "success", "login-success");
       return true;
     } catch (error) {
       // If there is an error, make sure the token gets cleaned up.
@@ -200,7 +202,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, getUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,7 +10,7 @@ import { Alerts } from "./components/common/Alerts";
 import { Header } from "./components/common/Header";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import { Home } from "./components/Home";
-import { BakesList } from "./components/bakes/BakesList";
+import { ViewBakes } from "./components/bakes/ViewBakes";
 import { RecipesView } from "./components/recipes/RecipesView";
 import { RecipeView } from "./components/recipes/RecipeView";
 import { ViewIngredients } from "./components/ingredients/ViewIngredients";
@@ -28,7 +28,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/bakes" element={<BakesList />} />
+        <Route path="/bakes" element={<ViewBakes />} />
         <Route path="/recipes" element={<RecipesView />} />
         <Route path="/recipes/new" element={<CreateRecipe />} />
         <Route path="/recipes/:recipeId" element={<RecipeView />} />
