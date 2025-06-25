@@ -49,7 +49,7 @@ export function BakeListItem({ bake, renderStatusBadge, handleStatusUpdate }) {
             className="btn btn-info me-2 mb-2 mb-md-0"
           >
             <i className="bi bi-eye me-1"></i>
-            View Recipe
+            Recipe
           </Link>
           {bake.status === "started" && (
             <>

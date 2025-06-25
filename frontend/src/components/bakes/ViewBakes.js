@@ -131,8 +131,8 @@ export function ViewBakes() {
   }
 
   return (
-    <div className="container mt-4 col-lg-7">
-      <h1 className="mb-4">Bakes</h1>
+    <div className="container py-4 my-4 col-lg-7 border rounded">
+      <h3 className="mb-4">Bakes</h3>
 
       {/* Dashboard */}
       <div className="card mb-4 bg-light">

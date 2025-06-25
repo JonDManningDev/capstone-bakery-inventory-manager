@@ -14,7 +14,7 @@ export function RecipesView() {
 
   return (
     // Component container
-    <div className="container col-11 col-md-7 col-lg-5 py-4 my-4 border rounded">
+    <div className="container col-11 col-md-8 col-lg-5 py-4 my-4 border rounded">
       {/* Upper container */}
       <div className="d-flex justify-content-between">
         <div>

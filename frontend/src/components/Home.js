@@ -18,8 +18,14 @@ export function Home() {
 
   return (
     <div className="container text-center py-4">
+      <div className="row d-flex align-items-center">
+          <h1 className="col-12 display-4 fw-normal">Maeve's Fine Baked Goods</h1>
+          <h2 className="col-12 display-6 fw-light fst-italic">
+            Bakery Management System
+          </h2>
+      </div>
       <div
-        className="row row-cols-1 row-cols-md-3 g-4"
+        className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 my-4"
         style={{ height: "250px" }}
       >
         <div className="col h-100">
