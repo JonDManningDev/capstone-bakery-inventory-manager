@@ -5,7 +5,7 @@ import { handleInputChange } from "../../../utils/handleInputChange";
 import { modalCloser } from "../../../utils/modalCloser";
 
 export function RegisterModal() {
-  const { user, getUser, setUser } = useAuth();
+  const { getUser, registerUser, setUser } = useAuth();
   const { addAlert } = useAlerts();
 
   // Manually control focus to prevent aria errors.
@@ -42,6 +42,7 @@ export function RegisterModal() {
     confirmPassword: "",
   });
 
+  // Handle new user registrations
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -58,35 +59,21 @@ export function RegisterModal() {
       console.error(
         "Registration error: Both pairs of email and password inputs must match!"
       );
-      // Yes, bad things happen if you don't include "return" here
-      return modalCloser("registerModal");
+      // Close the modal so that the user can see the error message
+      modalCloser("registerModal");
+      return;
     }
 
     try {
       // After registration in the database, this route returns a login token, if successful
-      const baseUrl = process.env.REACT_APP_API_BASE_URL;
-      const response = await fetch(`${baseUrl}/employees`, {
-        method: "POST",
-        body: JSON.stringify({
-          data: {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            password: formData.password,
-          },
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
+      const token = await registerUser(formData);
+      const userFromToken = await getUser(token);      
 
-      // Store the token locally, then use it to retrieve user info
-      const json = await response.json();
-      const user = await getUser(json.token);
-      setUser(user);
-
-      // Alert the successful login, and reset formData
-      if (user) {
+      // Set the user, alert the successful login, and reset formData
+      if (userFromToken) {
+        setUser(userFromToken);
         addAlert(
-          `Successfully registered and logged in as ${user.firstName}!`,
+          `Successfully registered and logged in as ${userFromToken.firstName}!`,
           "success",
           "getUser-success"
         );
@@ -99,17 +86,27 @@ export function RegisterModal() {
           confirmPassword: "",
         });
       }
-      // Close the modal
-      modalCloser("registerModal");
-
     } catch (error) {
+      // If there is an error, make sure the token gets cleaned up.
+      localStorage.removeItem("token");
+
+      // Restore user to the not-logged-in state.
+      setUser({
+        employeeId: null,
+        firstName: "Not Logged In",
+        lastName: null,
+        email: null,
+      });
+
       addAlert(
-        "There was an error during registration",
+        `There was an error during registration: ${error.message}!`,
         "danger",
         "register-failure"
       );
-      console.error("There was an error during registration: ", error);
+      console.error("There was an error during registration: ", error.message);
     }
+    // Close the modal regardless of success or failure
+    modalCloser("registerModal");
   }
 
   return (

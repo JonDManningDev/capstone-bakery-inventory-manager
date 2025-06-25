@@ -5,8 +5,8 @@ import { handleInputChange } from "../../../utils/handleInputChange";
 import { modalCloser } from "../../../utils/modalCloser";
 
 export function LoginModal() {
-  const { addAlert } = useAlerts();
-  const { login, user } = useAuth();
+  const { addAlert, setAlerts } = useAlerts();
+  const { getLoginToken, getUser, setUser } = useAuth();
 
   // Manually control focus to prevent aria errors.
   useEffect(() => {
@@ -39,20 +39,44 @@ export function LoginModal() {
     password: "",
   });
 
+  // Handle manual logins via the modal
   async function handleSubmit(event) {
     event.preventDefault();
 
     try {
-      await login(formData);
+      const token = await getLoginToken(formData);
+      const userFromToken = await getUser(token);
 
-      // Close the modal
-      modalCloser("loginModal");
-
-      // Reset form
-      setFormData({ email: "", password: "" });
+      if (userFromToken) {
+        setUser(userFromToken);
+        setAlerts((current) =>
+          current.filter((alert) => alert.type !== "no-login")
+        );
+        addAlert(
+          `Successfully logged in as ${userFromToken.firstName}!`,
+          "success",
+          "login-success"
+        );
+        // Reset the login form
+        setFormData({ email: "", password: "" });
+      }
     } catch (error) {
-      console.error(error);
+      // If there is an error, make sure the token gets cleaned up.
+      localStorage.removeItem("token");
+
+      // Restore user to the not-logged-in state.
+      setUser({
+        employeeId: null,
+        firstName: "Not Logged In",
+        lastName: null,
+        email: null,
+      });
+
+      addAlert(`Login attempt failed: ${error.message}!`, "danger");
+      console.error("Login attempt failed: ", error.message);
     }
+    // Close the modal regardless of success or failure
+    modalCloser("loginModal");
   }
 
   return (
