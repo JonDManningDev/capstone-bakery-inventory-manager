@@ -64,7 +64,10 @@ export function EditIngredient() {
         "danger",
         "editIngredientById-failure"
       );
-      console.error(`Failed to edit ingredient ${ingredient.name}:`, error.message);
+      console.error(
+        `Failed to edit ingredient ${ingredient.name}:`,
+        error.message
+      );
     }
   }
 

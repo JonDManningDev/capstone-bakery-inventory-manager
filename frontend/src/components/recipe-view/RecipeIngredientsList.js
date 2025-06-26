@@ -1,4 +1,4 @@
-import { RecipeIngredientsListing } from "./RecipeIngredientsListing";
+import { RecipeIngredientsListItem } from "./RecipeIngredientsListItem";
 
 export function RecipeIngredientsList({ recipe }) {
   const { ingredients } = recipe;
@@ -9,7 +9,7 @@ export function RecipeIngredientsList({ recipe }) {
 
   const ingredientsList = ingredientsSorted.map((ingredient) => {
     return (
-      <RecipeIngredientsListing
+      <RecipeIngredientsListItem
         key={ingredient.ingredient_id}
         recipeId={recipe.recipe_id}
         name={ingredient.name}

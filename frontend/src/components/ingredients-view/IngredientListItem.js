@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export function IngredientListing({ name, id }) {
+export function IngredientListItem({ name, id }) {
   return (
     <Link
       to={`/ingredients/${id}`}

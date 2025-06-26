@@ -23,7 +23,11 @@ export function EditRecipe() {
         const recipeRecord = await getRecipeById(recipeId);
         setRecipe(recipeRecord);
       } catch (error) {
-        addAlert(`Failed to load recipe: ${error.message}`, "danger", "getRecipeById-failure");
+        addAlert(
+          `Failed to load recipe: ${error.message}`,
+          "danger",
+          "getRecipeById-failure"
+        );
         console.error("Failed to load recipe:", error.message);
       }
     }

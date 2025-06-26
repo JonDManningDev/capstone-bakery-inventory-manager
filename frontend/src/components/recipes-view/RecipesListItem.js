@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export function RecipesListing({ title, image_url, id }) {
+export function RecipesListItem({ title, image_url, id }) {
   return (
     <Link
       to={`/recipes/${id}`}

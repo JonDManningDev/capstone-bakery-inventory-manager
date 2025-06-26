@@ -1,4 +1,4 @@
-import { RecipesListing } from "./RecipesListing";
+import { RecipesListItem } from "./RecipesListItem";
 
 export function RecipesList({ recipes }) {
   // Sort by alphabetical order
@@ -7,7 +7,7 @@ export function RecipesList({ recipes }) {
   );
 
   const recipesList = recipesSorted.map((recipe) => (
-    <RecipesListing
+    <RecipesListItem
       key={recipe.recipe_id}
       title={recipe.title}
       image_url={recipe.image_url}
