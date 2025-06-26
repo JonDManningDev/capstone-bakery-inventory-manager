@@ -38,7 +38,20 @@ export function RecipeView() {
   const [shortages, setShortages] = useState([]);
 
   useEffect(() => {
-    getRecipeById(recipeId);
+    async function loadRecipe() {
+      try {
+        const recipeRecord = await getRecipeById(recipeId);
+        setRecipe(recipeRecord);
+      } catch (error) {
+        addAlert(
+          `Failed to load recipe: ${error.message}!`,
+          "danger",
+          "getRecipeById-failure"
+        );
+        console.error("Failed to load recipe:", error.message);
+      }
+    }
+    loadRecipe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipeId]);
 
@@ -48,12 +61,15 @@ export function RecipeView() {
         const ingredientsRecords = await getIngredients();
         setIngredients(ingredientsRecords);
       } catch (error) {
-        addAlert(`Failed to load ingredients: ${error.message}`, "danger", "getIngredients-failure");
+        addAlert(
+          `Failed to load ingredients: ${error.message}`,
+          "danger",
+          "getIngredients-failure"
+        );
         console.error("Failed to load ingredients: ", error.message);
       }
     }
-
-    loadIngredients()
+    loadIngredients();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -82,19 +98,25 @@ export function RecipeView() {
   }, [shortages]);
 
   async function handleDelete(recipe_id, title) {
-    const message = `Are you sure you want to delete the recipe ${title}?`;
-    if (window.confirm(message)) {
-      await deleteRecipe(recipe_id, title);
-      // Reset all states that could become stale after the deletion
-      setRecipe({ ingredients: [] });
-      setShortages([]);
-      setIngredient({ name: "", base_unit: "", quantity_in_stock: 0 });
-      addAlert(
-        `Successfully deleted recipe: ${title}.`,
-        "info",
-        "deleteRecipe-success"
-      );
-      return navigate("/recipes");
+    try {
+      const message = `Are you sure you want to delete the recipe ${title}?`;
+
+      if (window.confirm(message)) {
+        await deleteRecipe(recipe_id, title);
+        // Reset all states that could become stale after the deletion
+        setRecipe({ ingredients: [] });
+        setShortages([]);
+        setIngredient({ name: "", base_unit: "", quantity_in_stock: 0 });
+        addAlert(
+          `Successfully deleted recipe: ${title}.`,
+          "info",
+          "deleteRecipe-success"
+        );
+        return navigate("/recipes");
+      }
+    } catch (error) {
+      addAlert(`Failed to delete recipe ${title}: ${error.message}`, "danger", "deleteRecipe-failure");
+      console.error(`Failed to delete recipe ${title}:`, error.message);
     }
   }
 
@@ -227,6 +249,7 @@ export function RecipeView() {
               addRecipeIngredient={addRecipeIngredient}
               getRecipeById={getRecipeById}
               units={units}
+              setRecipe={setRecipe}
             />
           </div>
         </div>

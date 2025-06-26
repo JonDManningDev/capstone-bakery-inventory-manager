@@ -1,15 +1,40 @@
+import { useAlerts } from "../../context/AlertsContext";
 import { useRecipes } from "../../context/RecipesContext";
 
-export function RecipeIngredientsListing({ name, title, amount_needed, unit, ingredientId, recipeId }) {
-    const { deleteRecipeIngredient, getRecipeById } = useRecipes();
+export function RecipeIngredientsListing({
+  name,
+  title,
+  amount_needed,
+  unit,
+  ingredientId,
+  recipeId,
+  setRecipe,
+}) {
+  const { addAlert } = useAlerts();
+  const { deleteRecipeIngredient, getRecipeById } = useRecipes();
 
-    async function handleDelete() {
-        // Delete the ingredient
-       await deleteRecipeIngredient(ingredientId, recipeId, name, title);
-        // Refresh the state
-       await getRecipeById(recipeId);
+  async function handleDelete() {
+    try {
+      // Delete the ingredient
+      await deleteRecipeIngredient(ingredientId, recipeId, name, title);
+      addAlert(
+        `Successfully removed ${name} from ${title}.`,
+        "info",
+        "deleteRecipeIngredient-success"
+      );
+      // Refresh the state
+      const recipeRecord = await getRecipeById(recipeId);
+      setRecipe(recipeRecord);
+    } catch (error) {
+      addAlert(
+        `Failed to remove ${name} from ${title}: ${error.message}!`,
+        "danger",
+        "deleteRecipeIngredient-failure"
+      );
+      console.error(`Failed to remove ${name} from ${title}:`, error.message);
     }
-   
+  }
+
   return (
     <div className="row p-2">
       <div className="col">

@@ -2,8 +2,6 @@
 
 import { createContext, useContext, useState } from "react";
 
-import { useAlerts } from "./AlertsContext";
-
 const RecipesContext = createContext();
 
 export function RecipesProvider({ children }) {
@@ -12,49 +10,33 @@ export function RecipesProvider({ children }) {
   const [recipe, setRecipe] = useState({ ingredients: [] });
 
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
-  const { addAlert } = useAlerts();
 
-  async function addRecipeIngredient(
-    recipeId,
-    ingredientId,
-    formData,
-    title,
-    name
-  ) {
-    try {
-      const response = await fetch(
-        `${baseUrl}/recipes/${recipeId}/${ingredientId}`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            data: {
-              recipe_id: recipeId,
-              ingredient_id: ingredientId,
-              amount_needed: formData.amount,
-              unit: formData.unit,
-            },
-          }),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for POST /recipes/:recipeId/:ingredientId"
-        );
+  async function addRecipeIngredient(recipeId, ingredientId, formData) {
+    const response = await fetch(
+      `${baseUrl}/recipes/${recipeId}/${ingredientId}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          data: {
+            recipe_id: recipeId,
+            ingredient_id: ingredientId,
+            amount_needed: formData.amount,
+            unit: formData.unit,
+          },
+        }),
+        headers: { "Content-Type": "application/json" },
       }
+    );
 
-      return addAlert(
-        `Successfully added ${name} to ${title}`,
-        "success",
-        "addRecipeIngredient-success"
+    if (!response.ok) {
+      const json = await response.json();
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for POST /recipes/:recipeId/:ingredientId"
       );
-    } catch (error) {
-      addAlert(error.message, "danger", "addRecipeIngredient-failure");
-      console.error(error);
     }
+
+    return;
   }
 
   async function createNewRecipe(formData) {
@@ -77,57 +59,39 @@ export function RecipesProvider({ children }) {
     return recipeRecord;
   }
 
-  async function deleteRecipe(recipeId, title) {
-    try {
-      const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
-        method: "DELETE",
-      });
+  async function deleteRecipe(recipeId) {
+    const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
+      method: "DELETE",
+    });
 
-      if (!response.ok) {
-        const json = response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for DELETE /recipes/:recipeId"
-        );
-      }
-
-      return addAlert(
-        `Successfully deleted recipe ${title}.`,
-        "info",
-        "deleteRecipe-success"
+    if (!response.ok) {
+      const json = response.json();
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for DELETE /recipes/:recipeId"
       );
-    } catch (error) {
-      addAlert(error.message, "danger", "deleteRecipe-failure");
-      console.error(error);
     }
+
+    return;
   }
 
-  async function deleteRecipeIngredient(ingredientId, recipeId, name, title) {
-    try {
-      const response = await fetch(
-        `${baseUrl}/recipes/${recipeId}/${ingredientId}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for DELETE /recipes/:recipeId/:ingredientId"
-        );
+  async function deleteRecipeIngredient(ingredientId, recipeId) {
+    const response = await fetch(
+      `${baseUrl}/recipes/${recipeId}/${ingredientId}`,
+      {
+        method: "DELETE",
       }
+    );
 
-      return addAlert(
-        `Successfully deleted ${name} from ${title}`,
-        "info",
-        "deleteRecipeIngredient-success"
+    if (!response.ok) {
+      const json = await response.json();
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for DELETE /recipes/:recipeId/:ingredientId"
       );
-    } catch (error) {
-      addAlert(error.message, "danger", "deleteRecipeIngredient-failure");
-      console.error(error);
     }
+
+    return;
   }
 
   async function editRecipeById(recipeId, formData) {
@@ -151,65 +115,53 @@ export function RecipesProvider({ children }) {
   }
 
   async function getRecipeById(recipeId) {
-    try {
-      const response = await fetch(`${baseUrl}/recipes/${recipeId}`);
+    const response = await fetch(`${baseUrl}/recipes/${recipeId}`);
 
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for GET /recipes/:recipeId"
-        );
-      }
-
+    if (!response.ok) {
       const json = await response.json();
-      const recipeRecord = json.data;
-
-      setRecipe(recipeRecord);
-      return recipeRecord;
-    } catch (error) {
-      addAlert(error.message, "danger", "getRecipeById-failure");
-      console.error(error);
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for GET /recipes/:recipeId"
+      );
     }
+
+    const json = await response.json();
+    const recipeRecord = json.data;
+
+    return recipeRecord;
   }
 
   async function getRecipes() {
-    try {
-      const response = await fetch(`${baseUrl}/recipes`);
+    const response = await fetch(`${baseUrl}/recipes`);
 
-      if (!response.ok) {
-        const json = response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for GET /recipes."
-        );
-      }
-
-      const json = await response.json();
-      const recipesRecords = json.data;
-
-      setRecipes(recipesRecords);
-      return recipesRecords;
-    } catch (error) {
-      addAlert(error.message, "danger", "getRecipes-failure");
-      console.error(error);
+    if (!response.ok) {
+      const json = response.json();
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for GET /recipes."
+      );
     }
+
+    const json = await response.json();
+    const recipesRecords = json.data;
+
+    return recipesRecords;
   }
 
   return (
     <RecipesContext.Provider
       value={{
-        recipes,
-        recipe,
-        setRecipe,
-        setRecipes,
-        editRecipeById,
-        getRecipes,
-        getRecipeById,
+        addRecipeIngredient,
         createNewRecipe,
         deleteRecipe,
-        addRecipeIngredient,
         deleteRecipeIngredient,
+        editRecipeById,
+        getRecipeById,
+        getRecipes,
+        recipe,
+        recipes,
+        setRecipe,
+        setRecipes,
       }}
     >
       {children}

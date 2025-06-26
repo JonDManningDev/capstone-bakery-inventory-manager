@@ -1,14 +1,26 @@
 import { Link } from "react-router-dom";
 
+import { useAlerts } from "../../context/AlertsContext";
 import { useRecipes } from "../../context/RecipesContext";
 import { RecipesList } from "./RecipesList";
 import { useEffect } from "react";
 
 export function RecipesView() {
-  const { recipes, getRecipes } = useRecipes();
+  const { addAlert } = useAlerts();
+  const { recipes, getRecipes, setRecipes } = useRecipes();
+  
   useEffect(() => {
     // Always fetch recipes when the component mounts or when navigated to with refresh: true
-    getRecipes();
+    async function loadRecipes() {
+      try {
+        const recipesRecords = await getRecipes();
+        setRecipes(recipesRecords);
+      } catch (error) {
+        addAlert(`Failed to load recipes: ${error.message}!`, "danger", "getRecipes-failure");
+        console.error("Failed to load recipes: ", error.message);
+      }
+    }
+    loadRecipes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
