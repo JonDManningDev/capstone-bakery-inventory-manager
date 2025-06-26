@@ -12,57 +12,80 @@ export function UnitsProvider({ children }) {
   const { addAlert } = useAlerts();
 
   async function getConversions() {
-    try {
-      const response = await fetch(`${baseUrl}/units/conversions`);
+    const response = await fetch(`${baseUrl}/units/conversions`);
 
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for GET /units/conversions"
-        );
-      }
-
+    if (!response.ok) {
       const json = await response.json();
-      const unitConversions = json.data;
-
-      return setConversions(unitConversions);
-    } catch (error) {
-        addAlert(error.message, "danger", "getConversions-failure");
-        console.error(error);
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for GET /units/conversions"
+      );
     }
+
+    const json = await response.json();
+    const unitConversions = json.data;
+
+    return unitConversions;
   }
 
   async function getUnits() {
-    try {
-      const response = await fetch(`${baseUrl}/units`);
+    const response = await fetch(`${baseUrl}/units`);
 
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for GET /units"
-        );
-      }
+    if (!response.ok) {
       const json = await response.json();
-      const unitsRecords = json.data;
-
-      return setUnits(unitsRecords);
-    } catch (error) {
-      addAlert(error.message, "danger", "getUnits-failure");
-      console.error(error);
+      throw new Error(
+        json.error || "There was an error in the server response for GET /units"
+      );
     }
+
+    const json = await response.json();
+    const unitsRecords = json.data;
+
+    return unitsRecords;
   }
 
-  // Load the units and conversion table on startup
+  // Load the conversions table on startup
   useEffect(() => {
-    getUnits();
-    getConversions();
+    async function loadConversions() {
+      try {
+        const conversions = await getConversions();
+        setConversions(conversions);
+      } catch (error) {
+        addAlert(
+          `Failed to load conversions table: ${error.message}!`,
+          "danger",
+          "getConversions-failure"
+        );
+        console.error("Failed to load conversions table:", error.message);
+      }
+    }
+    loadConversions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Load the units on startup
+  useEffect(() => {
+    async function loadUnits() {
+      try {
+        const units = await getUnits();
+        setUnits(units);
+      } catch (error) {
+        addAlert(
+          `Failed to load units: ${error.message}!`,
+          "danger",
+          "getUnits-failure"
+        );
+        console.error("Failed to load units:", error.message);
+      }
+    }
+    loadUnits();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <UnitsContext.Provider value={{ units, getUnits, conversions, getConversions }}>
+    <UnitsContext.Provider
+      value={{ conversions, getConversions, getUnits, units }}
+    >
       {children}
     </UnitsContext.Provider>
   );
