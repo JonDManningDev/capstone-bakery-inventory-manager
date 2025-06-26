@@ -1,7 +1,5 @@
 import { createContext, useContext, useState } from "react";
 
-import { useAlerts } from "./AlertsContext";
-
 const IngredientsContext = createContext();
 
 export function IngredientsProvider({ children }) {
@@ -9,7 +7,6 @@ export function IngredientsProvider({ children }) {
   const [ingredient, setIngredient] = useState({ recipes: [] });
 
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
-  const { addAlert } = useAlerts();
 
   async function createIngredient(formData) {
     const response = await fetch(`${baseUrl}/ingredients`, {
@@ -47,7 +44,7 @@ export function IngredientsProvider({ children }) {
       );
     }
 
-    return true;
+    return;
   }
 
   async function editIngredientById(ingredientId, formData) {
@@ -74,43 +71,37 @@ export function IngredientsProvider({ children }) {
   }
 
   async function getIngredientById(ingredientId) {
-    try {
-      const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`);
+    const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`);
 
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for GET /ingredients/:ingredientId"
-        );
-      }
-
+    if (!response.ok) {
       const json = await response.json();
-      const ingredientRecords = json.data;
-
-      setIngredient(ingredientRecords);
-      return ingredientRecords;
-    } catch (error) {
-      addAlert(error.message, "danger", "getIngredient-failure");
-      console.error(error);
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for GET /ingredients/:ingredientId"
+      );
     }
+
+    const json = await response.json();
+    const ingredientRecords = json.data;
+
+    return ingredientRecords;
   }
 
   async function getIngredients() {
-      const response = await fetch(`${baseUrl}/ingredients`);
+    const response = await fetch(`${baseUrl}/ingredients`);
 
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for GET /ingredients"
-        );
-      }
-
+    if (!response.ok) {
       const json = await response.json();
-      const ingredientsRecords = json.data;
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for GET /ingredients"
+      );
+    }
 
-      return ingredientsRecords;
+    const json = await response.json();
+    const ingredientsRecords = json.data;
+
+    return ingredientsRecords;
   }
 
   async function subtractBakeIngredients(recipeId) {
@@ -135,10 +126,11 @@ export function IngredientsProvider({ children }) {
         createIngredient,
         deleteIngredient,
         editIngredientById,
-        ingredients,
+        getIngredientById,
         getIngredients,
         ingredient,
-        getIngredientById,
+        ingredients,
+        setIngredient,
         setIngredients,
         subtractBakeIngredients,
       }}

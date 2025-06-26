@@ -14,17 +14,19 @@ export function ViewIngredient() {
   const { addAlert } = useAlerts();
   const { setRecipe } = useRecipes();
   const { name, base_unit, quantity_in_stock } = ingredient;
+
   useEffect(() => {
     async function loadIngredient() {
       try {
-        await getIngredientById(ingredientId);
+        const ingredientRecords = await getIngredientById(ingredientId);
+        setIngredient(ingredientRecords);
       } catch (error) {
         addAlert(
-          "There was an error in loading the ingredient.",
+          `Failed to load ingredient: ${error.message}!`,
           "danger",
           "getIngredientById-failure"
         );
-        console.error("There was an error in loading the ingredient: ", error);
+        console.error("Failed to load ingredient: ", error.message);
       }
     }
     loadIngredient();
@@ -52,11 +54,11 @@ export function ViewIngredient() {
       }
     } catch (error) {
       addAlert(
-        `Failed to delete ingredient: ${name}!`,
+        `Failed to delete ingredient ${name}: ${error.message}!`,
         "danger",
         "deleteIngredient-failure"
       );
-      console.error("There was an error in deleting the ingredient: ", error);
+      console.error(`Failed to delete ingredient ${name}:`, error.message);
     }
   }
 

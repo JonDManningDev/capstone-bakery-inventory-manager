@@ -6,20 +6,21 @@ import { useIngredients } from "../../context/IngredientsContext";
 import { useAlerts } from "../../context/AlertsContext";
 
 export function ViewIngredients() {
-  const { ingredients, getIngredients } = useIngredients();
+  const { ingredients, getIngredients, setIngredients } = useIngredients();
   const { addAlert } = useAlerts();
 
   useEffect(() => {
     async function loadIngredients() {
       try {
-        await getIngredients();
+        const ingredientsRecords = await getIngredients();
+        setIngredients(ingredientsRecords);
       } catch (error) {
         addAlert(
-          error.message || "Failed to load ingredients",
+          `Failed to load ingredients: ${error.message}!`,
           "danger",
           "getIngredients-failure"
         );
-        console.error("Failed to load ingredients:", error);
+        console.error("Failed to load ingredients:", error.message);
       }
     }
     loadIngredients();

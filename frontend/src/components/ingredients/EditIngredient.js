@@ -8,7 +8,7 @@ import { useIngredients } from "../../context/IngredientsContext";
 export function EditIngredient() {
   const navigate = useNavigate();
   const { ingredientId } = useParams();
-  const { editIngredientById, getIngredientById, ingredient } =
+  const { editIngredientById, getIngredientById, ingredient, setIngredient } =
     useIngredients();
   const { addAlert } = useAlerts();
 
@@ -21,7 +21,8 @@ export function EditIngredient() {
   useEffect(() => {
     async function loadIngredient() {
       try {
-        await getIngredientById(ingredientId);
+        const ingredientRecords = await getIngredientById(ingredientId);
+        setIngredient(ingredientRecords);
       } catch (error) {
         addAlert(
           "Failed to load ingredient.",
@@ -59,11 +60,11 @@ export function EditIngredient() {
       }
     } catch (error) {
       addAlert(
-        `Failed to edit ingredient: ${ingredient.name}`,
+        `Failed to edit ingredient ${ingredient.name}: ${error.message}!`,
         "danger",
         "editIngredientById-failure"
       );
-      console.error(error);
+      console.error(`Failed to edit ingredient ${ingredient.name}:`, error.message);
     }
   }
 

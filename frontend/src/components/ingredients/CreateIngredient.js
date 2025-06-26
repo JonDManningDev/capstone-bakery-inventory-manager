@@ -17,22 +17,24 @@ export function CreateIngredient() {
   });
 
   async function handleSubmit(formData, event) {
-    try {
-      event.preventDefault();
+    event.preventDefault();
+
+    try {      
       const record = await createIngredient(formData);
       addAlert(
         `Successfully created new ingredient: ${record.name}`,
         "success",
         "createIngredient-success"
       );
-      return navigate(`/ingredients/${record.ingredient_id}`);
+      navigate(`/ingredients/${record.ingredient_id}`);
+      return;
     } catch (error) {
       addAlert(
-        `Failed to create ingredient: ${formData.name}`,
+        `Failed to create ingredient ${formData.name}: ${error.message}!`,
         "danger",
         "createIngredient-failure"
       );
-      console.error(error);
+      console.error(`Failed to create ingredient ${formData.name}`, error.message);
     }
   }
 
