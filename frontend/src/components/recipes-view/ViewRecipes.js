@@ -5,7 +5,7 @@ import { useRecipes } from "../../context/RecipesContext";
 import { RecipesList } from "./RecipesList";
 import { useEffect } from "react";
 
-export function RecipesView() {
+export function ViewRecipes() {
   const { addAlert } = useAlerts();
   const { recipes, getRecipes, setRecipes } = useRecipes();
   

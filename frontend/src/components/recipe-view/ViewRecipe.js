@@ -11,7 +11,7 @@ import { RecipeIngredientsList } from "./RecipeIngredientsList";
 import { AddIngredientForm } from "./AddIngredientForm";
 import { getIngredientShortages } from "../../utils/getIngredientShortages";
 
-export function RecipeView() {
+export function ViewRecipe() {
   const { addAlert } = useAlerts();
   const { user } = useAuth();
   const { createBake } = useBakes();
@@ -115,7 +115,11 @@ export function RecipeView() {
         return navigate("/recipes");
       }
     } catch (error) {
-      addAlert(`Failed to delete recipe ${title}: ${error.message}`, "danger", "deleteRecipe-failure");
+      addAlert(
+        `Failed to delete recipe ${title}: ${error.message}`,
+        "danger",
+        "deleteRecipe-failure"
+      );
       console.error(`Failed to delete recipe ${title}:`, error.message);
     }
   }

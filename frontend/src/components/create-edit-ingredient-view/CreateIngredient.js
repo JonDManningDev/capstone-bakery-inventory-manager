@@ -19,7 +19,7 @@ export function CreateIngredient() {
   async function handleSubmit(formData, event) {
     event.preventDefault();
 
-    try {      
+    try {
       const record = await createIngredient(formData);
       addAlert(
         `Successfully created new ingredient: ${record.name}`,
@@ -34,7 +34,10 @@ export function CreateIngredient() {
         "danger",
         "createIngredient-failure"
       );
-      console.error(`Failed to create ingredient ${formData.name}`, error.message);
+      console.error(
+        `Failed to create ingredient ${formData.name}`,
+        error.message
+      );
     }
   }
 

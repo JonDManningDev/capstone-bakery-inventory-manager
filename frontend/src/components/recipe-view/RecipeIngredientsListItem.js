@@ -1,7 +1,7 @@
 import { useAlerts } from "../../context/AlertsContext";
 import { useRecipes } from "../../context/RecipesContext";
 
-export function RecipeIngredientsListing({
+export function RecipeIngredientsListItem({
   name,
   title,
   amount_needed,
