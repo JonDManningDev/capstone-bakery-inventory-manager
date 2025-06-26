@@ -4,7 +4,7 @@ import { useAlerts } from "../../context/AlertsContext";
 import { BakesList } from "./BakesList";
 
 export function ViewBakes() {
-  const { bakes, getBakes, updateBakeStatus } = useBakes();
+  const { bakes, getBakes, setBakes, updateBakeStatus } = useBakes();
   const { addAlert } = useAlerts();
 
   // States for filtering and sorting
@@ -15,10 +15,15 @@ export function ViewBakes() {
   useEffect(() => {
     async function loadBakes() {
       try {
-        await getBakes();
+        const bakesRecords = await getBakes();
+        setBakes(bakesRecords);
       } catch (error) {
-        addAlert("Failed to load bakes", "danger", "getBakes-failure");
-        console.error(error);
+        addAlert(
+          `Failed to load bakes: ${error.message}!`,
+          "danger",
+          "getBakes-failure"
+        );
+        console.error("Failed to load bakes:", error.message);
       }
     }
     loadBakes();
@@ -82,22 +87,21 @@ export function ViewBakes() {
       try {
         const updatedBake = await updateBakeStatus(bakeId, newStatus);
         addAlert(
-          `Bake status successfully set to ${statusText}`,
+          `Bake (${updatedBake.employee.first_name} ${updatedBake.employee.last_name} - ${updatedBake.recipe.title}) status successfully set to ${statusText}`,
           "success",
           "updateBakeStatus-success"
         );
-
-        if (updatedBake) {
-          // Update the local bakes state to reflect the change
-          return await getBakes();
-        }
+        // Update the local bakes state to reflect the change
+        const bakesRecords = await getBakes();
+        setBakes(bakesRecords);
+        return;
       } catch (error) {
         addAlert(
           `Failed to update bake status: ${error.message}`,
           "danger",
           "updateBakeStatus-failure"
         );
-        console.error(error);
+        console.error("Failed to update bake status: ", error.message);
       }
     }
   };

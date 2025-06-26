@@ -47,19 +47,17 @@ export function LoginModal() {
       const token = await getLoginToken(formData);
       const userFromToken = await getUser(token);
 
-      if (userFromToken) {
-        setUser(userFromToken);
-        setAlerts((current) =>
-          current.filter((alert) => alert.type !== "no-login")
-        );
-        addAlert(
-          `Successfully logged in as ${userFromToken.firstName}!`,
-          "success",
-          "login-success"
-        );
-        // Reset the login form
-        setFormData({ email: "", password: "" });
-      }
+      setUser(userFromToken);
+      setAlerts((current) =>
+        current.filter((alert) => alert.type !== "no-login")
+      );
+      addAlert(
+        `Successfully logged in as ${userFromToken.firstName} ${userFromToken.lastName}!`,
+        "success",
+        "login-success"
+      );
+      // Reset the login form
+      setFormData({ email: "", password: "" });
     } catch (error) {
       // If there is an error, make sure the token gets cleaned up.
       localStorage.removeItem("token");

@@ -97,8 +97,8 @@ export function IngredientsProvider({ children }) {
   }
 
   async function getIngredients() {
-    try {
       const response = await fetch(`${baseUrl}/ingredients`);
+
       if (!response.ok) {
         const json = await response.json();
         throw new Error(
@@ -110,32 +110,23 @@ export function IngredientsProvider({ children }) {
       const json = await response.json();
       const ingredientsRecords = json.data;
 
-      setIngredients(ingredientsRecords);
-    } catch (error) {
-      addAlert(error.message, "danger", "getIngredients-failure");
-      console.error(error);
-    }
+      return ingredientsRecords;
   }
 
   async function subtractBakeIngredients(recipeId) {
-    try {
-      const response = await fetch(`${baseUrl}/ingredients/bake/${recipeId}`, {
-        method: "PUT",
-      });
+    const response = await fetch(`${baseUrl}/ingredients/bake/${recipeId}`, {
+      method: "PUT",
+    });
 
-      if (!response.ok) {
-        const json = await response.json();
-        throw new Error(
-          json.error ||
-            "There was an error in the server response for PUT :/ingredients"
-        );
-      }
-
-      return;
-    } catch (error) {
-      addAlert(error.message, "danger", "subtractBakeIngredients-failure");
-      console.error(error);
+    if (!response.ok) {
+      const json = await response.json();
+      throw new Error(
+        json.error ||
+          "There was an error in the server response for PUT :/ingredients"
+      );
     }
+
+    return;
   }
 
   return (
@@ -148,6 +139,7 @@ export function IngredientsProvider({ children }) {
         getIngredients,
         ingredient,
         getIngredientById,
+        setIngredients,
         subtractBakeIngredients,
       }}
     >

@@ -96,6 +96,7 @@ async function subtractIngredients(recipeIngredients) {
   WHERE i.ingredient_id = v.ingredient_id`;
 
   await knex.raw(rawQuery);
+  return;
 }
 
 async function update(ingredientId, updates) {

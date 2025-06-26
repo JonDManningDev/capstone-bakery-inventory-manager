@@ -67,25 +67,23 @@ export function RegisterModal() {
     try {
       // After registration in the database, this route returns a login token, if successful
       const token = await registerUser(formData);
-      const userFromToken = await getUser(token);      
+      const userFromToken = await getUser(token);
 
       // Set the user, alert the successful login, and reset formData
-      if (userFromToken) {
-        setUser(userFromToken);
-        addAlert(
-          `Successfully registered and logged in as ${userFromToken.firstName}!`,
-          "success",
-          "getUser-success"
-        );
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          confirmEmail: "",
-          password: "",
-          confirmPassword: "",
-        });
-      }
+      setUser(userFromToken);
+      addAlert(
+        `Successfully registered and logged in as ${userFromToken.firstName} ${userFromToken.lastName}!`,
+        "success",
+        "getUser-success"
+      );
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        confirmEmail: "",
+        password: "",
+        confirmPassword: "",
+      });
     } catch (error) {
       // If there is an error, make sure the token gets cleaned up.
       localStorage.removeItem("token");

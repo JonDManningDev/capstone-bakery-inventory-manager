@@ -29,24 +29,20 @@ export function AuthProvider({ children }) {
     };
 
     async function autoLogin() {
+      // If a current login token exists, attempt to get user data
       if (token) {
         try {
-          console.log(
-            "Token found in localStorage, attempting to get user data..."
-          );
           const userFromToken = await getUser(token);
-          if (userFromToken) {
-            setUser(userFromToken);
-            setAlerts((current) =>
-              current.filter((alert) => alert.type !== "no-login")
-            );
-            addAlert(
-              "Logged in with existing user token!",
-              "success",
-              "autoLogin-success"
-            );
-            return true;
-          }
+          setUser(userFromToken);
+          setAlerts((current) =>
+            current.filter((alert) => alert.type !== "no-login")
+          );
+          addAlert(
+            "Logged in with existing user token!",
+            "success",
+            "autoLogin-success"
+          );
+          return true;
         } catch (error) {
           // If there is an error, make sure the token gets cleaned up.
           localStorage.removeItem("token");
@@ -67,24 +63,22 @@ export function AuthProvider({ children }) {
           console.error("Auto-login attempt failed: ", error.message);
           return false;
         }
+        // If no token is found in storage, attempt to log in with guestCredentials
       } else if (!token) {
         try {
           const token = await getLoginToken(guestCredentials);
           const userFromToken = await getUser(token);
+          setUser(userFromToken);
 
-          if (userFromToken) {
-            setUser(userFromToken);
-
-            setAlerts((current) =>
-              current.filter((alert) => alert.type !== "no-login")
-            );
-            addAlert(
-              `Successfully logged in as ${userFromToken.firstName} for demonstration purposes.`,
-              "info",
-              "autoLogin-success"
-            );
-            return true;
-          }
+          setAlerts((current) =>
+            current.filter((alert) => alert.type !== "no-login")
+          );
+          addAlert(
+            `Successfully logged in as ${userFromToken.firstName} for demonstration purposes.`,
+            "info",
+            "autoLogin-success"
+          );
+          return true;
         } catch (error) {
           // If there is an error, make sure the token gets cleaned up.
           localStorage.removeItem("token");

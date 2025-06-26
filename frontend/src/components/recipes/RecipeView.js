@@ -16,7 +16,6 @@ export function RecipeView() {
   const { user } = useAuth();
   const { createBake } = useBakes();
   const {
-    ingredient,
     ingredients,
     getIngredients,
     setIngredient,
@@ -44,13 +43,23 @@ export function RecipeView() {
   }, [recipeId]);
 
   useEffect(() => {
-    getIngredients();
+    async function loadIngredients() {
+      try {
+        const ingredientsRecords = await getIngredients();
+        setIngredients(ingredientsRecords);
+      } catch (error) {
+        addAlert(`Failed to load ingredients: ${error.message}`, "danger", "getIngredients-failure");
+        console.error("Failed to load ingredients: ", error.message);
+      }
+    }
+
+    loadIngredients()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Check for ingredient shortages that would prevent baking the recipe
   useEffect(() => {
-    if (recipe?.ingredients) {
+    if (recipe?.ingredients && ingredients.length !== 0) {
       getIngredientShortages(recipe, ingredients, conversions, setShortages);
     }
   }, [recipe, ingredients, conversions]);
@@ -91,16 +100,34 @@ export function RecipeView() {
 
   async function handleBake(recipeId, employeeId, title) {
     if (!employeeId) {
-      return addAlert(
+      addAlert(
         "You must log in before beginning a bake!",
         "danger",
         "handleBake-failure"
       );
+      return;
     }
-    await createBake(recipeId, employeeId, title);
-    await subtractBakeIngredients(recipeId);
-    const updatedInventory = await getIngredients();
-    setIngredients(updatedInventory);
+
+    try {
+      const bakeRecord = await createBake(recipeId, employeeId);
+      await subtractBakeIngredients(recipeId);
+      const updatedInventory = await getIngredients();
+
+      setIngredients(updatedInventory);
+      addAlert(
+        `Successfully added new bake! User: ${bakeRecord.employee.first_name} ${bakeRecord.employee.last_name}, Recipe: ${title}`,
+        "success",
+        "createBake-success"
+      );
+      return;
+    } catch (error) {
+      addAlert(
+        `There was an error in creating the bake: ${error.message}!`,
+        "danger",
+        "createBake-failure"
+      );
+      console.error("There was an error in creating the bake:", error.message);
+    }
   }
 
   if (!recipe.title) {

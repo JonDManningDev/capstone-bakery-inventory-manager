@@ -2,12 +2,21 @@ const knex = require("../db/connection");
 
 const tableName = "bakes";
 
-function create(newBake) {
-  return knex(tableName).insert(newBake).returning("*");
+async function create(newBake) {
+  const [newRecord] = await knex(tableName).insert(newBake).returning("*");
+
+  const [employee] = await knex("employees")
+    .select("first_name", "last_name")
+    .where({ employee_id: newBake.employee_id });
+
+  return {
+    ...newRecord,
+    employee,
+  };
 }
 
 async function list() {
-  // Obtain data for bakes and employees  
+  // Obtain data for bakes and employees
   const bakes = await knex(`${tableName} as b`)
     .join("employees as e", "b.employee_id", "e.employee_id")
     .select(
@@ -120,17 +129,69 @@ async function list() {
   return bakesList;
 }
 
-function read(bakeId) {
-  return knex(tableName).where({ bake_id: bakeId }).first();
+async function read(bakeId) {
+  const bakeRecord = await knex(`${tableName} as b`)
+    .join("employees as e", "b.employee_id", "e.employee_id")
+    .join("recipes as r", "b.recipe_id", "r.recipe_id")
+    .select(
+      "b.bake_id",
+      "b.status",
+      "b.created_at",
+      "b.updated_at",
+      "e.employee_id",
+      "e.first_name",
+      "e.last_name",
+      "r.recipe_id",
+      "r.title",
+      "r.image_url"
+    )
+    .where({ bake_id: bakeId })
+    .first();
+
+  const {
+    bake_id,
+    status,
+    created_at,
+    updated_at,
+    employee_id,
+    first_name,
+    last_name,
+    recipe_id,
+    title,
+    image_url,
+  } = bakeRecord;
+
+  return {
+    bake_id,
+    status,
+    created_at,
+    updated_at,
+    employee: {
+      employee_id,
+      first_name,
+      last_name,
+    },
+    recipe: {
+      recipe_id,
+      title,
+      image_url,
+    },
+  };
 }
 
 async function update(bakeId, updatedBake) {
-  const updated = await knex(tableName)
+  const [updatedRecord] = await knex(tableName)
     .where({ bake_id: bakeId })
     .update(updatedBake)
     .returning("*");
 
-  return updated[0];
+  const { employee, recipe } = await read(bakeId);
+
+  return {
+    ...updatedRecord,
+    employee,
+    recipe
+  };
 }
 
 module.exports = {
