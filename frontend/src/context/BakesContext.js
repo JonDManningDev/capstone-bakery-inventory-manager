@@ -1,24 +1,20 @@
 import { createContext, useContext, useState } from "react";
 
-import { useAlerts } from "./AlertsContext";
-
 const BakesContext = createContext();
 
 export function BakesProvider({ children }) {
-  const { addAlert } = useAlerts();
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const [bakes, setBakes] = useState([]);
 
-  async function createBake(recipeId, employeeId, title) {
-    try {
+  async function createBake(recipeId, employeeId) {
       const response = await fetch(`${baseUrl}/bakes`, {
         method: "POST",
         body: JSON.stringify({
           data: {
             recipe_id: recipeId,
             employee_id: employeeId,
-            status: "started", // Using lowercase to match backend validation
+            status: "started",
           },
         }),
         headers: { "Content-Type": "application/json" },
@@ -32,18 +28,12 @@ export function BakesProvider({ children }) {
         );
       }
 
-      return addAlert(
-        `Successfully added new bake! User: ${employeeId}, Recipe: ${title}`,
-        "success",
-        "createBake-success"
-      );
-    } catch (error) {
-      addAlert(error.message, "danger", "createBake-failure");
-      console.error(error);
-    }
+      const json = await response.json();
+      const newBakeRecord = json.data;
+      return newBakeRecord;      
   }
+
   async function getBakes() {
-    try {
       const response = await fetch(`${baseUrl}/bakes`);
 
       if (!response.ok) {
@@ -57,17 +47,10 @@ export function BakesProvider({ children }) {
       const json = await response.json();
       const bakesRecords = json.data;
 
-      setBakes(bakesRecords);
       return bakesRecords;
-    } catch (error) {
-      addAlert(error.message, "danger", "getBakes-failure");
-      console.error(error);
-      throw error;
-    }
   }
 
   async function updateBakeStatus(bakeId, newStatus) {
-    try {
       const response = await fetch(`${baseUrl}/bakes/${bakeId}`, {
         method: "PUT",
         body: JSON.stringify({
@@ -91,16 +74,11 @@ export function BakesProvider({ children }) {
       const updatedBake = json.data;
 
       return updatedBake;
-    } catch (error) {
-      addAlert(error.message, "danger", "updateBakeStatus-failure");
-      console.error(error);
-      throw error;
-    }
   }
 
   return (
     <BakesContext.Provider
-      value={{ bakes, createBake, getBakes, updateBakeStatus }}
+      value={{ bakes, createBake, getBakes, setBakes, updateBakeStatus }}
     >
       {children}
     </BakesContext.Provider>

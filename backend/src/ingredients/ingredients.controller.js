@@ -33,6 +33,7 @@ async function subtractIngredients(req, res, next) {
   const { recipeId } = req.params;
   const recipeIngredients = await service.listRecipeIngredients(recipeId);
   await service.subtractIngredients(recipeIngredients);
+  return res.sendStatus(204);
 }
 
 async function update(req, res, next) {
