@@ -8,7 +8,7 @@ import { useRecipes } from "../../context/RecipesContext";
 export function EditRecipe() {
   const navigate = useNavigate();
   const { recipeId } = useParams();
-  const { editRecipeById, getRecipeById, recipe } = useRecipes();
+  const { editRecipeById, getRecipeById, recipe, setRecipe } = useRecipes();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
@@ -20,10 +20,11 @@ export function EditRecipe() {
   useEffect(() => {
     async function loadRecipe(recipeId) {
       try {
-        await getRecipeById(recipeId);
+        const recipeRecord = await getRecipeById(recipeId);
+        setRecipe(recipeRecord);
       } catch (error) {
-        addAlert("Failed to load recipe.", "danger", "getRecipeById-failure");
-        console.error(error);
+        addAlert(`Failed to load recipe: ${error.message}`, "danger", "getRecipeById-failure");
+        console.error("Failed to load recipe:", error.message);
       }
     }
     loadRecipe(recipeId);
@@ -46,7 +47,7 @@ export function EditRecipe() {
       if (window.confirm(message)) {
         const updatedRecord = await editRecipeById(recipeId, formData);
         addAlert(
-          `Successfully edited recipe: ${updatedRecord.title}.`,
+          `Successfully edited recipe ${updatedRecord.title}.`,
           "info",
           "editRecipeById-success"
         );
@@ -54,11 +55,11 @@ export function EditRecipe() {
       }
     } catch (error) {
       addAlert(
-        `Failed to edit recipe: ${recipe.title}`,
+        `Failed to edit recipe ${recipe.title}: ${error.message}!`,
         "danger",
         "editRecipeById-failure"
       );
-      console.error(error);
+      console.error(`Failed to edit recipe ${recipe.title}:`, error.message);
     }
   }
 

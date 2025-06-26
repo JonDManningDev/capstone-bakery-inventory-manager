@@ -28,11 +28,11 @@ export function CreateRecipe() {
       return navigate(`/recipes/${record.recipe_id}`);
     } catch (error) {
       addAlert(
-        `Failed to create recipe: ${formData.title}`,
+        `Failed to create recipe ${formData.title}: ${error.message}`,
         "danger",
         "createRecipe-failure"
       );
-      console.error(error);
+      console.error(`Failed to create recipe ${formData.title}:`, error.message);
     }
   }
 

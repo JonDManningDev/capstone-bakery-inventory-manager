@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useAlerts } from "../../context/AlertsContext";
 import { IngredientSelector } from "./IngredientSelector";
 import { UnitSelector } from "../common/UnitSelector";
 import { handleInputChange } from "../../utils/handleInputChange";
@@ -10,8 +11,10 @@ export function AddIngredientForm({
   ingredients,
   getRecipeById,
   addRecipeIngredient,
-  units
+  units,
+  setRecipe,
 }) {
+  const { addAlert } = useAlerts();
   const [formData, setFormData] = useState({
     ingredient: "",
     amount: 0,
@@ -21,16 +24,31 @@ export function AddIngredientForm({
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const match = ingredients.find(
-      (ingredient) => ingredient.name === formData.ingredient
-    );
-    const ingredientId = match.ingredient_id;
-    const name = match.name;
+    try {
+      const match = ingredients.find(
+        (ingredient) => ingredient.name === formData.ingredient
+      );
+      const ingredientId = match.ingredient_id;
+      const name = match.name;
 
-    // Add the ingredient record to the recipe_ingredients table
-    await addRecipeIngredient(recipeId, ingredientId, formData, title, name);
-    // Fetch the updated recipe to refresh component state
-    await getRecipeById(recipeId);
+      // Add the ingredient record to the recipe_ingredients table
+      await addRecipeIngredient(recipeId, ingredientId, formData);
+      addAlert(
+        `Successfully added ${name} to ${title}`,
+        "success",
+        "addRecipeIngredient-success"
+      );
+      // Fetch the updated recipe to refresh component state
+      const recipeRecord = await getRecipeById(recipeId);
+      setRecipe(recipeRecord);
+    } catch (error) {
+      addAlert(
+        `Failed to add ingredient: ${error.message}!`,
+        "danger",
+        "addRecipeIngredient-failure"
+      );
+      console.error("Failed to add ingredient:", error.message);
+    }
   }
 
   return (
@@ -44,7 +62,7 @@ export function AddIngredientForm({
               setFormData={setFormData}
               ingredients={ingredients}
             />
-          </div>{" "}
+          </div>
           <div className="col-md-3">
             <label htmlFor="amount" className="form-label">
               Amount
@@ -64,7 +82,11 @@ export function AddIngredientForm({
             />
           </div>
           <div className="col-md-3">
-            <UnitSelector formData={formData} setFormData={setFormData} units={units} />
+            <UnitSelector
+              formData={formData}
+              setFormData={setFormData}
+              units={units}
+            />
           </div>
         </div>
 
