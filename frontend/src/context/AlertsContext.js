@@ -17,7 +17,7 @@ export function AlertsProvider({ children }) {
   }
   return (
     <AlertsContext.Provider
-      value={{ alerts, setAlerts, addAlert, removeAlert }}
+      value={{ addAlert, alerts, removeAlert, setAlerts }}
     >
       {children}
     </AlertsContext.Provider>
