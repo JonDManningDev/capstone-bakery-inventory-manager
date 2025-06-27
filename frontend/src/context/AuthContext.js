@@ -2,6 +2,7 @@
 // It also contains the useEffect() that automatically logs a returning user back in.
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 import { useAlerts } from "./AlertsContext";
 
@@ -18,19 +19,25 @@ export function AuthProvider({ children }) {
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   // Attempt auto-login
-  // The app will first attempt to fetch user data if there is an existing token in localStorage.
+  // The app will first attempt to fetch user data if there is an existing, non-expired token in localStorage.
   // If that fails, it will then attempt to log in as the Guest user and obtain its info.
   // This makes demoing the app easier, so that registering a new user is not required.
   useEffect(() => {
     const token = localStorage.getItem("token");
+    let expiration = null;
+    if (token) {
+      const { exp } = jwtDecode(token);
+      expiration = exp;
+    }
+
     const guestCredentials = {
       email: "guest@notreal.net",
       password: "guest123",
     };
 
     async function autoLogin() {
-      // If a current login token exists, attempt to get user data
-      if (token) {
+      // If a non-expired login token exists, attempt to get user data
+      if (token && Date.now() <= expiration * 1000) {
         try {
           const userFromToken = await getUser(token);
           setUser(userFromToken);
@@ -63,21 +70,43 @@ export function AuthProvider({ children }) {
           console.error("Auto-login attempt failed: ", error.message);
           return false;
         }
-        // If no token is found in storage, attempt to log in with guestCredentials
-      } else if (!token) {
+        // If no token is found in storage or if the token has expired, attempt to log in with guestCredentials
+      } else if (!token || Date.now() >= expiration * 1000) {
         try {
-          const token = await getLoginToken(guestCredentials);
-          const userFromToken = await getUser(token);
+          if (!token) {
+            addAlert(
+              "No previous session found. Beginning Guest login.",
+              "info",
+              "autoLogin-guest"
+            );
+          } else {
+            addAlert(
+              "Your previous session expired. Logging in as Guest.",
+              "info",
+              "autoLogin-expired"
+            );
+          }
+          // Clear stale data
+          localStorage.removeItem("token");
+          setUser({
+            employeeId: null,
+            firstName: "Not Logged In",
+            lastName: null,
+            email: null,
+          });
+          // Fetch and apply fresh data
+          const newToken = await getLoginToken(guestCredentials);
+          const userFromToken = await getUser(newToken);
           setUser(userFromToken);
-
-          setAlerts((current) =>
-            current.filter((alert) => alert.type !== "no-login")
-          );
           addAlert(
-            `Successfully logged in as ${userFromToken.firstName} for demonstration purposes.`,
+            "Logged in as Guest for demonstration purposes.",
             "info",
             "autoLogin-success"
           );
+          setAlerts((current) =>
+            current.filter((alert) => alert.type !== "no-login")
+          );
+
           return true;
         } catch (error) {
           // If there is an error, make sure the token gets cleaned up.

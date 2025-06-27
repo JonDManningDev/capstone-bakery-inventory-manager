@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^6.0.0"
+    "bcrypt": "^6.0.0",
+    "jwt-decode": "^4.0.0"
   }
 }
