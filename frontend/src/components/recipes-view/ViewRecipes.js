@@ -8,19 +8,28 @@ import { useEffect } from "react";
 export function ViewRecipes() {
   const { addAlert } = useAlerts();
   const { recipes, getRecipes, setRecipes } = useRecipes();
-  
+
   useEffect(() => {
-    // Always fetch recipes when the component mounts or when navigated to with refresh: true
+    const abortController = new AbortController();
     async function loadRecipes() {
       try {
-        const recipesRecords = await getRecipes();
+        const recipesRecords = await getRecipes({
+          signal: abortController.signal,
+        });
         setRecipes(recipesRecords);
       } catch (error) {
-        addAlert(`Failed to load recipes: ${error.message}!`, "danger", "getRecipes-failure");
-        console.error("Failed to load recipes: ", error.message);
+        if (error.name !== "AbortError") {
+          addAlert(
+            `Failed to load recipes: ${error.message}!`,
+            "danger",
+            "getRecipes-failure"
+          );
+          console.error("Failed to load recipes: ", error.message);
+        }
       }
     }
     loadRecipes();
+    return () => abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

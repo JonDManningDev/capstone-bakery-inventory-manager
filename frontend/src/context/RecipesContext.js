@@ -11,7 +11,12 @@ export function RecipesProvider({ children }) {
 
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
-  async function addRecipeIngredient(recipeId, ingredientId, formData) {
+  async function addRecipeIngredient(
+    recipeId,
+    ingredientId,
+    formData,
+    { signal } = {}
+  ) {
     const response = await fetch(
       `${baseUrl}/recipes/${recipeId}/${ingredientId}`,
       {
@@ -25,17 +30,16 @@ export function RecipesProvider({ children }) {
           },
         }),
         headers: { "Content-Type": "application/json" },
+        signal,
       }
     );
-
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for POST /recipes/:recipeId/:ingredientId"
       );
     }
-
     return;
   }
 
@@ -45,16 +49,13 @@ export function RecipesProvider({ children }) {
       body: JSON.stringify({ data: formData }),
       headers: { "Content-Type": "application/json" },
     });
-
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for POST /recipes"
       );
     }
-
-    const json = await response.json();
     const recipeRecord = json.data;
     return recipeRecord;
   }
@@ -63,15 +64,13 @@ export function RecipesProvider({ children }) {
     const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
       method: "DELETE",
     });
-
+    const json = await response.json().catch(() => ({}));
     if (!response.ok) {
-      const json = response.json();
       throw new Error(
-        json.error ||
+        (json && json.error) ||
           "There was an error in the server response for DELETE /recipes/:recipeId"
       );
     }
-
     return;
   }
 
@@ -82,15 +81,13 @@ export function RecipesProvider({ children }) {
         method: "DELETE",
       }
     );
-
+    const json = await response.json().catch(() => ({}));
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
-        json.error ||
+        (json && json.error) ||
           "There was an error in the server response for DELETE /recipes/:recipeId/:ingredientId"
       );
     }
-
     return;
   }
 
@@ -100,51 +97,40 @@ export function RecipesProvider({ children }) {
       body: JSON.stringify({ data: formData }),
       headers: { "Content-Type": "application/json" },
     });
-
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for PUT /recipes/:recipeId"
       );
     }
-
-    const json = await response.json();
     const updatedRecipe = json.data;
     return updatedRecipe;
   }
 
-  async function getRecipeById(recipeId) {
-    const response = await fetch(`${baseUrl}/recipes/${recipeId}`);
-
+  async function getRecipeById(recipeId, { signal } = {}) {
+    const response = await fetch(`${baseUrl}/recipes/${recipeId}`, { signal });
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for GET /recipes/:recipeId"
       );
     }
-
-    const json = await response.json();
     const recipeRecord = json.data;
-
     return recipeRecord;
   }
 
-  async function getRecipes() {
-    const response = await fetch(`${baseUrl}/recipes`);
-
+  async function getRecipes({ signal } = {}) {
+    const response = await fetch(`${baseUrl}/recipes`, { signal });
+    const json = await response.json();
     if (!response.ok) {
-      const json = response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for GET /recipes."
       );
     }
-
-    const json = await response.json();
     const recipesRecords = json.data;
-
     return recipesRecords;
   }
 

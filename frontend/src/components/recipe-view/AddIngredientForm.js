@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { useAlerts } from "../../context/AlertsContext";
 import { IngredientSelector } from "./IngredientSelector";
@@ -20,9 +20,17 @@ export function AddIngredientForm({
     amount: 0,
     unit: "",
   });
+  const abortControllerRef = useRef(null);
 
   async function handleSubmit(event) {
     event.preventDefault();
+
+    // Abort any previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     try {
       const match = ingredients.find(
@@ -32,24 +40,41 @@ export function AddIngredientForm({
       const name = match.name;
 
       // Add the ingredient record to the recipe_ingredients table
-      await addRecipeIngredient(recipeId, ingredientId, formData);
+      await addRecipeIngredient(recipeId, ingredientId, formData, {
+        signal: abortController.signal,
+      });
       addAlert(
         `Successfully added ${name} to ${title}`,
         "success",
         "addRecipeIngredient-success"
       );
       // Fetch the updated recipe to refresh component state
-      const recipeRecord = await getRecipeById(recipeId);
+      const recipeRecord = await getRecipeById(recipeId, {
+        signal: abortController.signal,
+      });
       setRecipe(recipeRecord);
     } catch (error) {
-      addAlert(
-        `Failed to add ingredient: ${error.message}!`,
-        "danger",
-        "addRecipeIngredient-failure"
-      );
-      console.error("Failed to add ingredient:", error.message);
+      if (error.name !== "AbortError") {
+        addAlert(
+          `Failed to add ingredient: ${error.message}!`,
+          "danger",
+          "addRecipeIngredient-failure"
+        );
+        console.error("Failed to add ingredient:", error.message);
+      }
+    } finally {
+      abortControllerRef.current = null;
     }
   }
+
+  // Cleanup ongoing add ingredient request on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   return (
     <>

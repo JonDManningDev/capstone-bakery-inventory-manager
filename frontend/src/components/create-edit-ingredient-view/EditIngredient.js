@@ -19,20 +19,26 @@ export function EditIngredient() {
   });
 
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadIngredient() {
       try {
-        const ingredientRecords = await getIngredientById(ingredientId);
+        const ingredientRecords = await getIngredientById(ingredientId, {
+          signal: abortController.signal,
+        });
         setIngredient(ingredientRecords);
       } catch (error) {
-        addAlert(
-          "Failed to load ingredient.",
-          "danger",
-          "getIngredientById-failure"
-        );
-        console.error(error);
+        if (error.name !== "AbortError") {
+          addAlert(
+            "Failed to load ingredient.",
+            "danger",
+            "getIngredientById-failure"
+          );
+          console.error(error);
+        }
       }
     }
     loadIngredient();
+    return () => abortController.abort();
   }, [ingredientId]);
 
   // Pre-load existing data
