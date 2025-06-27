@@ -16,20 +16,26 @@ export function ViewIngredient() {
   const { name, base_unit, quantity_in_stock } = ingredient;
 
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadIngredient() {
       try {
-        const ingredientRecords = await getIngredientById(ingredientId);
+        const ingredientRecords = await getIngredientById(ingredientId, {
+          signal: abortController.signal,
+        });
         setIngredient(ingredientRecords);
       } catch (error) {
-        addAlert(
-          `Failed to load ingredient: ${error.message}!`,
-          "danger",
-          "getIngredientById-failure"
-        );
-        console.error("Failed to load ingredient: ", error.message);
+        if (error.name !== "AbortError") {
+          addAlert(
+            `Failed to load ingredient: ${error.message}!`,
+            "danger",
+            "getIngredientById-failure"
+          );
+          console.error("Failed to load ingredient: ", error.message);
+        }
       }
     }
     loadIngredient();
+    return () => abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ingredientId]);
 

@@ -10,20 +10,26 @@ export function ViewIngredients() {
   const { addAlert } = useAlerts();
 
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadIngredients() {
       try {
-        const ingredientsRecords = await getIngredients();
+        const ingredientsRecords = await getIngredients({
+          signal: abortController.signal,
+        });
         setIngredients(ingredientsRecords);
       } catch (error) {
-        addAlert(
-          `Failed to load ingredients: ${error.message}!`,
-          "danger",
-          "getIngredients-failure"
-        );
-        console.error("Failed to load ingredients:", error.message);
+        if (error.name !== "AbortError") {
+          addAlert(
+            `Failed to load ingredients: ${error.message}!`,
+            "danger",
+            "getIngredients-failure"
+          );
+          console.error("Failed to load ingredients:", error.message);
+        }
       }
     }
     loadIngredients();
+    return () => abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

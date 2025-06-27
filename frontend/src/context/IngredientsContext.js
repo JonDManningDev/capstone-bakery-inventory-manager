@@ -17,17 +17,15 @@ export function IngredientsProvider({ children }) {
       },
     });
 
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for POST /ingredients"
       );
     }
 
-    const json = await response.json();
     const newIngredient = json.data;
-
     return newIngredient;
   }
 
@@ -36,14 +34,13 @@ export function IngredientsProvider({ children }) {
       method: "DELETE",
     });
 
+    const json = await response.json().catch(() => ({}));
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
-        json.error ||
+        (json && json.error) ||
           "There was an error in the server response for DELETE /ingredients/:ingredientId"
       );
     }
-
     return;
   }
 
@@ -56,51 +53,43 @@ export function IngredientsProvider({ children }) {
       },
     });
 
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for PUT /ingredients/:ingredientId"
       );
     }
 
-    const json = await response.json();
     const updatedIngredient = json.data;
-
     return updatedIngredient;
   }
 
-  async function getIngredientById(ingredientId) {
-    const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`);
-
+  async function getIngredientById(ingredientId, { signal } = {}) {
+    const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`, {
+      signal,
+    });
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for GET /ingredients/:ingredientId"
       );
     }
-
-    const json = await response.json();
     const ingredientRecords = json.data;
-
     return ingredientRecords;
   }
 
-  async function getIngredients() {
-    const response = await fetch(`${baseUrl}/ingredients`);
-
+  async function getIngredients({ signal } = {}) {
+    const response = await fetch(`${baseUrl}/ingredients`, { signal });
+    const json = await response.json();
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
         json.error ||
           "There was an error in the server response for GET /ingredients"
       );
     }
-
-    const json = await response.json();
     const ingredientsRecords = json.data;
-
     return ingredientsRecords;
   }
 
@@ -108,15 +97,13 @@ export function IngredientsProvider({ children }) {
     const response = await fetch(`${baseUrl}/ingredients/bake/${recipeId}`, {
       method: "PUT",
     });
-
+    const json = await response.json().catch(() => ({}));
     if (!response.ok) {
-      const json = await response.json();
       throw new Error(
-        json.error ||
+        (json && json.error) ||
           "There was an error in the server response for PUT :/ingredients"
       );
     }
-
     return;
   }
 

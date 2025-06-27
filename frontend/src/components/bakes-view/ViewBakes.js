@@ -13,11 +13,14 @@ export function ViewBakes() {
   const [filteredBakes, setFilteredBakes] = useState([]);
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     async function loadBakes() {
       try {
-        const bakesRecords = await getBakes();
+        const bakesRecords = await getBakes({ signal: abortController.signal });
         setBakes(bakesRecords);
       } catch (error) {
+        if (error.name === "AbortError") return;
         addAlert(
           `Failed to load bakes: ${error.message}!`,
           "danger",
@@ -27,6 +30,10 @@ export function ViewBakes() {
       }
     }
     loadBakes();
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   // currentBakes (all bakes since 12:00 am the current day) is used for both ordering/filtering and statistics

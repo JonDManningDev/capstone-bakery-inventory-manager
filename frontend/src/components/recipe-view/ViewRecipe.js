@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
@@ -33,43 +33,56 @@ export function ViewRecipe() {
   const { title, description, image_url } = recipe;
   const { recipeId } = useParams();
   const navigate = useNavigate();
+  const handleBakeAbortRef = useRef(null);
 
   // Keeps track of ingredient shortages that would prevent baking the recipe
   const [shortages, setShortages] = useState([]);
 
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadRecipe() {
       try {
-        const recipeRecord = await getRecipeById(recipeId);
+        const recipeRecord = await getRecipeById(recipeId, {
+          signal: abortController.signal,
+        });
         setRecipe(recipeRecord);
       } catch (error) {
-        addAlert(
-          `Failed to load recipe: ${error.message}!`,
-          "danger",
-          "getRecipeById-failure"
-        );
-        console.error("Failed to load recipe:", error.message);
+        if (error.name !== "AbortError") {
+          addAlert(
+            `Failed to load recipe: ${error.message}!`,
+            "danger",
+            "getRecipeById-failure"
+          );
+          console.error("Failed to load recipe:", error.message);
+        }
       }
     }
     loadRecipe();
+    return () => abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipeId]);
 
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadIngredients() {
       try {
-        const ingredientsRecords = await getIngredients();
+        const ingredientsRecords = await getIngredients({
+          signal: abortController.signal,
+        });
         setIngredients(ingredientsRecords);
       } catch (error) {
-        addAlert(
-          `Failed to load ingredients: ${error.message}`,
-          "danger",
-          "getIngredients-failure"
-        );
-        console.error("Failed to load ingredients: ", error.message);
+        if (error.name !== "AbortError") {
+          addAlert(
+            `Failed to load ingredients: ${error.message}`,
+            "danger",
+            "getIngredients-failure"
+          );
+          console.error("Failed to load ingredients: ", error.message);
+        }
       }
     }
     loadIngredients();
+    return () => abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -120,10 +133,23 @@ export function ViewRecipe() {
       return;
     }
 
+    // Abort any previous bake request
+    if (handleBakeAbortRef.current) {
+      handleBakeAbortRef.current.abort();
+    }
+    const abortController = new AbortController();
+    handleBakeAbortRef.current = abortController;
+
     try {
-      const bakeRecord = await createBake(recipeId, employeeId);
-      await subtractBakeIngredients(recipeId);
-      const updatedInventory = await getIngredients();
+      const bakeRecord = await createBake(recipeId, employeeId, {
+        signal: abortController.signal,
+      });
+      await subtractBakeIngredients(recipeId, {
+        signal: abortController.signal,
+      });
+      const updatedInventory = await getIngredients({
+        signal: abortController.signal,
+      });
 
       setIngredients(updatedInventory);
       addAlert(
@@ -133,14 +159,30 @@ export function ViewRecipe() {
       );
       return;
     } catch (error) {
-      addAlert(
-        `There was an error in creating the bake: ${error.message}!`,
-        "danger",
-        "createBake-failure"
-      );
-      console.error("There was an error in creating the bake:", error.message);
+      if (error.name !== "AbortError") {
+        addAlert(
+          `There was an error in creating the bake: ${error.message}!`,
+          "danger",
+          "createBake-failure"
+        );
+        console.error(
+          "There was an error in creating the bake:",
+          error.message
+        );
+      }
+    } finally {
+      handleBakeAbortRef.current = null;
     }
   }
+
+  // Cleanup ongoing bake request on unmount
+  useEffect(() => {
+    return () => {
+      if (handleBakeAbortRef.current) {
+        handleBakeAbortRef.current.abort();
+      }
+    };
+  }, []);
 
   if (!recipe.title) {
     return <h2>{`Recipe with ID ${recipeId} not found!`}</h2>;
