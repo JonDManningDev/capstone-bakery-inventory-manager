@@ -80,22 +80,8 @@ export function ViewRecipe() {
     }
   }, [recipe, ingredients, conversions]);
 
-  // Update the bake button state based on shortages
-  useEffect(() => {
-    const bakeButton = document.getElementById("recipeViewBake");
-
-    if (!recipe.title) return;
-
-    if (shortages && shortages.length > 0) {
-      if (!bakeButton.classList.contains("disabled")) {
-        bakeButton.classList.add("disabled");
-      }
-    } else {
-      if (bakeButton.classList.contains("disabled")) {
-        bakeButton.classList.remove("disabled");
-      }
-    }
-  }, [shortages]);
+  // Update the bake button state based on shortages state
+  const disableBake = shortages.length > 0;
 
   async function handleDelete(recipe_id, title) {
     try {
@@ -179,6 +165,7 @@ export function ViewRecipe() {
             id="recipeViewBake"
             className="btn btn-primary mx-1"
             onClick={() => handleBake(recipeId, user.employeeId, title)}
+            disabled={disableBake}
           >
             Bake Recipe
           </button>

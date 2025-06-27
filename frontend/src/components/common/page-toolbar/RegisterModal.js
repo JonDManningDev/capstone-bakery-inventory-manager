@@ -1,35 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useAlerts } from "../../../context/AlertsContext";
 import { handleInputChange } from "../../../utils/handleInputChange";
 import { modalCloser } from "../../../utils/modalCloser";
 
-export function RegisterModal() {
+export function RegisterModal({ loginDropdownRef }) {
   const { getUser, registerUser, setUser } = useAuth();
   const { addAlert } = useAlerts();
+  const modalRef = useRef(null);
+  const firstNameInputRef = useRef(null);
 
   // Manually control focus to prevent aria errors.
   useEffect(() => {
-    const modal = document.getElementById("registerModal");
+    const modal = modalRef.current;
     if (!modal) return;
+
     const modalFocusHandler = () => {
-      const input = document.getElementById("registerEmailAddress");
-      input?.focus();
+      firstNameInputRef.current?.focus();
     };
 
     const modalHideHandler = () => {
-      const dropdownButton = document.getElementById("loginDropdown");
-      if (dropdownButton) {
-        dropdownButton.focus();
-      }
+      loginDropdownRef.current?.focus();
     };
 
-    modal.addEventListener("hide.bs.modal", modalHideHandler);
     modal.addEventListener("shown.bs.modal", modalFocusHandler);
+    modal.addEventListener("hide.bs.modal", modalHideHandler);
 
     return () => {
-      modal.removeEventListener("hide.bs.modal", modalHideHandler);
       modal.removeEventListener("shown.bs.modal", modalFocusHandler);
+      modal.removeEventListener("hide.bs.modal", modalHideHandler);
     };
   }, []);
 
@@ -115,6 +114,7 @@ export function RegisterModal() {
       aria-labelledby="registerLabel"
       aria-hidden="true"
       data-bs-focus="false"
+      ref={modalRef}
     >
       <div className="modal-dialog">
         <div className="modal-content">
@@ -142,6 +142,7 @@ export function RegisterModal() {
                     className="form-control"
                     id="firstName"
                     name="firstName"
+                    ref={firstNameInputRef}
                     value={formData.firstName}
                     onChange={(event) =>
                       handleInputChange(event, formData, setFormData)

@@ -1,28 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useAlerts } from "../../../context/AlertsContext";
 import { handleInputChange } from "../../../utils/handleInputChange";
 import { modalCloser } from "../../../utils/modalCloser";
 
-export function LoginModal() {
+export function LoginModal({ loginDropdownRef }) {
   const { addAlert, setAlerts } = useAlerts();
   const { getLoginToken, getUser, setUser } = useAuth();
+  const modalRef = useRef(null);
+  const emailInputRef = useRef(null);
 
   // Manually control focus to prevent aria errors.
   useEffect(() => {
-    const modal = document.getElementById("loginModal");
+    const modal = modalRef.current;
     if (!modal) return;
 
     const modalFocusHandler = () => {
-      const input = document.getElementById("loginEmailAddress");
-      input?.focus();
+      emailInputRef.current?.focus();
     };
 
     const modalHideHandler = () => {
-      const dropdownButton = document.getElementById("loginDropdown");
-      if (dropdownButton) {
-        dropdownButton.focus();
-      }
+      loginDropdownRef.current?.focus();
     };
 
     modal.addEventListener("hide.bs.modal", modalHideHandler);
@@ -85,6 +83,7 @@ export function LoginModal() {
       aria-labelledby="loginLabel"
       aria-hidden="true"
       data-bs-focus="false"
+      ref={modalRef}
     >
       <div className="modal-dialog">
         <div className="modal-content">
@@ -110,6 +109,7 @@ export function LoginModal() {
                   className="form-control"
                   id="loginEmailAddress"
                   name="email"
+                  ref={emailInputRef}
                   value={formData.email}
                   onChange={(event) =>
                     handleInputChange(event, formData, setFormData)

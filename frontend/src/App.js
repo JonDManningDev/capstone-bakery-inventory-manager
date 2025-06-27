@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { CreateRecipe } from "./components/create-edit-recipe-view/CreateRecipe";
@@ -17,11 +18,12 @@ import { CreateIngredient } from "./components/create-edit-ingredient-view/Creat
 import { ViewIngredient } from "./components/ingredient-view/ViewIngredient";
 
 function App() {
+  const loginDropdownRef = useRef(null);
   return (
     <>
-      <LoginModal />
-      <RegisterModal />
-      <PageToolbar />
+      <LoginModal loginDropdownRef={loginDropdownRef} />
+      <RegisterModal loginDropdownRef={loginDropdownRef} />
+      <PageToolbar loginDropdownRef={loginDropdownRef} />
       <Alerts />
       <ScrollToTop />
       <Routes>

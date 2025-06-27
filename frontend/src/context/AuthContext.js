@@ -22,8 +22,10 @@ export function AuthProvider({ children }) {
   // The app will first attempt to fetch user data if there is an existing, non-expired token in localStorage.
   // If that fails, it will then attempt to log in as the Guest user and obtain its info.
   // This makes demoing the app easier, so that registering a new user is not required.
+  // In the case that a demo user intentionally logs out, autoLogin is then prevented by "preventAutoLogin" in sessionStorage.
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const preventAutoLogin = sessionStorage.getItem("preventAutoLogin");
     let expiration = null;
     if (token) {
       const { exp } = jwtDecode(token);
@@ -73,6 +75,12 @@ export function AuthProvider({ children }) {
         // If no token is found in storage or if the token has expired, attempt to log in with guestCredentials
       } else if (!token || Date.now() >= expiration * 1000) {
         try {
+          // Skip Guest login if the demo user intentionally logged out.
+          if (preventAutoLogin === "true") {
+            sessionStorage.removeItem("preventAutoLogin");
+            return;
+          }
+
           if (!token) {
             addAlert(
               "No previous session found. Beginning Guest login.",
@@ -180,13 +188,17 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    console.log("logout has been called")
     localStorage.removeItem("token");
+    console.log("Token should have been removed:", localStorage.getItem("token"));
+    sessionStorage.setItem("preventAutoLogin", "true");
     setUser({
       employeeId: null,
       firstName: "Not Logged In",
       lastName: null,
       email: null,
     });
+    console.log("User should be in not-logged-in state:", user);
     setAlerts((current) =>
       current.filter((alert) => alert.type !== "login-success")
     );

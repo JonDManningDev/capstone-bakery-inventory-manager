@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ToolbarDropdown } from "./ToolbarDropdown";
 import { LoginButton } from "./LoginButton";
 
-export function PageToolbar() {
+export function PageToolbar({ loginDropdownRef }) {
   const location = useLocation();
 
   const homeLink = () => {
@@ -76,7 +76,7 @@ export function PageToolbar() {
             <li className="nav-item">{bakesLink()}</li>
           </ul>          
         </div>
-        <LoginButton />
+        <LoginButton loginDropdownRef={ loginDropdownRef } />
       </div>
     </nav>
   );
