@@ -60,6 +60,7 @@ async function read(ingredientId) {
   };
 }
 
+// This is only used to validate a new ingredient by making sure no ingredient with the same name exists
 async function readByName(name) {
   return knex(tableName).where({ name }).select('*').first();
 }

@@ -1,3 +1,5 @@
+// authenticateToken validates login tokens sent by the frontend to retrieve user information.
+
 const jwt = require("jsonwebtoken");
 
 function authenticateToken(req, res, next) {
@@ -8,8 +10,8 @@ function authenticateToken(req, res, next) {
     return res.status(401).json({ message: "Missing token" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
+  jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
+    if (error) {
       return res.status(403).json({ message: "Invalid or expired token" });
     }
     req.user = user;

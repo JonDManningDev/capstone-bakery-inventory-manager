@@ -2,11 +2,13 @@ const knex = require("../db/connection");
 const bcrypt = require("bcrypt");
 
 const tableName = "employees";
+// Used by bcrypt to determine how many passes for hashing passwords
 const SALT_ROUNDS = 12;
 
 async function create(newEmployee) {
   const { firstName, lastName, email, password } = newEmployee;
 
+  // bcrypt encrypts passwords for security before they are stored in the database.
   const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
   const [newRecord] = await knex(tableName)

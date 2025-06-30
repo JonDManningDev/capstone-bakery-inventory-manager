@@ -29,6 +29,7 @@ async function read(req, res, next) {
   return res.json({ data: ingredient });
 }
 
+// This is used for updating the stock of ingredients when a recipe is baked
 async function subtractIngredients(req, res, next) {
   const { recipeId } = req.params;
   const recipeIngredients = await service.listRecipeIngredients(recipeId);

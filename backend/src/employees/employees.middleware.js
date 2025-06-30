@@ -2,9 +2,7 @@ const service = require("./employees.service");
 const asyncHandler = require("../errors/asyncHandler");
 const bcrypt = require("bcrypt");
 
-/**
- * Validates login information from request body
- */
+// Validates login information
 async function validateLogin(req, res, next) {
   const { email, password } = req.body.data;
 
@@ -38,9 +36,7 @@ async function validateLogin(req, res, next) {
   return next();
 }
 
-/**
- * Validates registration information from request body
- */
+// Validates registration information
 async function validateRegistration(req, res, next) {
   const { firstName, lastName, email, password } = req.body.data;
 
@@ -65,6 +61,7 @@ async function validateRegistration(req, res, next) {
     });
   }
 
+  // Checks for valid email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return next({
@@ -87,6 +84,7 @@ async function validateRegistration(req, res, next) {
     });
   }
 
+  // Checks for valid password format
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/;
   if (!passwordRegex.test(password)) {
     return next({

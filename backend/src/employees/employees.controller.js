@@ -19,7 +19,8 @@ async function create(req, res, next) {
 async function login(req, res, next) {
   const employee = res.locals.employee;
 
-  // Include this information in the token
+  // Include this information in the login token
+  // This information is used by the frontend to display user info
   const payload = {
     employeeId: employee.employee_id,
     email: employee.email,
