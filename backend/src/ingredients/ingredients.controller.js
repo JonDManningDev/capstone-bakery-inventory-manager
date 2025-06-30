@@ -6,13 +6,13 @@ const middleware = require("./ingredients.middleware");
 
 async function create(req, res, next) {
   const ingredientData = req.body.data;
-  return res.json({ data: await service.create(ingredientData) });
+  return res.status(201).json({ data: await service.create(ingredientData) });
 }
 
 async function destroy(req, res, next) {
   const { ingredientId } = req.params;
   await service.delete(ingredientId);
-  return res.sendStatus(204);
+  return res.json({ data: res.locals.ingredient });
 }
 
 async function list(req, res, next) {
@@ -40,7 +40,7 @@ async function subtractIngredients(req, res, next) {
 async function update(req, res, next) {
   const { ingredientId } = req.params;
   const updates = req.body.data;
-  return res.json({ data: await service.update(ingredientId, updates) });
+  return res.status(201).json({ data: await service.update(ingredientId, updates) });
 }
 
 module.exports = {
