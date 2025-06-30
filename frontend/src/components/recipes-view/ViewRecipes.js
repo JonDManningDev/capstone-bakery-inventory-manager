@@ -1,3 +1,5 @@
+// ViewRecipes displays a list of recipes in the bakery database with links to each entry
+
 import { Link } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
@@ -35,7 +37,7 @@ export function ViewRecipes() {
 
   return (
     // Component container
-    <div className="container col-11 col-md-8 col-lg-5 py-4 my-4 border rounded">
+    <div className="container col-11 col-md-8 col-lg-5 py-4 my-4 border rounded bg-light">
       {/* Upper container */}
       <div className="d-flex justify-content-between">
         <div>

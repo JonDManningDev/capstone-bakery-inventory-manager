@@ -9,13 +9,13 @@ export function PageToolbar({ loginDropdownRef }) {
   const homeLink = () => {
     if (location.pathname === "/") {
       return (
-        <Link to="/" className="nav-link active" aria-current="page">
+        <Link to="/" className="nav-link active text-light" aria-current="page">
           Home
         </Link>
       );
     } else {
       return (
-        <Link to="/" className="nav-link">
+        <Link to="/" className="nav-link text-light">
           Home
         </Link>
       );
@@ -25,13 +25,13 @@ export function PageToolbar({ loginDropdownRef }) {
   const bakesLink = () => {
     if (location.pathname === "/bakes") {
       return (
-        <Link to="/bakes" className="nav-link active" aria-current="page">
+        <Link to="/bakes" className="nav-link active text-light" aria-current="page">
           Bakes
         </Link>
       );
     } else {
       return (
-        <Link to="/bakes" className="nav-link">
+        <Link to="/bakes" className="nav-link text-light">
           Bakes
         </Link>
       );
@@ -39,7 +39,7 @@ export function PageToolbar({ loginDropdownRef }) {
   };
 
   return (
-    <nav className="navbar navbar-expand-md sticky-top bg-body-secondary">
+    <nav className="navbar navbar-expand-md sticky-top bg-secondary">
       <div className="container-fluid">
         
         <button
@@ -53,7 +53,7 @@ export function PageToolbar({ loginDropdownRef }) {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <a className="navbar-brand" href="#">
+        <a className="navbar-brand text-light" href="#">
           Maeve's
         </a>
         <div className="collapse navbar-collapse" id="navContent">

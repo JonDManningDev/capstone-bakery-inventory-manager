@@ -1,3 +1,5 @@
+// Renders the list of current bakes
+
 import { BakeListItem } from "./BakeListItem";
 
 export function BakesList({

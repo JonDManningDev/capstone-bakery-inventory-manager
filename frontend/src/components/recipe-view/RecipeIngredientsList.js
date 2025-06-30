@@ -1,3 +1,5 @@
+// Renders the list of ingredients in a given recipe
+
 import { RecipeIngredientsListItem } from "./RecipeIngredientsListItem";
 
 export function RecipeIngredientsList({ recipe }) {

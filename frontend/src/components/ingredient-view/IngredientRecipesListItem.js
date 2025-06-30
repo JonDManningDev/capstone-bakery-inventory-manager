@@ -1,3 +1,5 @@
+// Renders each individual recipe of an ingredient
+
 import { Link } from "react-router-dom";
 
 export function IngredientRecipesListItem({ recipeId, title }) {

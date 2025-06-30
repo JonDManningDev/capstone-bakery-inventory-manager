@@ -1,3 +1,5 @@
+// Renders each individual bake in the list
+
 import { Link } from "react-router-dom";
 
 export function BakeListItem({ bake, renderStatusBadge, handleStatusUpdate }) {

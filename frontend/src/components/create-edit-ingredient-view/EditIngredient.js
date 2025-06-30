@@ -1,3 +1,5 @@
+// View for editing an existing ingredient.
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 

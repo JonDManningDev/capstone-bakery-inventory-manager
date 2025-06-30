@@ -1,10 +1,11 @@
+// Shared form for creating and editing recipes.
+// FormData (title, description, image_url) is auto-populated with data from existing recipe in parent component (EditRecipe).
+// handleSubmit() prop allows flexibility based on editing or creating.
+
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { handleInputChange } from "../../utils/handleInputChange";
 
-// Shared form for creating and editing recipes.
-// FormData (title, description, image_url) is auto-populated with data from existing recipe in parent component (EditRecipe).
-// handleSubmit() prop allows flexibility based on editing or creating.
 export function RecipeForm({ handleSubmit, formData, setFormData }) {
   const navigate = useNavigate();
   const location = useLocation();

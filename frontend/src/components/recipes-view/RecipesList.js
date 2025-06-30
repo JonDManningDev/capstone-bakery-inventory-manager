@@ -1,3 +1,5 @@
+// Renders the list of recipes
+
 import { RecipesListItem } from "./RecipesListItem";
 
 export function RecipesList({ recipes }) {

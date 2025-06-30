@@ -1,3 +1,5 @@
+// View for creating a new recipe.
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

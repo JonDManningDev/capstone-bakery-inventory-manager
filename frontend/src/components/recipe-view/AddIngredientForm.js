@@ -1,3 +1,5 @@
+// Form for adding an ingredient to a recipe
+
 import { useState, useRef, useEffect } from "react";
 
 import { useAlerts } from "../../context/AlertsContext";

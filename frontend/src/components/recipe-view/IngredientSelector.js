@@ -1,3 +1,5 @@
+// Selector for selecting an ingredient to add to a recipe
+
 import { handleInputChange } from "../../utils/handleInputChange";
 
 export function IngredientSelector({ formData, setFormData, ingredients }) {
