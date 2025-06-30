@@ -8,6 +8,12 @@ async function ingredientExists(req, res, next) {
   // New ingredients (POST) will not have an ingredientId yet, so check for duplicate name
   if (!ingredientId) {
     const { name } = req.body.data;
+    if (!name) {
+      return next({
+        status: 400,
+        message: `Ingredient name is required.`,
+      });
+    }
     const ingredient = await service.readByName(name);
     if (!ingredient) {
       return next();

@@ -69,6 +69,8 @@ describe("API: Ingredients resource", () => {
         .send({
           data: {
             name: "Ingredient Name",
+            base_unit: "cup",
+            quantity_in_stock: 50,
           },
         });
       expect(response.status).toBe(201);
@@ -85,7 +87,8 @@ describe("API: Ingredients resource", () => {
         .set("Accept", "application/json")
         .send({
           data: {
-            unit: "cup",
+            base_unit: "cup",
+            quantity_in_stock: 50,
           },
         });
 
@@ -104,6 +107,8 @@ describe("API: Ingredients resource", () => {
         .send({
           data: {
             name: "New Ingredient Name",
+            base_unit: "teaspoon",
+            quantity_in_stock: 100,
           },
         });
 
@@ -122,7 +127,8 @@ describe("API: Ingredients resource", () => {
         .send({
           data: {
             name: "New Ingredient Name",
-            unit: "teaspoon",
+            base_unit: "teaspoon",
+            quantity_in_stock: 100,
           },
         });
 
@@ -138,6 +144,7 @@ describe("API: Ingredients resource", () => {
         .send({
           data: {
             unit: "cup",
+            quantity_in_stock: 50,
           },
         });
 

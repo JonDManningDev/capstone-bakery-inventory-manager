@@ -118,6 +118,7 @@ describe("API: Recipes resource", () => {
         .send({
           data: {
             title: "Recipe Name",
+            image_url: "https://exampleimage.com/image.png",
           },
         });
 
