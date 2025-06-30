@@ -46,6 +46,7 @@ function validateIngredient(req, res, next) {
   const invalidFields = [];
   const missingFields = [];
 
+  // Check for invalid fields
   for (const field of Object.keys(ingredientData)) {
     if (!requiredFields.includes(field)) invalidFields.push(field);
   }
@@ -58,6 +59,7 @@ function validateIngredient(req, res, next) {
       )}.`,
     });
 
+  // Check for missing fields
   for (const field of requiredFields) {
     if (!Object.keys(ingredientData).includes(field)) missingFields.push(field);
   }

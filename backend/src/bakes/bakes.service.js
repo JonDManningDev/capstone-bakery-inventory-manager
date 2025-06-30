@@ -77,10 +77,10 @@ async function list() {
 
   const recipeMap = new Map();
 
-  // Remember that each row of records that gets returned from the recipes query will have all of the data for a single recipe from the 'recipes' table...
-  // And the data for a single ingredient used in that recipe from 'recipe_ingredients' and 'ingredients'.
+  // Each row of records that gets returned from the recipes query will have all of the data for a single recipe from the 'recipes' table...
+  // ...and the data for a single ingredient used in that recipe from 'recipe_ingredients' and 'ingredients'.
   // The trick is to copy the recipe information only once, because it is duplicated as many times as there are ingredients in that recipe...
-  // Then push in the data for each successive ingredient as long as it is still part of that recipe.
+  // ...then push in the data for each successive ingredient as long as it is still part of that recipe.
   // Once recipe_id changes, that signals that you are looking at a new recipe, so you need logic to trigger a new entry in the map.
   for (const row of recipes) {
     // These are all the values you are going to find in each row returned from the recipes query
@@ -161,6 +161,7 @@ async function read(bakeId) {
     image_url,
   } = bakeRecord;
 
+  // Reformat the returned data with nesting for clarity
   return {
     bake_id,
     status,
@@ -187,6 +188,8 @@ async function update(bakeId, updatedBake) {
 
   const { employee, recipe } = await read(bakeId);
 
+  // Merge employee and recipe data into the updated bake record to be returned to the client
+  // This allows clear alert messages to be displayed on the frontend
   return {
     ...updatedRecord,
     employee,

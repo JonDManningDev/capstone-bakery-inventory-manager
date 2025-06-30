@@ -32,6 +32,7 @@ async function recipeExists(req, res, next) {
   }
 }
 
+// This is used to check if a recipe contains a specific ingredient when adding or deleting ingredients
 function recipeIngredientExists(req, res, next) {
   const { ingredients } = res.locals.recipe;
   const { name, ingredient_id } = res.locals.ingredient;
@@ -41,6 +42,7 @@ function recipeIngredientExists(req, res, next) {
     (ingredient) => ingredient.ingredient_id === ingredient_id
   );
 
+  // When deleting, use this logic path
   if (method === "DELETE") {
     if (!match) {
       return next({
@@ -53,6 +55,7 @@ function recipeIngredientExists(req, res, next) {
     }
   }
 
+  // When adding, use this logic path
   if (method === "POST") {
     if (match) {
       return next({

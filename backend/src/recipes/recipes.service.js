@@ -53,6 +53,7 @@ async function read(recipeId) {
   };
 }
 
+// This is only used to validate a new recipe by making sure no recipe with the same title exists
 function readByTitle(title) {
   return knex(tableName).select("*").where({ title }).first();
 }

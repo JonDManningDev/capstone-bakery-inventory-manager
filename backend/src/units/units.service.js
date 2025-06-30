@@ -5,7 +5,7 @@ const tableName = "unit_conversions";
 // Instead of hitting the database every time we need to do a unit conversion, we just request the whole table once and load it into memory
 // It gets loaded by loadConversionCache()
 let conversionMap = null;
-// Add a graph representation of the conversions for multi-step conversion
+// Add a graph representation of the conversions for multi-step conversions
 let conversionGraph = null;
 
 function getConversionFactor(from_unit, to_unit) {
@@ -15,7 +15,7 @@ function getConversionFactor(from_unit, to_unit) {
 
   if (!from_unit || !to_unit) {
     throw new Error(
-      `Invalid units: from_unit=${from_unit}, to_unit=${to_unit}`
+      `Missing units: from_unit=${from_unit}, to_unit=${to_unit}`
     );
   }
 
@@ -53,7 +53,7 @@ function getConversionFactor(from_unit, to_unit) {
     combinedFactor *= stepFactor;
   }
 
-  // Log the conversion path that was used (helpful for debugging)
+  // Log the conversion path that was used
   console.log(
     `Multi-step conversion from ${from_unit} to ${to_unit} via path: ${conversionPath.join(
       " -> "

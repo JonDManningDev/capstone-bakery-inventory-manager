@@ -6,6 +6,7 @@ const methodNotAllowed = require("../errors/methodNotAllowed");
 
 router.route("/login").post(controller.login).all(methodNotAllowed);
 
+// Route for obtaining employee information from an existing login token
 router.route("/me").get(authenticateToken, controller.readSelf).all(methodNotAllowed);
 
 router.route("/").post(controller.create).all(methodNotAllowed);
