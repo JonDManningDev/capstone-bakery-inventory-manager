@@ -1,3 +1,5 @@
+// Displays information for all bakes made today, including statistics and filtering options.
+
 import { useState, useEffect } from "react";
 import { useBakes } from "../../context/BakesContext";
 import { useAlerts } from "../../context/AlertsContext";
@@ -138,11 +140,11 @@ export function ViewBakes() {
   }
 
   return (
-    <div className="container py-4 my-4 col-lg-7 border rounded">
+    <div className="container py-4 my-4 col-lg-7 border rounded bg-light">
       <h3 className="mb-4">Bakes</h3>
 
       {/* Dashboard */}
-      <div className="card mb-4 bg-light">
+      <div className="card mb-4">
         <div className="card-body">
           <h3 className="text-primary">
             There have been {dailyBakesTotal} bakes today.

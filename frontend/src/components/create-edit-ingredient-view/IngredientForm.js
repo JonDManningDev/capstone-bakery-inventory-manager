@@ -1,12 +1,13 @@
+// Shared form for creating and editing ingredients.
+// FormData (name, base_unit, quantity_in_stock) is auto-populated with data from existing ingredient in parent component (EditIngredient).
+// handleSubmit() prop allows flexibility based on editing or creating.
+
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { handleInputChange } from "../../utils/handleInputChange";
 import { UnitSelector } from "../common/UnitSelector";
 import { useUnits } from "../../context/UnitsContext";
 
-// Shared form for creating and editing ingredients.
-// FormData (name, base_unit, quantity_in_stock) is auto-populated with data from existing ingredient in parent component (EditIngredient).
-// handleSubmit() prop allows flexibility based on editing or creating.
 export function IngredientForm({ handleSubmit, formData, setFormData }) {
   const navigate = useNavigate();
   const location = useLocation();

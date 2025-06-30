@@ -1,3 +1,5 @@
+// Home contains links to the different sections of the app, along with some statistics for each
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -111,7 +113,7 @@ export function Home() {
         style={{ height: "250px" }}
       >
         <div className="col h-100">
-          <div className="card h-100">
+          <div className="card h-100 bg-light">
             <div className="card-body d-flex flex-column justify-content-between">
               <h3 className="card-title border-bottom">
                 {`Bakes `}
@@ -148,7 +150,7 @@ export function Home() {
           </div>
         </div>
         <div className="col h-100">
-          <div className="card h-100">
+          <div className="card h-100 bg-light">
             <div className="card-body d-flex flex-column justify-content-between">
               <h3 className="card-title border-bottom">
                 {`Recipes `}
@@ -180,7 +182,7 @@ export function Home() {
           </div>
         </div>
         <div className="col h-100">
-          <div className="card h-100">
+          <div className="card h-100 bg-light">
             <div className="card-body d-flex flex-column justify-content-between">
               <h3 className="card-title border-bottom">
                 {`Ingredients `}

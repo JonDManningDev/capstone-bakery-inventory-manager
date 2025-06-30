@@ -1,3 +1,5 @@
+// Renders each individual recipe entry in the list
+
 import { Link } from "react-router-dom";
 
 export function RecipesListItem({ title, image_url, id }) {

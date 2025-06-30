@@ -1,3 +1,5 @@
+// Displays a list of all ingredients in the database, with an option to create a new ingredient
+
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -35,7 +37,7 @@ export function ViewIngredients() {
 
   // Render the list
   return (
-    <div className="container col-11 col-md-6 col-lg-5 py-4 my-4 border rounded">
+    <div className="container col-11 col-md-6 col-lg-5 py-4 my-4 border rounded bg-light">
       {/* Upper container */}
       <div className="d-flex justify-content-between">
         <div>

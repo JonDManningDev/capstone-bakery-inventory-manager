@@ -1,3 +1,5 @@
+// Displays information about a recipe, along with options to edit its ingredients, create a bake, or delete the recipe
+
 import { useEffect, useState, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 

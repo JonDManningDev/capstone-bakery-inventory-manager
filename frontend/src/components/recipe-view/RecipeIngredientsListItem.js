@@ -1,3 +1,5 @@
+// Renders each individual ingredient in a recipe
+
 import { useAlerts } from "../../context/AlertsContext";
 import { useRecipes } from "../../context/RecipesContext";
 

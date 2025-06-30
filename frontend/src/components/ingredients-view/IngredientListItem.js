@@ -1,3 +1,5 @@
+// Renders each individual ingredient
+
 import { Link } from "react-router-dom";
 
 export function IngredientListItem({ name, id }) {

@@ -1,3 +1,5 @@
+// Renders the list of ingredients from the database
+
 import { IngredientListItem } from "./IngredientListItem";
 
 export function IngredientsList({ ingredients }) {

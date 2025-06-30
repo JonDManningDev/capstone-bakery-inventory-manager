@@ -19,7 +19,7 @@ export function ToolbarDropdown({ label, links = [] }) {
   return (
     <li className="nav-item dropdown" ref={dropdownRef}>
       <button
-        className="nav-link dropdown-toggle btn btn-link"
+        className="nav-link dropdown-toggle btn btn-link text-light"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="true"

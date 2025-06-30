@@ -1,3 +1,5 @@
+// Displays information for a given ingredient, including links to the recipes in which it is found
+
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
