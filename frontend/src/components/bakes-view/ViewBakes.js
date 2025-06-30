@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useBakes } from "../../context/BakesContext";
 import { useAlerts } from "../../context/AlertsContext";
 import { BakesList } from "./BakesList";
+import { getCurrentBakes } from "../../utils/getCurrentBakes";
 
 export function ViewBakes() {
   const { bakes, getBakes, setBakes, updateBakeStatus } = useBakes();
@@ -36,13 +37,8 @@ export function ViewBakes() {
     };
   }, []);
 
-  // currentBakes (all bakes since 12:00 am the current day) is used for both ordering/filtering and statistics
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  let currentBakes = bakes.filter((bake) => {
-    const bakeDate = new Date(bake.created_at);
-    return bakeDate >= today;
-  });
+  // currentBakes (all bakes since 12:00 am the current day, local time, compared to UTC DB time)
+  let currentBakes = getCurrentBakes(bakes);
 
   // This useEffect() governs filter/sort button behavior
   // filteredBakes is the state that is used to render the bakes list
