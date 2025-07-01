@@ -32,8 +32,7 @@ export function ViewIngredients() {
     }
     loadIngredients();
     return () => abortController.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [addAlert, getIngredients, setIngredients]);
 
   // Render the list
   return (

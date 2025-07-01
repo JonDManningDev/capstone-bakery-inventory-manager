@@ -34,7 +34,7 @@ export function EditRecipe() {
       }
     }
     loadRecipe(recipeId);
-  }, []);
+  }, [addAlert, getRecipeById, recipeId, setRecipe]);
 
   // Pre-load existing data
   useEffect(() => {
@@ -72,7 +72,7 @@ export function EditRecipe() {
   if (!recipe.title) {
     return <h2>{`Recipe with ID ${recipeId} loading or not found.`}</h2>;
   }
-  
+
   return (
     <RecipeForm
       handleSubmit={handleSubmit}

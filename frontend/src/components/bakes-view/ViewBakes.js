@@ -13,6 +13,7 @@ export function ViewBakes() {
   // States for filtering and sorting
   const [sortByEmployee, setSortByEmployee] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
+  const [currentBakes, setCurrentBakes] = useState([]);
   const [filteredBakes, setFilteredBakes] = useState([]);
 
   useEffect(() => {
@@ -22,6 +23,8 @@ export function ViewBakes() {
       try {
         const bakesRecords = await getBakes({ signal: abortController.signal });
         setBakes(bakesRecords);
+        // currentBakes (all bakes since 12:00 am the current day, local time, compared to UTC DB time)
+        setCurrentBakes(getCurrentBakes(bakesRecords));
       } catch (error) {
         if (error.name === "AbortError") return;
         addAlert(
@@ -37,10 +40,7 @@ export function ViewBakes() {
     return () => {
       abortController.abort();
     };
-  }, []);
-
-  // currentBakes (all bakes since 12:00 am the current day, local time, compared to UTC DB time)
-  let currentBakes = getCurrentBakes(bakes);
+  }, [getBakes, setBakes, addAlert]);
 
   // This useEffect() governs filter/sort button behavior
   // filteredBakes is the state that is used to render the bakes list
@@ -49,15 +49,16 @@ export function ViewBakes() {
       setFilteredBakes([]);
       return;
     }
+    let filtered = currentBakes;
     // Apply status filter if set
     if (filterStatus) {
-      currentBakes = currentBakes.filter(
+      filtered = filtered.filter(
         (bake) => bake.status && bake.status === filterStatus
       );
     }
     // Apply employee sorting if enabled
     if (sortByEmployee) {
-      currentBakes = [...currentBakes].sort((a, b) => {
+      filtered = [...filtered].sort((a, b) => {
         // First sort by last name
         const lastNameComparison = a.employee.last_name.localeCompare(
           b.employee.last_name
@@ -70,9 +71,9 @@ export function ViewBakes() {
       });
     }
 
-    setFilteredBakes(currentBakes);
+    setFilteredBakes(filtered);
     return;
-  }, [bakes, filterStatus, sortByEmployee]);
+  }, [bakes, filterStatus, sortByEmployee, currentBakes]);
 
   // Calculate statistics
   const dailyBakesTotal = currentBakes.length;

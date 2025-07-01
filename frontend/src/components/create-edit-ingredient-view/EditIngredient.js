@@ -41,7 +41,7 @@ export function EditIngredient() {
     }
     loadIngredient();
     return () => abortController.abort();
-  }, [ingredientId]);
+  }, [addAlert, getIngredientById, ingredientId, setIngredient]);
 
   // Pre-load existing data
   useEffect(() => {

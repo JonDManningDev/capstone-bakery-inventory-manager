@@ -38,8 +38,7 @@ export function ViewIngredient() {
     }
     loadIngredient();
     return () => abortController.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ingredientId]);
+  }, [ingredientId, getIngredientById, setIngredient, addAlert]);
 
   async function handleDelete(ingredientId, name) {
     try {

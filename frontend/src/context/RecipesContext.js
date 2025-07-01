@@ -1,15 +1,14 @@
-// This context file provides recipes and recipe state, as well as all frontend logic for interacting with the 'recipes' resource
+// This context file provides recipes and recipe state, as well as all frontend logic for interacting with the resources: 'recipes' table and 'recipe_ingredients' table.
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 
 const RecipesContext = createContext();
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export function RecipesProvider({ children }) {
   const [recipes, setRecipes] = useState([]);
   // Explicitly set the default value of recipe.ingredients to an empty array to prevent crashing elsewhere
   const [recipe, setRecipe] = useState({ ingredients: [] });
-
-  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   async function addRecipeIngredient(
     recipeId,
@@ -108,8 +107,10 @@ export function RecipesProvider({ children }) {
     return updatedRecipe;
   }
 
-  async function getRecipeById(recipeId, { signal } = {}) {
-    const response = await fetch(`${baseUrl}/recipes/${recipeId}`, { signal });
+  const getRecipeById = useCallback(async (recipeId, { signal } = {}) => {
+    const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
+      signal,
+    });
     const json = await response.json();
     if (!response.ok) {
       throw new Error(
@@ -119,9 +120,9 @@ export function RecipesProvider({ children }) {
     }
     const recipeRecord = json.data;
     return recipeRecord;
-  }
+  }, []);
 
-  async function getRecipes({ signal } = {}) {
+  const getRecipes = useCallback(async ({ signal } = {}) => {
     const response = await fetch(`${baseUrl}/recipes`, { signal });
     const json = await response.json();
     if (!response.ok) {
@@ -132,7 +133,7 @@ export function RecipesProvider({ children }) {
     }
     const recipesRecords = json.data;
     return recipesRecords;
-  }
+  }, []);
 
   return (
     <RecipesContext.Provider
