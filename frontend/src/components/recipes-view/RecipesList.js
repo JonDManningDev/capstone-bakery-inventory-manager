@@ -19,7 +19,7 @@ export function RecipesList({ recipes }) {
 
   return (
     <div className="list-group py-4">
-      {recipes.length > 0 ? recipesList : <p>No recipes found.</p>}
+      {recipes.length > 0 ? recipesList : <p>Recipes loading or not found.</p>}
     </div>
   );
 }

@@ -187,7 +187,7 @@ export function ViewRecipe() {
   }, []);
 
   if (!recipe.title) {
-    return <h2>{`Recipe with ID ${recipeId} not found!`}</h2>;
+    return <h2>{`Recipe with ID ${recipeId} loading or not found.`}</h2>;
   }
 
   return (

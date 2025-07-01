@@ -18,7 +18,7 @@ export function IngredientsList({ ingredients }) {
 
   return (
     <div className="list-group py-4">
-      {ingredients.length > 0 ? ingredientsList : <p>No ingredients found.</p>}
+      {ingredients.length > 0 ? ingredientsList : <p>Ingredients loading or not found.</p>}
     </div>
   );
 }

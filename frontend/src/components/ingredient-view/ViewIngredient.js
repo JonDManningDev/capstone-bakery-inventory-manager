@@ -71,7 +71,7 @@ export function ViewIngredient() {
   }
 
   if (!ingredient.name) {
-    return <h2>{`Ingredient with ID ${ingredientId} not found!`}</h2>;
+    return <h2>{`Ingredient with ID ${ingredientId} loading or not found.`}</h2>;
   }
 
   return (

@@ -79,6 +79,10 @@ export function EditIngredient() {
     }
   }
 
+  if (!ingredient.name) {
+    return <h2>{`Ingredient with ID ${ingredientId} loading or not found.`}</h2>;
+  }
+
   return (
     <IngredientForm
       handleSubmit={handleSubmit}
