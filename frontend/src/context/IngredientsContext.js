@@ -1,12 +1,14 @@
-import { createContext, useContext, useState } from "react";
+// This context file provides logic for managing ingredients ('ingredients' table) throughout the app.
+
+import { createContext, useContext, useState, useCallback } from "react";
 
 const IngredientsContext = createContext();
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export function IngredientsProvider({ children }) {
   const [ingredients, setIngredients] = useState([]);
+  // Explicitly set the default value of ingredient.recipes to an empty array to prevent crashing elsewhere
   const [ingredient, setIngredient] = useState({ recipes: [] });
-
-  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   async function createIngredient(formData) {
     const response = await fetch(`${baseUrl}/ingredients`, {
@@ -65,22 +67,25 @@ export function IngredientsProvider({ children }) {
     return updatedIngredient;
   }
 
-  async function getIngredientById(ingredientId, { signal } = {}) {
-    const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`, {
-      signal,
-    });
-    const json = await response.json();
-    if (!response.ok) {
-      throw new Error(
-        json.error ||
-          "There was an error in the server response for GET /ingredients/:ingredientId"
-      );
-    }
-    const ingredientRecords = json.data;
-    return ingredientRecords;
-  }
+  const getIngredientById = useCallback(
+    async (ingredientId, { signal } = {}) => {
+      const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`, {
+        signal,
+      });
+      const json = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          json.error ||
+            "There was an error in the server response for GET /ingredients/:ingredientId"
+        );
+      }
+      const ingredientRecords = json.data;
+      return ingredientRecords;
+    },
+    []
+  );
 
-  async function getIngredients({ signal } = {}) {
+  const getIngredients = useCallback(async ({ signal } = {}) => {
     const response = await fetch(`${baseUrl}/ingredients`, { signal });
     const json = await response.json();
     if (!response.ok) {
@@ -91,7 +96,7 @@ export function IngredientsProvider({ children }) {
     }
     const ingredientsRecords = json.data;
     return ingredientsRecords;
-  }
+  }, []);
 
   async function subtractBakeIngredients(recipeId) {
     const response = await fetch(`${baseUrl}/ingredients/bake/${recipeId}`, {

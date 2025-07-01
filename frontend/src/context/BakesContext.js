@@ -1,10 +1,11 @@
-import { createContext, useContext, useState } from "react";
+// This context file provides logic for managing bakes (in-progress recipes - 'bakes' table) throughout the app.
+
+import { createContext, useContext, useState, useCallback } from "react";
 
 const BakesContext = createContext();
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export function BakesProvider({ children }) {
-  const baseUrl = process.env.REACT_APP_API_BASE_URL;
-
   const [bakes, setBakes] = useState([]);
 
   async function createBake(recipeId, employeeId, { signal } = {}) {
@@ -32,7 +33,7 @@ export function BakesProvider({ children }) {
     return newBake;
   }
 
-  async function getBakes({ signal } = {}) {
+  const getBakes = useCallback(async ({ signal } = {}) => {
     const response = await fetch(`${baseUrl}/bakes`, { signal });
     const json = await response.json();
     if (!response.ok) {
@@ -42,7 +43,7 @@ export function BakesProvider({ children }) {
     }
     const bakesRecords = json.data;
     return bakesRecords;
-  }
+  }, []);
 
   async function updateBakeStatus(bakeId, newStatus) {
     const response = await fetch(`${baseUrl}/bakes/${bakeId}`, {

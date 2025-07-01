@@ -61,8 +61,7 @@ export function ViewRecipe() {
     }
     loadRecipe();
     return () => abortController.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recipeId]);
+  }, [recipeId, getRecipeById, setRecipe, addAlert]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -85,8 +84,7 @@ export function ViewRecipe() {
     }
     loadIngredients();
     return () => abortController.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [addAlert, getIngredients, setIngredients]);
 
   // Check for ingredient shortages that would prevent baking the recipe
   useEffect(() => {

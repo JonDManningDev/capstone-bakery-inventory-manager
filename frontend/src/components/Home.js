@@ -30,11 +30,15 @@ export function Home() {
       try {
         const bakes = await getBakes({ signal: bakesController.signal });
         const currentBakes = getCurrentBakes(bakes);
-        const statsHolder = { dailyStarted: 0, dailyComplete: 0, dailyCanceled: 0 };
+        const statsHolder = {
+          dailyStarted: 0,
+          dailyComplete: 0,
+          dailyCanceled: 0,
+        };
         currentBakes.forEach((bake) => {
-            if (bake.status === "started") statsHolder.dailyStarted++;
-            else if (bake.status === "complete") statsHolder.dailyComplete++;
-            else if (bake.status === "canceled") statsHolder.dailyCanceled++;
+          if (bake.status === "started") statsHolder.dailyStarted++;
+          else if (bake.status === "complete") statsHolder.dailyComplete++;
+          else if (bake.status === "canceled") statsHolder.dailyCanceled++;
         });
         setBakesStats(statsHolder);
       } catch (error) {
@@ -49,7 +53,7 @@ export function Home() {
     }
     loadBakes();
     return () => bakesController.abort();
-  }, [getBakes]);
+  }, [getBakes, addAlert]);
 
   // Fetch recipes
   useEffect(() => {
@@ -70,7 +74,7 @@ export function Home() {
     }
     loadRecipes();
     return () => recipesController.abort();
-  }, [getRecipes]);
+  }, [getRecipes, addAlert]);
 
   // Fetch ingredients
   useEffect(() => {
@@ -93,7 +97,7 @@ export function Home() {
     }
     loadIngredients();
     return () => ingredientsController.abort();
-  }, [getIngredients]);
+  }, [getIngredients, addAlert]);
 
   const dailyCount =
     bakesStats.dailyStarted +

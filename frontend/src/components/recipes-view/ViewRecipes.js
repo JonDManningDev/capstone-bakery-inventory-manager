@@ -32,8 +32,7 @@ export function ViewRecipes() {
     }
     loadRecipes();
     return () => abortController.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [addAlert, getRecipes, setRecipes]);
 
   return (
     // Component container
