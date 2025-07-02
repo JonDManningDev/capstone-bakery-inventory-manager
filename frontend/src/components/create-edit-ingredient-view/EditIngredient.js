@@ -10,8 +10,13 @@ import { useIngredients } from "../../context/IngredientsContext";
 export function EditIngredient() {
   const navigate = useNavigate();
   const { ingredientId } = useParams();
-  const { editIngredientById, getIngredientById, getIngredients, ingredient, setIngredient } =
-    useIngredients();
+  const {
+    editIngredientById,
+    getIngredientById,
+    getIngredients,
+    ingredient,
+    setIngredient,
+  } = useIngredients();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
@@ -64,11 +69,12 @@ export function EditIngredient() {
       lastAbortController = abortController;
       try {
         // Check for a different existing record with the same name
-       const ingredientRecords = await getIngredients({ signal: abortController.signal });
-       const nameExists = ingredientRecords.some(
+        const ingredientRecords = await getIngredients({
+          signal: abortController.signal,
+        });
+        const nameExists = ingredientRecords.some(
           (ingredient) =>
-            ingredient.name === formData.name &&
-            ingredient.ingredient_id !== ingredientId
+            ingredient.name === formData.name && ingredient.id !== ingredientId
         );
         if (nameExists) {
           addAlert(
@@ -93,7 +99,7 @@ export function EditIngredient() {
             "info",
             "editIngredientById-success"
           );
-          return navigate(`/ingredients/${updatedRecord.ingredient_id}`);
+          return navigate(`/ingredients/${updatedRecord.id}`);
         }
       } catch (error) {
         if (error.name === "AbortError") return;

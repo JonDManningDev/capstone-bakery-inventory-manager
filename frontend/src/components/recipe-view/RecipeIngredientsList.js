@@ -2,7 +2,7 @@
 
 import { RecipeIngredientsListItem } from "./RecipeIngredientsListItem";
 
-export function RecipeIngredientsList({ recipe }) {
+export function RecipeIngredientsList({ recipe, setRecipe }) {
   const { ingredients } = recipe;
 
   const ingredientsSorted = ingredients.sort((a, b) =>
@@ -12,13 +12,14 @@ export function RecipeIngredientsList({ recipe }) {
   const ingredientsList = ingredientsSorted.map((ingredient) => {
     return (
       <RecipeIngredientsListItem
-        key={ingredient.ingredient_id}
-        recipeId={recipe.recipe_id}
+        key={ingredient.id}
+        recipeId={recipe.id}
         name={ingredient.name}
         title={recipe.title}
         amount_needed={ingredient.amount_needed}
         unit={ingredient.unit}
-        ingredientId={ingredient.ingredient_id}
+        ingredientId={ingredient.id}
+        setRecipe={setRecipe}
       />
     );
   });

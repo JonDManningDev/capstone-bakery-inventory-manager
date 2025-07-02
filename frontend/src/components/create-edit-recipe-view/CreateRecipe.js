@@ -50,7 +50,7 @@ export function CreateRecipe() {
           "success",
           "createRecipe-success"
         );
-        return navigate(`/recipes/${record.recipe_id}`);
+        return navigate(`/recipes/${record.id}`);
       } catch (error) {
         if (error.name === "AbortError") return;
         addAlert(

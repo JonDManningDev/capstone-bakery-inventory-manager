@@ -3,10 +3,12 @@
 import { handleInputChange } from "../../utils/handleInputChange";
 
 export function IngredientSelector({ formData, setFormData, ingredients }) {
-  const ingredientsSorted = ingredients.sort((a, b) => a.name.localeCompare(b.name, undefined, {sensitivity: "base"}));
+  const ingredientsSorted = ingredients.sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
+  );
   const ingredientsList = ingredientsSorted.map((ingredient) => {
     return (
-      <option key={ingredient.ingredient_id} value={ingredient.name}>
+      <option key={ingredient.id} value={ingredient.name}>
         {ingredient.name}
       </option>
     );

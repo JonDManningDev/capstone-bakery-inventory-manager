@@ -48,22 +48,22 @@ function validateIngredient(req, res, next) {
     });
   }
 
-  const requiredFields = ["name", "base_unit", "quantity_in_stock"];
-  const invalidFields = [];
+  const requiredFields = ["name"];
+  // const invalidFields = [];
   const missingFields = [];
 
   // Check for invalid fields
-  for (const field of Object.keys(ingredientData)) {
-    if (!requiredFields.includes(field)) invalidFields.push(field);
-  }
+  // for (const field of Object.keys(ingredientData)) {
+  //   if (!requiredFields.includes(field)) invalidFields.push(field);
+  // }
 
-  if (invalidFields.length > 0)
-    return next({
-      status: 400,
-      message: `Submission contains invalid fields: ${invalidFields.join(
-        ", "
-      )}.`,
-    });
+  // if (invalidFields.length > 0)
+  //   return next({
+  //     status: 400,
+  //     message: `Submission contains invalid fields: ${invalidFields.join(
+  //       ", "
+  //     )}.`,
+  //   });
 
   // Check for missing fields
   for (const field of requiredFields) {

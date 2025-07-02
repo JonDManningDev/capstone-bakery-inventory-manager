@@ -19,5 +19,9 @@ export function IngredientRecipesList({ ingredient }) {
     );
   });
 
-  return <div className="list-group py-2">{recipes.length > 0 ? recipesList : <p>No recipes found.</p>}</div>
+  return (
+    <div className="list-group py-2">
+      {recipes.length > 0 ? recipesList : <p>No recipes found.</p>}
+    </div>
+  );
 }

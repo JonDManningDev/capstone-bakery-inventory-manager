@@ -4,9 +4,9 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("recipes", (table) => {
-    table.increments("recipe_id").primary().unsigned().notNullable();
+    table.increments("id").primary().unsigned().notNullable();
     table.string("title").notNullable();
-    table.string("image_url"); // Making this nullable since it's optional
+    table.string("image_url").notNullable();
     table.text("description").notNullable();
   });
 };

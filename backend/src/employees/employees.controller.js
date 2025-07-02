@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 async function create(req, res, next) {
   // Establish employee/user info in the database first
   await service.create(res.locals.newEmployee);
-  // Obtain full employee info (including newly-generated employee_id)
+  // Obtain full employee info (including newly-generated id)
   const employee = await service.read(res.locals.newEmployee.email);
   // Save the full info
   res.locals.employee = employee;
@@ -22,7 +22,7 @@ async function login(req, res, next) {
   // Include this information in the login token
   // This information is used by the frontend to display user info
   const payload = {
-    employeeId: employee.employee_id,
+    employeeId: employee.id,
     email: employee.email,
     firstName: employee.first_name,
     lastName: employee.last_name,
