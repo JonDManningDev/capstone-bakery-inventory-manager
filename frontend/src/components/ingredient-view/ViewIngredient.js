@@ -40,37 +40,50 @@ export function ViewIngredient() {
     return () => abortController.abort();
   }, [ingredientId, getIngredientById, setIngredient, addAlert]);
 
-  async function handleDelete(ingredientId, name) {
-    try {
-      const message = `Are you sure you want to delete the ingredient ${name}?`;
-      if (window.confirm(message)) {
-        await deleteIngredient(ingredientId);
-        // Reset the recipe and ingredient states to avoid errors from stale/invalid data
-        setRecipe({ ingredients: [] });
-        setIngredient({
-          name: "",
-          base_unit: "",
-          quantity_in_stock: 0,
-        });
-        addAlert(
-          `Successfully deleted ingredient: ${name}.`,
-          "info",
-          "deleteIngredient-success"
-        );
-        return navigate("/ingredients");
+  const handleDelete = (() => {
+    let lastAbortController = null;
+    return async function (ingredientId, name) {
+      if (lastAbortController) {
+        lastAbortController.abort();
       }
-    } catch (error) {
-      addAlert(
-        `Failed to delete ingredient ${name}: ${error.message}!`,
-        "danger",
-        "deleteIngredient-failure"
-      );
-      console.error(`Failed to delete ingredient ${name}:`, error.message);
-    }
-  }
+      const abortController = new AbortController();
+      lastAbortController = abortController;
+      try {
+        const message = `Are you sure you want to delete the ingredient ${name}?`;
+        if (window.confirm(message)) {
+          await deleteIngredient(ingredientId, {
+            signal: abortController.signal,
+          });
+          // Reset the recipe and ingredient states to avoid errors from stale/invalid data
+          setRecipe({ ingredients: [] });
+          setIngredient({
+            name: "",
+            base_unit: "",
+            quantity_in_stock: 0,
+          });
+          addAlert(
+            `Successfully deleted ingredient: ${name}.`,
+            "info",
+            "deleteIngredient-success"
+          );
+          return navigate("/ingredients");
+        }
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        addAlert(
+          `Failed to delete ingredient ${name}: ${error.message}!`,
+          "danger",
+          "deleteIngredient-failure"
+        );
+        console.error(`Failed to delete ingredient ${name}:`, error.message);
+      }
+    };
+  })();
 
   if (!ingredient.name) {
-    return <h2>{`Ingredient with ID ${ingredientId} loading or not found.`}</h2>;
+    return (
+      <h2>{`Ingredient with ID ${ingredientId} loading or not found.`}</h2>
+    );
   }
 
   return (

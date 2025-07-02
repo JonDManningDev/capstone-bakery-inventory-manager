@@ -42,69 +42,85 @@ export function RegisterModal({ loginDropdownRef }) {
   });
 
   // Handle new user registrations
-  async function handleSubmit(event) {
-    event.preventDefault();
+  const handleSubmit = (() => {
+    let lastAbortController = null;
+    return async function (event) {
+      event.preventDefault();
+      if (lastAbortController) {
+        lastAbortController.abort();
+      }
+      const abortController = new AbortController();
+      lastAbortController = abortController;
 
-    // Logic for ensuring email and password fields match
-    if (
-      formData.email !== formData.confirmEmail ||
-      formData.password !== formData.confirmPassword
-    ) {
-      addAlert(
-        "Registration error: Both pairs of email and password inputs must match!",
-        "danger",
-        "register-failure"
-      );
-      console.error(
-        "Registration error: Both pairs of email and password inputs must match!"
-      );
-      // Close the modal so that the user can see the error message
+      // Logic for ensuring email and password fields match
+      if (
+        formData.email !== formData.confirmEmail ||
+        formData.password !== formData.confirmPassword
+      ) {
+        addAlert(
+          "Registration error: Both pairs of email and password inputs must match!",
+          "danger",
+          "register-failure"
+        );
+        console.error(
+          "Registration error: Both pairs of email and password inputs must match!"
+        );
+        // Close the modal so that the user can see the error message
+        modalCloser("registerModal");
+        return;
+      }
+
+      try {
+        // After registration in the database, this route returns a login token, if successful
+        const token = await registerUser(formData, {
+          signal: abortController.signal,
+        });
+        const userFromToken = await getUser(token, {
+          signal: abortController.signal,
+        });
+
+        // Set the user, alert the successful login, and reset formData
+        setUser(userFromToken);
+        addAlert(
+          `Successfully registered and logged in as ${userFromToken.firstName} ${userFromToken.lastName}!`,
+          "success",
+          "getUser-success"
+        );
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          confirmEmail: "",
+          password: "",
+          confirmPassword: "",
+        });
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        // If there is an error, make sure the token gets cleaned up.
+        localStorage.removeItem("token");
+
+        // Restore user to the not-logged-in state.
+        setUser({
+          employeeId: null,
+          firstName: "Not Logged In",
+          lastName: null,
+          email: null,
+        });
+
+        addAlert(
+          `There was an error during registration: ${error.message}!`,
+          "danger",
+          "register-failure"
+        );
+        console.error(
+          "There was an error during registration: ",
+          error.message
+        );
+      }
+      // Close the modal regardless of success or failure
       modalCloser("registerModal");
-      return;
-    }
-
-    try {
-      // After registration in the database, this route returns a login token, if successful
-      const token = await registerUser(formData);
-      const userFromToken = await getUser(token);
-
-      // Set the user, alert the successful login, and reset formData
-      setUser(userFromToken);
-      addAlert(
-        `Successfully registered and logged in as ${userFromToken.firstName} ${userFromToken.lastName}!`,
-        "success",
-        "getUser-success"
-      );
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        confirmEmail: "",
-        password: "",
-        confirmPassword: "",
-      });
-    } catch (error) {
-      // If there is an error, make sure the token gets cleaned up.
-      localStorage.removeItem("token");
-
-      // Restore user to the not-logged-in state.
-      setUser({
-        employeeId: null,
-        firstName: "Not Logged In",
-        lastName: null,
-        email: null,
-      });
-
-      addAlert(
-        `There was an error during registration: ${error.message}!`,
-        "danger",
-        "register-failure"
-      );
-      console.error("There was an error during registration: ", error.message);
-    }
-    // Close the modal regardless of success or failure
-    modalCloser("registerModal");
-  }
+    };
+  })();
 
   return (
     <div

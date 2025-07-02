@@ -38,42 +38,54 @@ export function LoginModal({ loginDropdownRef }) {
   });
 
   // Handle manual logins via the modal
-  async function handleSubmit(event) {
-    event.preventDefault();
+  const handleSubmit = (() => {
+    let lastAbortController = null;
+    return async function (event) {
+      event.preventDefault();
+      if (lastAbortController) {
+        lastAbortController.abort();
+      }
+      const abortController = new AbortController();
+      lastAbortController = abortController;
+      try {
+        const token = await getLoginToken(formData, {
+          signal: abortController.signal,
+        });
+        const userFromToken = await getUser(token, {
+          signal: abortController.signal,
+        });
 
-    try {
-      const token = await getLoginToken(formData);
-      const userFromToken = await getUser(token);
+        setUser(userFromToken);
+        setAlerts((current) =>
+          current.filter((alert) => alert.type !== "no-login")
+        );
+        addAlert(
+          `Successfully logged in as ${userFromToken.firstName} ${userFromToken.lastName}!`,
+          "success",
+          "login-success"
+        );
+        // Reset the login form
+        setFormData({ email: "", password: "" });
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        // If there is an error, make sure the token gets cleaned up.
+        localStorage.removeItem("token");
 
-      setUser(userFromToken);
-      setAlerts((current) =>
-        current.filter((alert) => alert.type !== "no-login")
-      );
-      addAlert(
-        `Successfully logged in as ${userFromToken.firstName} ${userFromToken.lastName}!`,
-        "success",
-        "login-success"
-      );
-      // Reset the login form
-      setFormData({ email: "", password: "" });
-    } catch (error) {
-      // If there is an error, make sure the token gets cleaned up.
-      localStorage.removeItem("token");
+        // Restore user to the not-logged-in state.
+        setUser({
+          employeeId: null,
+          firstName: "Not Logged In",
+          lastName: null,
+          email: null,
+        });
 
-      // Restore user to the not-logged-in state.
-      setUser({
-        employeeId: null,
-        firstName: "Not Logged In",
-        lastName: null,
-        email: null,
-      });
-
-      addAlert(`Login attempt failed: ${error.message}!`, "danger");
-      console.error("Login attempt failed: ", error.message);
-    }
-    // Close the modal regardless of success or failure
-    modalCloser("loginModal");
-  }
+        addAlert(`Login attempt failed: ${error.message}!`, "danger");
+        console.error("Login attempt failed: ", error.message);
+      }
+      // Close the modal regardless of success or failure
+      modalCloser("loginModal");
+    };
+  })();
 
   return (
     <div

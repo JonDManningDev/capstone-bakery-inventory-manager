@@ -20,11 +20,15 @@ export function EditRecipe() {
   });
 
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadRecipe(recipeId) {
       try {
-        const recipeRecord = await getRecipeById(recipeId);
+        const recipeRecord = await getRecipeById(recipeId, {
+          signal: abortController.signal,
+        });
         setRecipe(recipeRecord);
       } catch (error) {
+        if (error.name === "AbortError") return;
         addAlert(
           `Failed to load recipe: ${error.message}`,
           "danger",
@@ -34,6 +38,7 @@ export function EditRecipe() {
       }
     }
     loadRecipe(recipeId);
+    return () => abortController.abort();
   }, [addAlert, getRecipeById, recipeId, setRecipe]);
 
   // Pre-load existing data
@@ -46,28 +51,39 @@ export function EditRecipe() {
     });
   }, [recipe]);
 
-  async function handleSubmit(formData, event) {
-    try {
+  const handleSubmit = (() => {
+    let lastAbortController = null;
+    return async function (formData, event) {
       event.preventDefault();
-      const message = `Save changes to ${recipe.title}?`;
-      if (window.confirm(message)) {
-        const updatedRecord = await editRecipeById(recipeId, formData);
-        addAlert(
-          `Successfully edited recipe ${updatedRecord.title}.`,
-          "info",
-          "editRecipeById-success"
-        );
-        return navigate(`/recipes/${updatedRecord.recipe_id}`);
+      if (lastAbortController) {
+        lastAbortController.abort();
       }
-    } catch (error) {
-      addAlert(
-        `Failed to edit recipe ${recipe.title}: ${error.message}!`,
-        "danger",
-        "editRecipeById-failure"
-      );
-      console.error(`Failed to edit recipe ${recipe.title}:`, error.message);
-    }
-  }
+      const abortController = new AbortController();
+      lastAbortController = abortController;
+      try {
+        const message = `Save changes to ${recipe.title}?`;
+        if (window.confirm(message)) {
+          const updatedRecord = await editRecipeById(recipeId, formData, {
+            signal: abortController.signal,
+          });
+          addAlert(
+            `Successfully edited recipe ${updatedRecord.title}.`,
+            "info",
+            "editRecipeById-success"
+          );
+          return navigate(`/recipes/${updatedRecord.recipe_id}`);
+        }
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        addAlert(
+          `Failed to edit recipe ${recipe.title}: ${error.message}!`,
+          "danger",
+          "editRecipeById-failure"
+        );
+        console.error(`Failed to edit recipe ${recipe.title}:`, error.message);
+      }
+    };
+  })();
 
   if (!recipe.title) {
     return <h2>{`Recipe with ID ${recipeId} loading or not found.`}</h2>;

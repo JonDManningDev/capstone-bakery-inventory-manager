@@ -45,7 +45,7 @@ export function BakesProvider({ children }) {
     return bakesRecords;
   }, []);
 
-  async function updateBakeStatus(bakeId, newStatus) {
+  async function updateBakeStatus(bakeId, newStatus, { signal } = {}) {
     const response = await fetch(`${baseUrl}/bakes/${bakeId}`, {
       method: "PUT",
       body: JSON.stringify({
@@ -55,6 +55,7 @@ export function BakesProvider({ children }) {
         },
       }),
       headers: { "Content-Type": "application/json" },
+      signal,
     });
 
     const json = await response.json();
