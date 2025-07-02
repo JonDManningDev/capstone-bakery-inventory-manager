@@ -9,7 +9,7 @@ import { useIngredients } from "../../context/IngredientsContext";
 
 export function CreateIngredient() {
   const navigate = useNavigate();
-  const { createIngredient } = useIngredients();
+  const { getIngredients, createIngredient } = useIngredients();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
@@ -20,8 +20,24 @@ export function CreateIngredient() {
 
   async function handleSubmit(formData, event) {
     event.preventDefault();
-    const abortController = new AbortController();
+    const abortController = new AbortController();    
     try {
+      // Check for an existing record with the same name
+      const ingredientRecords = await getIngredients({
+        signal: abortController.signal,
+      });
+      const nameExists = ingredientRecords.some(
+        (ingredient) => ingredient.name === formData.name
+      );
+      if (nameExists) {
+        addAlert(
+          `Ingredient with name ${formData.name} already exists!`,
+          "danger",
+          "createIngredient-duplicate"
+        );
+        return;
+      }
+      // Then proceed to create the new ingredient
       const record = await createIngredient({
         ...formData,
         signal: abortController.signal,

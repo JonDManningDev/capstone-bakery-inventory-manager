@@ -10,6 +10,7 @@ import { handleInputChange } from "../../utils/handleInputChange";
 export function AddIngredientForm({
   recipeId,
   title,
+  recipeIngredients,
   ingredients,
   getRecipeById,
   addRecipeIngredient,
@@ -39,14 +40,26 @@ export function AddIngredientForm({
         (ingredient) => ingredient.name === formData.ingredient
       );
       const ingredientId = match.ingredient_id;
-      const name = match.name;
+
+      // Check if the ingredient is already added to the recipe
+      const existingIngredient = recipeIngredients.find(
+        (ingredient) => ingredient.ingredient_id === ingredientId
+      );
+      if (existingIngredient) {
+        addAlert(
+          `Ingredient ${formData.ingredient} is already a part of ${title}`,
+          "info",
+          "addRecipeIngredient-duplicate"
+        );
+        return;
+      }
 
       // Add the ingredient record to the recipe_ingredients table
       await addRecipeIngredient(recipeId, ingredientId, formData, {
         signal: abortController.signal,
       });
       addAlert(
-        `Successfully added ${name} to ${title}`,
+        `Successfully added ${formData.ingredient} to ${title}`,
         "success",
         "addRecipeIngredient-success"
       );

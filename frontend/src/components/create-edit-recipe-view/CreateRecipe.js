@@ -9,7 +9,7 @@ import { useRecipes } from "../../context/RecipesContext";
 
 export function CreateRecipe() {
   const navigate = useNavigate();
-  const { createNewRecipe } = useRecipes();
+  const { createNewRecipe, getRecipes } = useRecipes();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
@@ -28,6 +28,20 @@ export function CreateRecipe() {
       const abortController = new AbortController();
       lastAbortController = abortController;
       try {
+        // Check for an existing record with the same title
+        const recipeRecords = await getRecipes({ signal: abortController.signal });
+        const titleExists = recipeRecords.some(
+          (recipe) => recipe.title === formData.title
+        );
+        if (titleExists) {
+          addAlert(
+            `Recipe with title ${formData.title} already exists!`,
+            "danger",
+            "createRecipe-duplicate"
+          );
+          return;
+        }
+        // Then proceed to create the new recipe
         const record = await createNewRecipe(formData, {
           signal: abortController.signal,
         });

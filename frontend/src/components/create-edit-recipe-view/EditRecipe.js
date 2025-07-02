@@ -10,7 +10,7 @@ import { useRecipes } from "../../context/RecipesContext";
 export function EditRecipe() {
   const navigate = useNavigate();
   const { recipeId } = useParams();
-  const { editRecipeById, getRecipeById, recipe, setRecipe } = useRecipes();
+  const { editRecipeById, getRecipeById, getRecipes, recipe, setRecipe } = useRecipes();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
@@ -61,6 +61,19 @@ export function EditRecipe() {
       const abortController = new AbortController();
       lastAbortController = abortController;
       try {
+        // Check for a different existing record with the same title
+        const recipeRecords = await getRecipes({ signal: abortController.signal });
+        const titleExists = recipeRecords.some(
+          (recipe) => recipe.title === formData.title && recipe.recipe_id !== recipeId
+        );
+        if (titleExists) {
+          addAlert(
+            `Recipe with title ${formData.title} already exists!`,
+            "danger",
+            "editRecipe-duplicate"
+          );
+          return;
+        }
         const message = `Save changes to ${recipe.title}?`;
         if (window.confirm(message)) {
           const updatedRecord = await editRecipeById(recipeId, formData, {

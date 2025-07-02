@@ -287,6 +287,7 @@ export function ViewRecipe() {
             <AddIngredientForm
               recipeId={recipe.recipe_id}
               title={recipe.title}
+              recipeIngredients={recipe.ingredients}
               ingredients={ingredients}
               addRecipeIngredient={addRecipeIngredient}
               getRecipeById={getRecipeById}
