@@ -77,7 +77,6 @@ export function AuthProvider({ children }) {
       "Token should have been removed:",
       localStorage.getItem("token")
     );
-    sessionStorage.setItem("preventAutoLogin", "true");
     setUser({
       employeeId: null,
       firstName: "Not Logged In",
@@ -125,10 +124,8 @@ export function AuthProvider({ children }) {
   // The app will first attempt to fetch user data if there is an existing, non-expired token in localStorage.
   // If that fails, it will then attempt to log in as the Guest user and obtain its info.
   // This makes demoing the app easier, so that registering a new user is not required.
-  // In the case that a demo user intentionally logs out, autoLogin is then prevented by "preventAutoLogin" in sessionStorage.
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const preventAutoLogin = sessionStorage.getItem("preventAutoLogin");
     let expiration = null;
     if (token) {
       const { exp } = jwtDecode(token);
@@ -174,28 +171,9 @@ export function AuthProvider({ children }) {
           );
           console.error("Auto-login attempt failed: ", error.message);
           return false;
-        }
-        // If no token is found in storage or if the token has expired, attempt to log in with guestCredentials
+        } // If no token is found in storage or if the token has expired, attempt to log in with guestCredentials
       } else if (!token || Date.now() >= expiration * 1000) {
         try {
-          // Skip Guest login if the demo user intentionally logged out.
-          if (preventAutoLogin === "true") {
-            sessionStorage.removeItem("preventAutoLogin");
-            // Set user to not-logged-in state and show appropriate alert
-            setUser({
-              employeeId: null,
-              firstName: "Not Logged In",
-              lastName: null,
-              email: null,
-            });
-            addAlert(
-              "You are not logged in. You can log in or register to continue.",
-              "info",
-              "no-login"
-            );
-            return false;
-          }
-
           if (!token) {
             addAlert(
               "No previous session found. Beginning Guest login.",
