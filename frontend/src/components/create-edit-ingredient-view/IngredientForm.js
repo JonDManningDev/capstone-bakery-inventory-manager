@@ -62,6 +62,7 @@ export function IngredientForm({ handleSubmit, formData, setFormData }) {
                   </label>
                   <input
                     type="number"
+                    min="0"
                     className="form-control"
                     id="ingredient-quantity-in-stock"
                     name="quantity_in_stock"
