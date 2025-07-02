@@ -85,32 +85,45 @@ export function ViewBakes() {
   }, {});
 
   // Handler for updating bake status
-  const handleStatusUpdate = async (bakeId, newStatus) => {
-    const statusText = newStatus === "complete" ? "Complete" : "Canceled";
-    const confirmMessage = `Are you sure you want to set the status of this bake to ${statusText}?`;
-
-    if (window.confirm(confirmMessage)) {
-      try {
-        const updatedBake = await updateBakeStatus(bakeId, newStatus);
-        addAlert(
-          `Bake (${updatedBake.employee.first_name} ${updatedBake.employee.last_name} - ${updatedBake.recipe.title}) status successfully set to ${statusText}`,
-          "success",
-          "updateBakeStatus-success"
-        );
-        // Update the local bakes state to reflect the change
-        const bakesRecords = await getBakes();
-        setBakes(bakesRecords);
-        return;
-      } catch (error) {
-        addAlert(
-          `Failed to update bake status: ${error.message}`,
-          "danger",
-          "updateBakeStatus-failure"
-        );
-        console.error("Failed to update bake status: ", error.message);
+  const handleStatusUpdate = (() => {
+    let lastAbortController = null;
+    return async (bakeId, newStatus) => {
+      if (lastAbortController) {
+        lastAbortController.abort();
       }
-    }
-  };
+      const abortController = new AbortController();
+      lastAbortController = abortController;
+      const statusText = newStatus === "complete" ? "Complete" : "Canceled";
+      const confirmMessage = `Are you sure you want to set the status of this bake to ${statusText}?`;
+
+      if (window.confirm(confirmMessage)) {
+        try {
+          const updatedBake = await updateBakeStatus(bakeId, newStatus, {
+            signal: abortController.signal,
+          });
+          addAlert(
+            `Bake (${updatedBake.employee.first_name} ${updatedBake.employee.last_name} - ${updatedBake.recipe.title}) status successfully set to ${statusText}`,
+            "success",
+            "updateBakeStatus-success"
+          );
+          // Update the local bakes state to reflect the change
+          const bakesRecords = await getBakes({
+            signal: abortController.signal,
+          });
+          setBakes(bakesRecords);
+          return;
+        } catch (error) {
+          if (error.name === "AbortError") return;
+          addAlert(
+            `Failed to update bake status: ${error.message}`,
+            "danger",
+            "updateBakeStatus-failure"
+          );
+          console.error("Failed to update bake status: ", error.message);
+        }
+      }
+    };
+  })();
 
   // Toggle filter buttons
   const toggleFilter = (status) => {

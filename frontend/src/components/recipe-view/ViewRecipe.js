@@ -96,32 +96,41 @@ export function ViewRecipe() {
   // Update the bake button state based on shortages state
   const disableBake = shortages.length > 0;
 
-  async function handleDelete(recipe_id, title) {
-    try {
-      const message = `Are you sure you want to delete the recipe ${title}?`;
-
-      if (window.confirm(message)) {
-        await deleteRecipe(recipe_id, title);
-        // Reset all states that could become stale after the deletion
-        setRecipe({ ingredients: [] });
-        setShortages([]);
-        setIngredient({ name: "", base_unit: "", quantity_in_stock: 0 });
-        addAlert(
-          `Successfully deleted recipe: ${title}.`,
-          "info",
-          "deleteRecipe-success"
-        );
-        return navigate("/recipes");
+  const handleDelete = (() => {
+    let lastAbortController = null;
+    return async function (recipe_id, title) {
+      if (lastAbortController) {
+        lastAbortController.abort();
       }
-    } catch (error) {
-      addAlert(
-        `Failed to delete recipe ${title}: ${error.message}`,
-        "danger",
-        "deleteRecipe-failure"
-      );
-      console.error(`Failed to delete recipe ${title}:`, error.message);
-    }
-  }
+      const abortController = new AbortController();
+      lastAbortController = abortController;
+      try {
+        const message = `Are you sure you want to delete the recipe ${title}?`;
+
+        if (window.confirm(message)) {
+          await deleteRecipe(recipe_id, { signal: abortController.signal });
+          // Reset all states that could become stale after the deletion
+          setRecipe({ ingredients: [] });
+          setShortages([]);
+          setIngredient({ name: "", base_unit: "", quantity_in_stock: 0 });
+          addAlert(
+            `Successfully deleted recipe: ${title}.`,
+            "info",
+            "deleteRecipe-success"
+          );
+          return navigate("/recipes");
+        }
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        addAlert(
+          `Failed to delete recipe ${title}: ${error.message}`,
+          "danger",
+          "deleteRecipe-failure"
+        );
+        console.error(`Failed to delete recipe ${title}:`, error.message);
+      }
+    };
+  })();
 
   async function handleBake(recipeId, employeeId, title) {
     if (!employeeId) {

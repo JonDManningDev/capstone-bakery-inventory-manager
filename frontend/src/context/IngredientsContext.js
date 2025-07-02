@@ -10,13 +10,14 @@ export function IngredientsProvider({ children }) {
   // Explicitly set the default value of ingredient.recipes to an empty array to prevent crashing elsewhere
   const [ingredient, setIngredient] = useState({ recipes: [] });
 
-  async function createIngredient(formData) {
+  async function createIngredient(formData, { signal } = {}) {
     const response = await fetch(`${baseUrl}/ingredients`, {
       method: "POST",
       body: JSON.stringify({ data: formData }),
       headers: {
         "Content-Type": "application/json",
       },
+      signal,
     });
 
     const json = await response.json();
@@ -31,9 +32,10 @@ export function IngredientsProvider({ children }) {
     return newIngredient;
   }
 
-  async function deleteIngredient(ingredientId) {
+  async function deleteIngredient(ingredientId, { signal } = {}) {
     const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`, {
       method: "DELETE",
+      signal,
     });
 
     const json = await response.json().catch(() => ({}));
@@ -46,13 +48,14 @@ export function IngredientsProvider({ children }) {
     return;
   }
 
-  async function editIngredientById(ingredientId, formData) {
+  async function editIngredientById(ingredientId, formData, { signal } = {}) {
     const response = await fetch(`${baseUrl}/ingredients/${ingredientId}`, {
       method: "PUT",
       body: JSON.stringify({ data: formData }),
       headers: {
         "Content-Type": "application/json",
       },
+      signal,
     });
 
     const json = await response.json();
@@ -98,9 +101,10 @@ export function IngredientsProvider({ children }) {
     return ingredientsRecords;
   }, []);
 
-  async function subtractBakeIngredients(recipeId) {
+  async function subtractBakeIngredients(recipeId, { signal } = {}) {
     const response = await fetch(`${baseUrl}/ingredients/bake/${recipeId}`, {
       method: "PUT",
+      signal,
     });
     const json = await response.json().catch(() => ({}));
     if (!response.ok) {

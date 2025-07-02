@@ -20,9 +20,12 @@ export function CreateIngredient() {
 
   async function handleSubmit(formData, event) {
     event.preventDefault();
-
+    const abortController = new AbortController();
     try {
-      const record = await createIngredient(formData);
+      const record = await createIngredient({
+        ...formData,
+        signal: abortController.signal,
+      });
       addAlert(
         `Successfully created new ingredient: ${record.name}`,
         "success",
@@ -31,6 +34,7 @@ export function CreateIngredient() {
       navigate(`/ingredients/${record.ingredient_id}`);
       return;
     } catch (error) {
+      if (error.name === "AbortError") return;
       addAlert(
         `Failed to create ingredient ${formData.name}: ${error.message}!`,
         "danger",

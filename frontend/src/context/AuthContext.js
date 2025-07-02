@@ -24,11 +24,12 @@ export function AuthProvider({ children }) {
   });
   const { addAlert, setAlerts } = useAlerts();
 
-  const getLoginToken = useCallback(async (credentials) => {
+  const getLoginToken = useCallback(async (credentials, { signal } = {}) => {
     const response = await fetch(`${baseUrl}/employees/login`, {
       method: "POST",
       body: JSON.stringify({ data: credentials }),
       headers: { "Content-Type": "application/json" },
+      signal,
     });
 
     if (!response.ok) {
@@ -46,12 +47,13 @@ export function AuthProvider({ children }) {
     return token;
   }, []);
 
-  const getUser = useCallback(async (token) => {
+  const getUser = useCallback(async (token, { signal } = {}) => {
     const response = await fetch(`${baseUrl}/employees/me`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      signal,
     });
 
     if (!response.ok) {
@@ -89,7 +91,7 @@ export function AuthProvider({ children }) {
     addAlert("You have successfully logged out.", "info", "logout-success");
   }
 
-  async function registerUser(formData) {
+  async function registerUser(formData, { signal } = {}) {
     const response = await fetch(`${baseUrl}/employees`, {
       method: "POST",
       body: JSON.stringify({
@@ -101,6 +103,7 @@ export function AuthProvider({ children }) {
         },
       }),
       headers: { "Content-Type": "application/json" },
+      signal,
     });
 
     if (!response.ok) {

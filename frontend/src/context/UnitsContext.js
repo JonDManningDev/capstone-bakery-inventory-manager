@@ -19,8 +19,8 @@ export function UnitsProvider({ children }) {
 
   const { addAlert } = useAlerts();
 
-  const getConversions = useCallback(async () => {
-    const response = await fetch(`${baseUrl}/units/conversions`);
+  const getConversions = useCallback(async ({ signal } = {}) => {
+    const response = await fetch(`${baseUrl}/units/conversions`, { signal });
 
     if (!response.ok) {
       const json = await response.json();
@@ -36,8 +36,8 @@ export function UnitsProvider({ children }) {
     return unitConversions;
   }, []);
 
-  const getUnits = useCallback(async () => {
-    const response = await fetch(`${baseUrl}/units`);
+  const getUnits = useCallback(async ({ signal } = {}) => {
+    const response = await fetch(`${baseUrl}/units`, { signal });
 
     if (!response.ok) {
       const json = await response.json();
@@ -54,11 +54,15 @@ export function UnitsProvider({ children }) {
 
   // Load the conversions table on startup
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadConversions() {
       try {
-        const conversions = await getConversions();
+        const conversions = await getConversions({
+          signal: abortController.signal,
+        });
         setConversions(conversions);
       } catch (error) {
+        if (error.name === "AbortError") return;
         addAlert(
           `Failed to load conversions table: ${error.message}!`,
           "danger",
@@ -68,16 +72,19 @@ export function UnitsProvider({ children }) {
       }
     }
     loadConversions();
+    return () => abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getConversions, addAlert]);
 
   // Load the units on startup
   useEffect(() => {
+    const abortController = new AbortController();
     async function loadUnits() {
       try {
-        const units = await getUnits();
+        const units = await getUnits({ signal: abortController.signal });
         setUnits(units);
       } catch (error) {
+        if (error.name === "AbortError") return;
         addAlert(
           `Failed to load units: ${error.message}!`,
           "danger",
@@ -87,6 +94,7 @@ export function UnitsProvider({ children }) {
       }
     }
     loadUnits();
+    return () => abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getUnits, addAlert]);
 

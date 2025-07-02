@@ -53,34 +53,51 @@ export function EditIngredient() {
     });
   }, [ingredient]);
 
-  async function handleSubmit(formData, event) {
-    try {
+  const handleSubmit = (() => {
+    let lastAbortController = null;
+    return async function (formData, event) {
       event.preventDefault();
-      const message = `Save changes to ${ingredient.name}?`;
-      if (window.confirm(message)) {
-        const updatedRecord = await editIngredientById(ingredientId, formData);
-        addAlert(
-          `Successfully edited ingredient: ${updatedRecord.name}`,
-          "info",
-          "editIngredientById-success"
-        );
-        return navigate(`/ingredients/${updatedRecord.ingredient_id}`);
+      if (lastAbortController) {
+        lastAbortController.abort();
       }
-    } catch (error) {
-      addAlert(
-        `Failed to edit ingredient ${ingredient.name}: ${error.message}!`,
-        "danger",
-        "editIngredientById-failure"
-      );
-      console.error(
-        `Failed to edit ingredient ${ingredient.name}:`,
-        error.message
-      );
-    }
-  }
+      const abortController = new AbortController();
+      lastAbortController = abortController;
+      try {
+        const message = `Save changes to ${ingredient.name}?`;
+        if (window.confirm(message)) {
+          const updatedRecord = await editIngredientById(
+            ingredientId,
+            formData,
+            {
+              signal: abortController.signal,
+            }
+          );
+          addAlert(
+            `Successfully edited ingredient: ${updatedRecord.name}`,
+            "info",
+            "editIngredientById-success"
+          );
+          return navigate(`/ingredients/${updatedRecord.ingredient_id}`);
+        }
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        addAlert(
+          `Failed to edit ingredient ${ingredient.name}: ${error.message}!`,
+          "danger",
+          "editIngredientById-failure"
+        );
+        console.error(
+          `Failed to edit ingredient ${ingredient.name}:`,
+          error.message
+        );
+      }
+    };
+  })();
 
   if (!ingredient.name) {
-    return <h2>{`Ingredient with ID ${ingredientId} loading or not found.`}</h2>;
+    return (
+      <h2>{`Ingredient with ID ${ingredientId} loading or not found.`}</h2>
+    );
   }
 
   return (

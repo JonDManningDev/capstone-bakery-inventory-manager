@@ -42,11 +42,12 @@ export function RecipesProvider({ children }) {
     return;
   }
 
-  async function createNewRecipe(formData) {
+  async function createNewRecipe(formData, { signal } = {}) {
     const response = await fetch(`${baseUrl}/recipes`, {
       method: "POST",
       body: JSON.stringify({ data: formData }),
       headers: { "Content-Type": "application/json" },
+      signal,
     });
     const json = await response.json();
     if (!response.ok) {
@@ -59,9 +60,10 @@ export function RecipesProvider({ children }) {
     return recipeRecord;
   }
 
-  async function deleteRecipe(recipeId) {
+  async function deleteRecipe(recipeId, { signal } = {}) {
     const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
       method: "DELETE",
+      signal,
     });
     const json = await response.json().catch(() => ({}));
     if (!response.ok) {
@@ -73,11 +75,16 @@ export function RecipesProvider({ children }) {
     return;
   }
 
-  async function deleteRecipeIngredient(ingredientId, recipeId) {
+  async function deleteRecipeIngredient(
+    ingredientId,
+    recipeId,
+    { signal } = {}
+  ) {
     const response = await fetch(
       `${baseUrl}/recipes/${recipeId}/${ingredientId}`,
       {
         method: "DELETE",
+        signal,
       }
     );
     const json = await response.json().catch(() => ({}));
@@ -90,11 +97,12 @@ export function RecipesProvider({ children }) {
     return;
   }
 
-  async function editRecipeById(recipeId, formData) {
+  async function editRecipeById(recipeId, formData, { signal } = {}) {
     const response = await fetch(`${baseUrl}/recipes/${recipeId}`, {
       method: "PUT",
       body: JSON.stringify({ data: formData }),
       headers: { "Content-Type": "application/json" },
+      signal,
     });
     const json = await response.json();
     if (!response.ok) {
