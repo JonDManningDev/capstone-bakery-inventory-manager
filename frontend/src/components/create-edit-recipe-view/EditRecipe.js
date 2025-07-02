@@ -64,7 +64,7 @@ export function EditRecipe() {
         // Check for a different existing record with the same title
         const recipeRecords = await getRecipes({ signal: abortController.signal });
         const titleExists = recipeRecords.some(
-          (recipe) => recipe.title === formData.title && recipe.recipe_id !== recipeId
+          (recipe) => recipe.title === formData.title && recipe.id !== recipeId
         );
         if (titleExists) {
           addAlert(
@@ -84,7 +84,7 @@ export function EditRecipe() {
             "info",
             "editRecipeById-success"
           );
-          return navigate(`/recipes/${updatedRecord.recipe_id}`);
+          return navigate(`/recipes/${updatedRecord.id}`);
         }
       } catch (error) {
         if (error.name === "AbortError") return;

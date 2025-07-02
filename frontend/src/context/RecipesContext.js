@@ -22,8 +22,6 @@ export function RecipesProvider({ children }) {
         method: "POST",
         body: JSON.stringify({
           data: {
-            recipe_id: recipeId,
-            ingredient_id: ingredientId,
             amount_needed: formData.amount,
             unit: formData.unit,
           },

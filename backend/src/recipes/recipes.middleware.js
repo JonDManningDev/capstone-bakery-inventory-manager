@@ -35,11 +35,11 @@ async function recipeExists(req, res, next) {
 // This is used to check if a recipe contains a specific ingredient when adding or deleting ingredients
 function recipeIngredientExists(req, res, next) {
   const { ingredients } = res.locals.recipe;
-  const { name, ingredient_id } = res.locals.ingredient;
+  const { name, id } = res.locals.ingredient;
   const method = req.method;
   const title = res.locals.recipe.title;
   const match = ingredients.find(
-    (ingredient) => ingredient.ingredient_id === ingredient_id
+    (ingredient) => ingredient.id === id
   );
 
   // When deleting, use this logic path
@@ -78,7 +78,7 @@ function validateRecipe(req, res, next) {
     });
   }
 
-  const { title, description } = recipe;
+  const { title, description, image_url } = recipe;
 
   if (!title) {
     return next({
@@ -93,6 +93,13 @@ function validateRecipe(req, res, next) {
       message: "Recipe description is required",
     });
   }
+
+  if (!image_url) {
+    return next({
+      status: 400,
+      message: "Recipe image URL is required",
+    });
+  } 
 
   return next();
 }

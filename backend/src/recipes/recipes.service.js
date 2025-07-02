@@ -13,7 +13,7 @@ async function create(newRecipe) {
 }
 
 function destroyRecipe(recipeId) {
-  return knex(tableName).where({ recipe_id: recipeId }).del();
+  return knex(tableName).where({ id: recipeId }).del();
 }
 
 function destroyRecipeIngredient(recipeId, ingredientId) {
@@ -30,7 +30,7 @@ async function read(recipeId) {
   // Get the recipe information
   const recipe = await knex(tableName)
     .select("*")
-    .where({ recipe_id: recipeId })
+    .where({ id: recipeId })
     .first();
 
   if (!recipe) {
@@ -39,13 +39,13 @@ async function read(recipeId) {
 
   // Get the recipe's ingredients separately
   const ingredients = await knex("recipe_ingredients as ri")
-    .join("ingredients as i", "ri.ingredient_id", "i.ingredient_id")
-    .select("i.ingredient_id", "i.name", "ri.amount_needed", "ri.unit")
+    .join("ingredients as i", "ri.ingredient_id", "i.id")
+    .select("i.id", "i.name", "ri.amount_needed", "ri.unit")
     .where({ "ri.recipe_id": recipeId });
 
   // Return the combined recipe object. The value of ingredients will be an array of ingredient objects.
   return {
-    recipe_id: recipe.recipe_id,
+    id: recipe.id,
     title: recipe.title,
     description: recipe.description,
     image_url: recipe.image_url,
@@ -59,8 +59,11 @@ function readByTitle(title) {
 }
 
 async function update(recipeId, updates) {
-  const updatedRecords = await knex(tableName).where({ recipe_id: recipeId }).update(updates).returning('*');
-  
+  const updatedRecords = await knex(tableName)
+    .where({ id: recipeId })
+    .update(updates)
+    .returning("*");
+
   return updatedRecords[0];
 }
 

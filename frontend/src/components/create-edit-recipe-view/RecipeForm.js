@@ -74,8 +74,8 @@ export function RecipeForm({ handleSubmit, formData, setFormData }) {
                       handleInputChange(event, formData, setFormData)
                     }
                     placeholder="Enter URL for recipe image"
+                    required
                   />
-                  <small className="form-text text-muted">Optional</small>
                 </div>
                 <div className="d-flex justify-content-between">
                   <button

@@ -10,15 +10,19 @@ export function IngredientsList({ ingredients }) {
 
   const ingredientsList = ingredientsSorted.map((ingredient) => (
     <IngredientListItem
-      key={ingredient.ingredient_id}
+      key={ingredient.id}
       name={ingredient.name}
-      id={ingredient.ingredient_id}
+      id={ingredient.id}
     />
   ));
 
   return (
     <div className="list-group py-4">
-      {ingredients.length > 0 ? ingredientsList : <p>Ingredients loading or not found.</p>}
+      {ingredients.length > 0 ? (
+        ingredientsList
+      ) : (
+        <p>Ingredients loading or not found.</p>
+      )}
     </div>
   );
 }

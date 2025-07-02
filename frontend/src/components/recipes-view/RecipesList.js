@@ -10,10 +10,10 @@ export function RecipesList({ recipes }) {
 
   const recipesList = recipesSorted.map((recipe) => (
     <RecipesListItem
-      key={recipe.recipe_id}
+      key={recipe.id}
       title={recipe.title}
       image_url={recipe.image_url}
-      id={recipe.recipe_id}
+      id={recipe.id}
     />
   ));
 

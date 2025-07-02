@@ -42,6 +42,13 @@ export function ViewBakes() {
     };
   }, [getBakes, setBakes, addAlert]);
 
+  // Update currentBakes whenever bakes state changes (e.g., after status update)
+  useEffect(() => {
+    if (bakes.length > 0) {
+      setCurrentBakes(getCurrentBakes(bakes));
+    }
+  }, [bakes]);
+
   // This useEffect() governs filter/sort button behavior
   // filteredBakes is the state that is used to render the bakes list
   useEffect(() => {

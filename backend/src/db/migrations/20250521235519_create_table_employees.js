@@ -4,7 +4,7 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("employees", (table) => {
-    table.increments("employee_id").primary().unsigned().notNullable();
+    table.increments("id").primary().unsigned().notNullable();
     table.string("first_name").notNullable();
     table.string("last_name").notNullable();
     table.string("email").notNullable().unique();

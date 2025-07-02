@@ -39,16 +39,16 @@ export function AddIngredientForm({
       const match = ingredients.find(
         (ingredient) => ingredient.name === formData.ingredient
       );
-      const ingredientId = match.ingredient_id;
+      const ingredientId = match.id;
 
       // Check if the ingredient is already added to the recipe
       const existingIngredient = recipeIngredients.find(
-        (ingredient) => ingredient.ingredient_id === ingredientId
+        (ingredient) => ingredient.id === ingredientId
       );
       if (existingIngredient) {
         addAlert(
-          `Ingredient ${formData.ingredient} is already a part of ${title}`,
-          "info",
+          `Ingredient ${formData.ingredient} is already a part of ${title}.`,
+          "warning",
           "addRecipeIngredient-duplicate"
         );
         return;
@@ -112,8 +112,8 @@ export function AddIngredientForm({
               className="form-control"
               id="amount"
               name="amount"
-              min="1"
-              step="1"
+              min=".25"
+              step=".25"
               placeholder="Enter amount"
               value={formData.amount}
               onChange={(event) =>

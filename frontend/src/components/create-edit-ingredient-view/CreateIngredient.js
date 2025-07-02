@@ -20,7 +20,7 @@ export function CreateIngredient() {
 
   async function handleSubmit(formData, event) {
     event.preventDefault();
-    const abortController = new AbortController();    
+    const abortController = new AbortController();
     try {
       // Check for an existing record with the same name
       const ingredientRecords = await getIngredients({
@@ -38,8 +38,7 @@ export function CreateIngredient() {
         return;
       }
       // Then proceed to create the new ingredient
-      const record = await createIngredient({
-        ...formData,
+      const record = await createIngredient(formData, {
         signal: abortController.signal,
       });
       addAlert(
@@ -47,7 +46,7 @@ export function CreateIngredient() {
         "success",
         "createIngredient-success"
       );
-      navigate(`/ingredients/${record.ingredient_id}`);
+      navigate(`/ingredients/${record.id}`);
       return;
     } catch (error) {
       if (error.name === "AbortError") return;

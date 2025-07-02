@@ -7,7 +7,7 @@ async function create(newBake) {
 
   const [employee] = await knex("employees")
     .select("first_name", "last_name")
-    .where({ employee_id: newBake.employee_id });
+    .where({ id: newBake.employee_id });
 
   return {
     ...newRecord,
@@ -18,9 +18,9 @@ async function create(newBake) {
 async function list() {
   // Obtain data for bakes and employees
   const bakes = await knex(`${tableName} as b`)
-    .join("employees as e", "b.employee_id", "e.employee_id")
+    .join("employees as e", "b.employee_id", "e.id")
     .select(
-      "b.bake_id",
+      "b.id as bake_id",
       "b.recipe_id",
       "b.employee_id",
       "b.status",
@@ -58,13 +58,13 @@ async function list() {
   );
 
   const recipes = await knex("recipes as r")
-    .join("recipe_ingredients as ri", "r.recipe_id", "ri.recipe_id")
-    .join("ingredients as i", "ri.ingredient_id", "i.ingredient_id")
+    .join("recipe_ingredients as ri", "r.id", "ri.recipe_id")
+    .join("ingredients as i", "ri.ingredient_id", "i.id")
     .select(
-      "r.recipe_id",
+      "r.id as recipe_id",
       "r.title",
       "r.image_url",
-      "i.ingredient_id",
+      "i.id as ingredient_id",
       "i.name",
       "ri.amount_needed",
       "ri.unit",
@@ -131,25 +131,25 @@ async function list() {
 
 async function read(bakeId) {
   const bakeRecord = await knex(`${tableName} as b`)
-    .join("employees as e", "b.employee_id", "e.employee_id")
-    .join("recipes as r", "b.recipe_id", "r.recipe_id")
+    .join("employees as e", "b.employee_id", "e.id")
+    .join("recipes as r", "b.recipe_id", "r.id")
     .select(
-      "b.bake_id",
+      "b.id",
       "b.status",
       "b.created_at",
       "b.updated_at",
-      "e.employee_id",
+      "b.employee_id",
+      "b.recipe_id",
       "e.first_name",
       "e.last_name",
-      "r.recipe_id",
       "r.title",
       "r.image_url"
     )
-    .where({ bake_id: bakeId })
+    .where({ "b.id": bakeId })
     .first();
 
   const {
-    bake_id,
+    id,
     status,
     created_at,
     updated_at,
@@ -163,7 +163,7 @@ async function read(bakeId) {
 
   // Reformat the returned data with nesting for clarity
   return {
-    bake_id,
+    id,
     status,
     created_at,
     updated_at,
@@ -182,7 +182,7 @@ async function read(bakeId) {
 
 async function update(bakeId, updatedBake) {
   const [updatedRecord] = await knex(tableName)
-    .where({ bake_id: bakeId })
+    .where({ id: bakeId })
     .update(updatedBake)
     .returning("*");
 
@@ -193,7 +193,7 @@ async function update(bakeId, updatedBake) {
   return {
     ...updatedRecord,
     employee,
-    recipe
+    recipe,
   };
 }
 

@@ -98,7 +98,7 @@ export function ViewRecipe() {
 
   const handleDelete = (() => {
     let lastAbortController = null;
-    return async function (recipe_id, title) {
+    return async function (id, title) {
       if (lastAbortController) {
         lastAbortController.abort();
       }
@@ -108,7 +108,7 @@ export function ViewRecipe() {
         const message = `Are you sure you want to delete the recipe ${title}?`;
 
         if (window.confirm(message)) {
-          await deleteRecipe(recipe_id, { signal: abortController.signal });
+          await deleteRecipe(id, { signal: abortController.signal });
           // Reset all states that could become stale after the deletion
           setRecipe({ ingredients: [] });
           setShortages([]);
@@ -281,11 +281,11 @@ export function ViewRecipe() {
               <h4 className="border-bottom">Amount</h4>
             </div>
           </div>
-          <RecipeIngredientsList recipe={recipe} />
+          <RecipeIngredientsList recipe={recipe} setRecipe={setRecipe} />
           {/* Add Ingredient Form */}
           <div className="mt-4 p-3 border-top">
             <AddIngredientForm
-              recipeId={recipe.recipe_id}
+              recipeId={recipe.id}
               title={recipe.title}
               recipeIngredients={recipe.ingredients}
               ingredients={ingredients}
