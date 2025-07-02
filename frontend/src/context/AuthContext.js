@@ -181,7 +181,19 @@ export function AuthProvider({ children }) {
           // Skip Guest login if the demo user intentionally logged out.
           if (preventAutoLogin === "true") {
             sessionStorage.removeItem("preventAutoLogin");
-            return;
+            // Set user to not-logged-in state and show appropriate alert
+            setUser({
+              employeeId: null,
+              firstName: "Not Logged In",
+              lastName: null,
+              email: null,
+            });
+            addAlert(
+              "You are not logged in. You can log in or register to continue.",
+              "info",
+              "no-login"
+            );
+            return false;
           }
 
           if (!token) {
