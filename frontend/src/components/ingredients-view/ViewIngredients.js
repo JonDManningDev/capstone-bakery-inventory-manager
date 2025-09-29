@@ -34,13 +34,16 @@ export function ViewIngredients() {
     return () => abortController.abort();
   }, [addAlert, getIngredients, setIngredients]);
 
-  // Render the list
   return (
-    <div className="container col-11 col-md-6 col-lg-5 py-4 my-4 border rounded bg-light">
+    // Component container
+    <div className="container col-11 col-md-6 col-lg-5 pb-4 my-4 border rounded bg-primary-subtle shadow">
       {/* Upper container */}
-      <div className="d-flex justify-content-between">
+      <div
+        className="d-flex justify-content-between bg-secondary p-4 mb-4 rounded-top"
+        style={{ marginLeft: "-0.75rem", marginRight: "-0.75rem" }}
+      >
         <div>
-          <h3>Our Ingredients</h3>
+          <h3 className="text-light">Our Ingredients</h3>
         </div>
         <div id="ingredientsListActions">
           <Link to="/ingredients/new" role="button" className="btn btn-success">
@@ -48,6 +51,7 @@ export function ViewIngredients() {
           </Link>
         </div>
       </div>
+
       {/* Lower container */}
       <IngredientsList ingredients={ingredients} />
     </div>

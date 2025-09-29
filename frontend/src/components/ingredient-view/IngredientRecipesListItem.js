@@ -7,7 +7,7 @@ export function IngredientRecipesListItem({ recipeId, title }) {
     <div className="p-2">
       <Link
         to={`/recipes/${recipeId}`}
-        className="list-group-item list-group-item-action py-4 border rounded"
+        className="list-group-item list-group-item-action py-4 border rounded bg-primary text-light shadow-sm"
       >
         <h5>{title}</h5>
       </Link>

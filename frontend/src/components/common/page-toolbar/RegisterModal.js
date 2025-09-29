@@ -258,12 +258,12 @@ export function RegisterModal({ loginDropdownRef }) {
               </div>
             </div>
             <div className="modal-footer">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary shadow-sm">
                 Submit
               </button>
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-secondary shadow-sm"
                 data-bs-dismiss="modal"
               >
                 Close

@@ -17,8 +17,8 @@ export function RecipeForm({ handleSubmit, formData, setFormData }) {
     <div className="container mt-4">
       <div className="row justify-content-center">
         <div className="col-md-8">
-          <div className="card shadow-sm">
-            <div className="card-header bg-primary text-white">
+          <div className="card shadow">
+            <div className="card-header bg-secondary text-light">
               <h4>{editing ? `Edit ${formData.title}` : "Create New Recipe"}</h4>
             </div>
             <div className="card-body">
@@ -85,7 +85,7 @@ export function RecipeForm({ handleSubmit, formData, setFormData }) {
                   >
                     Cancel
                   </button>
-                  <button className={editing ? "btn btn-primary" : "btn btn-success"} type="submit">
+                  <button className={editing ? "btn btn-primary shadow-sm" : "btn btn-success shadow-sm"} type="submit">
                     {editing ? "Save Recipe" : "Create Recipe"}
                   </button>
                 </div>

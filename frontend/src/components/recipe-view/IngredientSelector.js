@@ -22,7 +22,7 @@ export function IngredientSelector({ formData, setFormData, ingredients }) {
       <select
         id="ingredient-select"
         name="ingredient"
-        className="form-select"
+        className="form-select bg-success-subtle"
         value={formData.ingredient}
         onChange={(event) => handleInputChange(event, formData, setFormData)}
         aria-label="Select ingredient"

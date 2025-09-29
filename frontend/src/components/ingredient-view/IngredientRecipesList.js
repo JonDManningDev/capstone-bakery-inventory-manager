@@ -20,7 +20,7 @@ export function IngredientRecipesList({ ingredient }) {
   });
 
   return (
-    <div className="list-group py-2">
+    <div className="list-group py-2 bg-secondary-subtle">
       {recipes.length > 0 ? recipesList : <p>No recipes found.</p>}
     </div>
   );

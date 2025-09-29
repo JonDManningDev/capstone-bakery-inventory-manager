@@ -199,10 +199,13 @@ export function ViewRecipe() {
 
   return (
     // Component container
-    <div className="container p-2 my-4 border rounded bg-light">
+    <div className="container col-11 pb-2 my-4 border rounded bg-primary-subtle shadow">
       {/* Title and Actions */}
-      <div className="row d-flex align-items-center justify-content-between m-2 rounded bg-secondary-subtle">
-        <div className="col d-flex justify-content-start align-items-center p-2">
+      <div
+        className="row align-items-center justify-content-between mb-2 p-3 rounded-top text-light bg-secondary"
+        style={{ marginLeft: "-0.75rem", marginRight: "-0.75rem" }}
+      >
+        <div className="col-11 col-md-6 d-flex my-1 justify-content-start align-items-center">
           <img
             src={image_url}
             alt={title}
@@ -211,7 +214,7 @@ export function ViewRecipe() {
           ></img>
           <h2 className="ps-3">{title}</h2>
         </div>
-        <div className="col d-flex justify-content-end p-2">
+        <div className="col-11 col-md-6 d-flex my-1 justify-content-end">
           <button
             id="recipeViewBake"
             className="btn btn-primary mx-1"
@@ -239,13 +242,13 @@ export function ViewRecipe() {
       <div className="row d-flex align-items-start justify-content-between py-2 m-2">
         <div
           id="recipeDescription"
-          className="col-12 col-md-4 bg-secondary-subtle rounded mb-2 mb-md-0"
+          className="col-11 col-md-4 bg-success-subtle shadow-sm rounded mb-2 mb-md-0 p-3"
         >
           <p className="lead">{description}</p>
         </div>
         <div
           id="editIngredients"
-          className="col-12 col-md-7 border rounded bg-white mt-2 mt-md-0"
+          className="col-11 col-md-7 border rounded bg-secondary-subtle shadow-sm mt-2 mt-md-0"
         >
           {/* Ingredient Shortages Alert */}
           {shortages.length > 0 && (
@@ -275,15 +278,15 @@ export function ViewRecipe() {
           <h3 className="mt-3 mb-3 text-center">Ingredients Editor</h3>
           <div className="row p-2">
             <div className="col">
-              <h4 className="border-bottom">Ingredient</h4>
+              <h4 className="border-bottom border-secondary">Ingredient</h4>
             </div>
             <div className="col">
-              <h4 className="border-bottom">Amount</h4>
+              <h4 className="border-bottom border-secondary">Amount</h4>
             </div>
           </div>
           <RecipeIngredientsList recipe={recipe} setRecipe={setRecipe} />
           {/* Add Ingredient Form */}
-          <div className="mt-4 p-3 border-top">
+          <div className="mt-4 p-3 border-top border-secondary">
             <AddIngredientForm
               recipeId={recipe.id}
               title={recipe.title}

@@ -150,46 +150,50 @@ export function ViewBakes() {
   function renderStatusBadge(status) {
     switch (status) {
       case "started":
-        return <span className="badge bg-info">Started</span>;
+        return <span className="badge bg-info text-body">Started</span>;
       case "complete":
-        return <span className="badge bg-success">Complete</span>;
+        return <span className="badge bg-success text-body">Complete</span>;
       case "canceled":
-        return <span className="badge bg-danger">Canceled</span>;
+        return <span className="badge bg-danger text-light">Canceled</span>;
       default:
         return null;
     }
   }
 
   return (
-    <div className="container py-4 my-4 col-lg-7 border rounded bg-light">
-      <h3 className="mb-4">Bakes</h3>
+    <div className="container pb-4 my-4 col-11 col-lg-7 border rounded bg-primary-subtle shadow">
+      <div
+        className="bg-secondary p-4 mb-4 rounded-top"
+        style={{ marginLeft: "-0.75rem", marginRight: "-0.75rem" }}
+      >
+        <h3 className="text-light">Bakes</h3>
+      </div>
 
       {/* Dashboard */}
-      <div className="card mb-4">
+      <div className="card mb-4 shadow-sm">
         <div className="card-body">
-          <h3 className="text-primary">
-            There have been {dailyBakesTotal} bakes today.
+          <h3 className="text-body">
+            {dailyBakesTotal === 1 ? "There has been 1 bake today." : `There have been ${dailyBakesTotal} bakes today.`}
           </h3>
-
           <div className="row mt-3 d-flex justify-content-between">
-            <div className="col-md-4">
-              <div className="card bg-info text-white">
+            <div className="col-md-4 my-1">
+              <div className="card bg-info text-body shadow-sm">
                 <div className="card-body">
                   <h4 className="card-title">Started</h4>
                   <p className="display-5">{statusCounts["started"] || 0}</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-4">
-              <div className="card bg-success text-white">
+            <div className="col-md-4 my-1">
+              <div className="card bg-success text-body shadow-sm">
                 <div className="card-body">
                   <h4 className="card-title">Complete</h4>
                   <p className="display-5">{statusCounts["complete"] || 0}</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-4">
-              <div className="card bg-danger text-white">
+            <div className="col-md-4 my-1">
+              <div className="card bg-danger text-light shadow-sm">
                 <div className="card-body">
                   <h4 className="card-title">Canceled</h4>
                   <p className="display-5">{statusCounts["canceled"] || 0}</p>

@@ -1,0 +1,218 @@
+:root,
+[data-bs-theme="light"] {
+  --bs-primary: #c17c4a;
+  --bs-primary-rgb: 193, 124, 74;
+  --bs-secondary: #3e2c26;
+  --bs-secondary-rgb: 62, 44, 38;
+  --bs-success: #f7d488;
+  --bs-success-rgb: 247, 212, 136;
+  --bs-danger: #b23a48;
+  --bs-danger-rgb: 178, 58, 72;
+  --bs-info: #a9c5eb;
+  --bs-info-rgb: 169, 197, 235;
+  --bs-warning: #f7d488;
+  --bs-warning-rgb: 247, 212, 136;
+
+  --bs-body-bg: #f5ece3;
+  --bs-body-bg-rgb: 255, 248, 240;
+  --bs-body-color: #3e2c26;
+  --bs-body-color-rgb: 62, 44, 38;
+  --bs-border-color: #e2e0dc;
+  --bs-link-color: #b23a48;
+  --bs-link-color-rgb: 178, 58, 72;
+  --bs-link-hover-color: #8a2e3a;
+  --bs-link-hover-color-rgb: 138, 46, 58;
+
+  --bs-primary-bg-subtle: #ad703e88; /* light brown */
+  --bs-primary-border-subtle: #e0c7b3; /* light border */
+  --bs-primary-text-emphasis: #5d3a22; /* dark text on subtle bg */
+
+  --bs-secondary-bg-subtle: #f5ece3; /* very light cocoa */
+
+  /* success subtle (butter) */
+  --bs-success-bg-subtle: #fff2d7;
+  --bs-success-border-subtle: #ffe3ad;
+  --bs-success-text-emphasis: #6b532a;
+
+  /* danger subtle (jam) */
+  --bs-danger-bg-subtle: #f6d9dd;
+  --bs-danger-border-subtle: #e9b3bb;
+  --bs-danger-text-emphasis: #5d1f26;
+
+  /* info subtle (powder blue) */
+  --bs-info-bg-subtle: #e9f1fb;
+  --bs-info-border-subtle: #cfe0f7;
+  --bs-info-text-emphasis: #2e3d52;
+}
+
+/* Primary button (bread brown) */
+.btn-primary {
+  --bs-btn-color: #f8f9fa;
+  --bs-btn-bg: #c17c4a;
+  --bs-btn-border-color: #c17c4a;
+  --bs-btn-hover-bg: #a86d41;
+  --bs-btn-hover-border-color: #a86d41;
+  --bs-btn-focus-shadow-rgb: 193, 124, 74; /* matches primary-rgb */
+  --bs-btn-active-bg: #8f5e38;
+  --bs-btn-active-border-color: #8f5e38;
+}
+
+/* Primary outline button (bread brown outline) */
+.btn-outline-primary {
+  --bs-btn-color: #c17c4a;
+  --bs-btn-border-color: #c17c4a;
+  --bs-btn-bg: transparent;
+
+  --bs-btn-hover-color: #f8f9fa;
+  --bs-btn-hover-bg: #c17c4a;
+  --bs-btn-hover-border-color: #c17c4a;
+
+  --bs-btn-focus-shadow-rgb: 193, 124, 74;
+
+  --bs-btn-active-color: #f8f9fa;
+  --bs-btn-active-bg: #a86d41;
+  --bs-btn-active-border-color: #a86d41;
+
+  --bs-btn-disabled-color: #c17c4a;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #c17c4a;
+}
+
+/* Secondary button (Dark Cocoa) */
+.btn-secondary {
+  --bs-btn-color: #fff; /* text */
+  --bs-btn-bg: #3e2c26; /* base */
+  --bs-btn-border-color: #3e2c26;
+
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #2f231e; /* ~15% darker */
+  --bs-btn-hover-border-color: #2f231e;
+
+  --bs-btn-focus-shadow-rgb: 62, 44, 38; /* matches --bs-secondary-rgb */
+
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #241a15; /* darker again */
+  --bs-btn-active-border-color: #241a15;
+
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #8f817b; /* muted cocoa for disabled */
+  --bs-btn-disabled-border-color: #8f817b;
+}
+
+/* Optional outline variant */
+.btn-outline-secondary {
+  --bs-btn-color: #3e2c26;
+  --bs-btn-border-color: #3e2c26;
+
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #3e2c26;
+  --bs-btn-hover-border-color: #3e2c26;
+
+  --bs-btn-focus-shadow-rgb: 62, 44, 38;
+
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #2f231e;
+  --bs-btn-active-border-color: #2f231e;
+
+  --bs-btn-disabled-color: #3e2c26;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #3e2c26;
+}
+
+/* Success button (butter yellow) */
+.btn-success {
+  --bs-btn-color: #3e2c26;
+  --bs-btn-bg: #f7d488;
+  --bs-btn-border-color: #f7d488;
+  --bs-btn-hover-bg: #e8c172;
+  --bs-btn-hover-border-color: #e8c172;
+  --bs-btn-focus-shadow-rgb: 247, 212, 136;
+  --bs-btn-active-bg: #d9ad5d;
+  --bs-btn-active-border-color: #d9ad5d;
+}
+
+/* Success outline button (butter yellow outline) */
+.btn-outline-success {
+  --bs-btn-color: #f7d488;
+  --bs-btn-border-color: #f7d488;
+  --bs-btn-bg: transparent;
+
+  --bs-btn-hover-color: #3e2c26;
+  --bs-btn-hover-bg: #f7d488;
+  --bs-btn-hover-border-color: #f7d488;
+
+  --bs-btn-focus-shadow-rgb: 247, 212, 136;
+
+  --bs-btn-active-color: #3e2c26;
+  --bs-btn-active-bg: #e8c172;
+  --bs-btn-active-border-color: #e8c172;
+
+  --bs-btn-disabled-color: #f7d488;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #f7d488;
+}
+
+/* Danger button (jam red) */
+.btn-danger {
+  --bs-btn-color: #f8f9fa;
+  --bs-btn-bg: #b23a48;
+  --bs-btn-border-color: #b23a48;
+  --bs-btn-hover-bg: #9e3340;
+  --bs-btn-hover-border-color: #9e3340;
+  --bs-btn-focus-shadow-rgb: 178, 58, 72;
+  --bs-btn-active-bg: #8a2e38;
+  --bs-btn-active-border-color: #8a2e38;
+}
+
+/* Info button (Powder Blue) */
+.btn-info {
+  --bs-btn-color: #3e2c26; /* Dark Cocoa text for contrast */
+  --bs-btn-bg: #a9c5eb; /* Powder Blue */
+  --bs-btn-border-color: #a9c5eb;
+
+  --bs-btn-hover-color: #3e2c26;
+  --bs-btn-hover-bg: #93b5e4; /* slightly darker */
+  --bs-btn-hover-border-color: #93b5e4;
+
+  --bs-btn-focus-shadow-rgb: 169, 197, 235; /* matches info-rgb */
+  --bs-btn-active-color: #3e2c26;
+  --bs-btn-active-bg: #7ea4de; /* darker again */
+  --bs-btn-active-border-color: #7ea4de;
+
+  --bs-btn-disabled-color: #3e2c26;
+  --bs-btn-disabled-bg: #cfe0f7; /* very light blue */
+  --bs-btn-disabled-border-color: #cfe0f7;
+}
+
+/* Optional outline variant to match the same palette */
+.btn-outline-info {
+  --bs-btn-color: #a9c5eb;
+  --bs-btn-border-color: #a9c5eb;
+
+  --bs-btn-hover-color: #3e2c26;
+  --bs-btn-hover-bg: #a9c5eb;
+  --bs-btn-hover-border-color: #a9c5eb;
+
+  --bs-btn-focus-shadow-rgb: 169, 197, 235;
+  --bs-btn-active-color: #3e2c26;
+  --bs-btn-active-bg: #93b5e4;
+  --bs-btn-active-border-color: #93b5e4;
+
+  --bs-btn-disabled-color: #a9c5eb;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #a9c5eb;
+}
+
+.card {
+  --bs-card-bg: #ad703e88;
+  --bs-card-color: var(--bs-body);
+  --bs-card-border-color: var(--bs-body);
+}
+
+.navbar-toggler {
+  border-color: rgba(255, 248, 240, 1);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 248, 240, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}

@@ -10,7 +10,7 @@ export function BakesList({
   return (
     <div className="list-group">
       {filteredBakes.length === 0 ? (
-        <div className="alert alert-info">
+        <div className="alert alert-info shadow-sm">
           No bakes found for the selected criteria.
         </div>
       ) : (

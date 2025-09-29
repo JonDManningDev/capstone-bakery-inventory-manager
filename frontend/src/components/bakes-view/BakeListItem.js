@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export function BakeListItem({ bake, renderStatusBadge, handleStatusUpdate }) {
   return (
-    <div key={bake.bake_id} className="list-group-item p-3 mb-3 border rounded">
+    <div key={bake.bake_id} className="list-group-item p-3 mb-2 border rounded shadow-sm">
       <div className="row align-items-center">
         {/* Recipe Image */}
         <div className="col-md-2 text-center mb-3 mb-md-0">

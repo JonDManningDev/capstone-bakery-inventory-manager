@@ -24,7 +24,7 @@ export function UnitSelector({ formData, setFormData, units }) {
       </label>
       <select
         id={inRecipe ? "unit" : "ingredient-base-unit"}
-        className="form-select"
+        className={inRecipe ? "form-select bg-success-subtle" : "form-select"}
         name={inRecipe ? "unit" : "base_unit"}
         value={inRecipe ? formData.unit : formData.base_unit}
         onChange={(event) => handleInputChange(event, formData, setFormData)}
