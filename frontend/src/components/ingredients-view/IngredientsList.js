@@ -17,7 +17,7 @@ export function IngredientsList({ ingredients }) {
   ));
 
   return (
-    <div className="list-group py-4">
+    <div className="list-group">
       {ingredients.length > 0 ? (
         ingredientsList
       ) : (

@@ -36,11 +36,14 @@ export function ViewRecipes() {
 
   return (
     // Component container
-    <div className="container col-11 col-md-8 col-lg-5 py-4 my-4 border rounded bg-light">
+    <div className="container col-11 col-md-8 col-lg-5 pb-4 my-4 border rounded bg-primary-subtle shadow">
       {/* Upper container */}
-      <div className="d-flex justify-content-between">
+      <div
+        className="d-flex justify-content-between bg-secondary p-4 mb-4 rounded-top"
+        style={{ marginLeft: "-0.75rem", marginRight: "-0.75rem" }}
+      >
         <div>
-          <h3>Our Recipes</h3>
+          <h3 className="text-light">Our Recipes</h3>
         </div>
         <div id="recipesListActions">
           <Link to="/recipes/new" role="button" className="btn btn-success">

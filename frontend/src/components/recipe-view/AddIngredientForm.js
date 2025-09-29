@@ -109,7 +109,7 @@ export function AddIngredientForm({
             </label>
             <input
               type="number"
-              className="form-control"
+              className="form-control bg-success-subtle"
               id="amount"
               name="amount"
               min=".25"
@@ -131,7 +131,7 @@ export function AddIngredientForm({
         </div>
 
         <div className="d-flex justify-content-end">
-          <button type="submit" className="btn btn-success">
+          <button type="submit" className="btn btn-success shadow-sm">
             <i className="bi bi-plus-circle me-2"></i>
             Add Ingredient
           </button>

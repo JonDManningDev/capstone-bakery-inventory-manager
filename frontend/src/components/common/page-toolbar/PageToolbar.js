@@ -39,7 +39,7 @@ export function PageToolbar({ loginDropdownRef }) {
   };
 
   return (
-    <nav className="navbar navbar-expand-md sticky-top bg-secondary">
+    <nav className="navbar navbar-expand-md sticky-top bg-secondary shadow-sm">
       <div className="container-fluid">
         
         <button
@@ -53,9 +53,9 @@ export function PageToolbar({ loginDropdownRef }) {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <a className="navbar-brand text-light" href="#">
+        <span className="navbar-brand text-light">
           Maeve's
-        </a>
+        </span>
         <div className="collapse navbar-collapse" id="navContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">{homeLink()}</li>

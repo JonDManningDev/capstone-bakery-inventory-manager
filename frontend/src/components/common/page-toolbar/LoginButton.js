@@ -30,7 +30,7 @@ export function LoginButton({ loginDropdownRef }) {
   return (
     <div className="dropdown">
       <button
-        className="btn btn-primary dropdown-toggle"
+        className="btn btn-primary dropdown-toggle shadow-sm"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}

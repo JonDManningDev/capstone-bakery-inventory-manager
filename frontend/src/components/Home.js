@@ -117,9 +117,9 @@ export function Home() {
         style={{ height: "250px" }}
       >
         <div className="col h-100">
-          <div className="card h-100 bg-light">
+          <div className="card h-100 shadow">
             <div className="card-body d-flex flex-column justify-content-between">
-              <h3 className="card-title border-bottom">
+              <h3 className="card-title border-bottom border-secondary">
                 {`Bakes `}
                 <i className="bi-list-check"></i>
               </h3>
@@ -128,7 +128,7 @@ export function Home() {
                   id="bakesActions"
                   className="d-flex justify-content-evenly w-100"
                 >
-                  <Link to="/bakes" role="button" className="btn btn-primary">
+                  <Link to="/bakes" role="button" className="btn btn-primary shadow-sm">
                     <i className="bi-eye"></i>
                     {` View Bakes`}
                   </Link>
@@ -137,16 +137,16 @@ export function Home() {
                   id="bakesStats"
                   className="d-flex flex-column justify-content-evenly w-100"
                 >
-                  <div id="bakesTotal">
+                  <div id="bakesTotal" className="mb-2">
                     <h5>{`There have been ${dailyCount} bakes today.`}</h5>
                   </div>
                   <div
                     id="bakesCategories"
                     className="d-flex justify-content-evenly w-100"
                   >
-                    <p className="p-2 border rounded bg-info text-white">{`Started: ${bakesStats.dailyStarted}`}</p>
-                    <p className="p-2 border rounded bg-success text-white">{`Complete: ${bakesStats.dailyComplete}`}</p>
-                    <p className="p-2 border rounded bg-danger text-white">{`Canceled: ${bakesStats.dailyCanceled}`}</p>
+                    <p className="p-2 rounded bg-info text-body shadow-sm">{`Started: ${bakesStats.dailyStarted}`}</p>
+                    <p className="p-2 rounded bg-success text-body shadow-sm">{`Complete: ${bakesStats.dailyComplete}`}</p>
+                    <p className="p-2 rounded bg-danger text-light shadow-sm">{`Canceled: ${bakesStats.dailyCanceled}`}</p>
                   </div>
                 </div>
               </div>
@@ -154,9 +154,9 @@ export function Home() {
           </div>
         </div>
         <div className="col h-100">
-          <div className="card h-100 bg-light">
+          <div className="card h-100 shadow">
             <div className="card-body d-flex flex-column justify-content-between">
-              <h3 className="card-title border-bottom">
+              <h3 className="card-title border-bottom border-secondary">
                 {`Recipes `}
                 <i className="bi-clipboard2-heart"></i>
               </h3>
@@ -165,14 +165,14 @@ export function Home() {
                   id="recipesActions"
                   className="d-flex justify-content-evenly w-100"
                 >
-                  <Link to="/recipes" role="button" className="btn btn-primary">
+                  <Link to="/recipes" role="button" className="btn btn-primary shadow-sm">
                     <i className="bi-eye"></i>
                     {` View Recipes`}
                   </Link>
                   <Link
                     to="/recipes/new"
                     role="button"
-                    className="btn btn-success"
+                    className="btn btn-success shadow-sm"
                   >
                     <i className="bi-plus"></i>
                     {` Create Recipe`}
@@ -186,9 +186,9 @@ export function Home() {
           </div>
         </div>
         <div className="col h-100">
-          <div className="card h-100 bg-light">
+          <div className="card h-100 shadow">
             <div className="card-body d-flex flex-column justify-content-between">
-              <h3 className="card-title border-bottom">
+              <h3 className="card-title border-bottom border-secondary">
                 {`Ingredients `}
                 <i className="bi bi-measuring-cup"></i>
               </h3>
@@ -200,7 +200,7 @@ export function Home() {
                   <Link
                     to="/ingredients"
                     role="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary shadow-sm"
                   >
                     <i className="bi-eye"></i>
                     {` View Ingredients`}
@@ -208,7 +208,7 @@ export function Home() {
                   <Link
                     to="/ingredients/new"
                     role="button"
-                    className="btn btn-success"
+                    className="btn btn-success shadow-sm"
                   >
                     <i className="bi-plus"></i>
                     {` Create Ingredient`}

@@ -88,9 +88,9 @@ export function ViewIngredient() {
 
   return (
     // Component container
-    <div className="container p-2 my-4 border rounded bg-light">
+    <div className="container col-11 pb-2 my-4 border rounded bg-primary-subtle shadow">
       {/* Title and Actions */}
-      <div className="row d-flex align-items-center justify-content-between m-2 rounded bg-secondary-subtle">
+      <div className="row d-flex align-items-center justify-content-between mb-2 p-3 rounded-top bg-secondary text-light">
         <div className="col d-flex justify-content-start align-items-center p-2">
           <h2 className="ps-3">{name}</h2>
         </div>
@@ -114,7 +114,7 @@ export function ViewIngredient() {
       <div className="row d-flex align-items-start justify-content-between py-2 m-2">
         <div
           id="inventoryDetails"
-          className="col-12 col-md-4 bg-secondary-subtle rounded mb-2 mb-md-0"
+          className="col-11 col-md-4 bg-success-subtle rounded mb-2 mb-md-0 p-3 shadow-sm"
         >
           <h3 className="p-2">Inventory Details</h3>
           <div className="d-flex justify-content-around">
@@ -128,7 +128,7 @@ export function ViewIngredient() {
         </div>
         <div
           id="recipesWithIngredient"
-          className="col-12 col-md-7 border rounded bg-white mt-2 mt-md-0"
+          className="col-11 col-md-7 border rounded bg-secondary-subtle mt-2 mt-md-0 shadow-sm"
         >
           <h3 className="mt-3 mb-3 text-center">Recipes with {name}</h3>
           <IngredientRecipesList ingredient={ingredient} />

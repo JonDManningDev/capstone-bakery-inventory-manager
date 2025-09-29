@@ -46,7 +46,7 @@ export function RecipeIngredientsListItem({
         <p>{`${amount_needed} ${unit}`}</p>
         <button
           type="button"
-          className="btn btn-danger"
+          className="btn btn-danger shadow-sm"
           aria-label={`Delete ${name} from ${title}`}
           onClick={() => handleDelete()}
         >
