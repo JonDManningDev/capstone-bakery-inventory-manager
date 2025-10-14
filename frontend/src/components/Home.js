@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useAlerts } from "../context/AlertsContext";
-import { useBakes } from "../context/BakesContext";
+import { bakesAPI } from "../apis";
 import { useRecipes } from "../context/RecipesContext";
 import { useIngredients } from "../context/IngredientsContext";
 import { getCurrentBakes } from "../utils/getCurrentBakes";
 
 export function Home() {
   const { addAlert } = useAlerts();
-  const { getBakes } = useBakes();
   const { getRecipes } = useRecipes();
   const { getIngredients } = useIngredients();
 
@@ -28,7 +27,7 @@ export function Home() {
     const bakesController = new AbortController();
     async function loadBakes() {
       try {
-        const bakes = await getBakes({ signal: bakesController.signal });
+        const bakes = await bakesAPI.getBakes({ signal: bakesController.signal });
         const currentBakes = getCurrentBakes(bakes);
         const statsHolder = {
           dailyStarted: 0,
@@ -53,7 +52,7 @@ export function Home() {
     }
     loadBakes();
     return () => bakesController.abort();
-  }, [getBakes, addAlert]);
+  }, [addAlert]);
 
   // Fetch recipes
   useEffect(() => {

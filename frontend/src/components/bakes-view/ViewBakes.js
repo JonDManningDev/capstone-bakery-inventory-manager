@@ -1,16 +1,18 @@
 // Displays information for all bakes made today, including statistics and filtering options.
 
 import { useState, useEffect } from "react";
-import { useBakes } from "../../context/BakesContext";
+import { bakesAPI } from "../../apis";
 import { useAlerts } from "../../context/AlertsContext";
 import { BakesList } from "./BakesList";
 import { getCurrentBakes } from "../../utils/getCurrentBakes";
 
 export function ViewBakes() {
-  const { bakes, getBakes, setBakes, updateBakeStatus } = useBakes();
   const { addAlert } = useAlerts();
 
-  // States for filtering and sorting
+  // Primary bakes state
+  const [bakes, setBakes] = useState([]);
+
+  // States for filtering and sorting bakes
   const [sortByEmployee, setSortByEmployee] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
   const [currentBakes, setCurrentBakes] = useState([]);
@@ -21,7 +23,7 @@ export function ViewBakes() {
 
     async function loadBakes() {
       try {
-        const bakesRecords = await getBakes({ signal: abortController.signal });
+        const bakesRecords = await bakesAPI.getBakes({ signal: abortController.signal });
         setBakes(bakesRecords);
         // currentBakes (all bakes since 12:00 am the current day, local time, compared to UTC DB time)
         setCurrentBakes(getCurrentBakes(bakesRecords));
@@ -40,7 +42,7 @@ export function ViewBakes() {
     return () => {
       abortController.abort();
     };
-  }, [getBakes, setBakes, addAlert]);
+  }, [addAlert]);
 
   // Update currentBakes whenever bakes state changes (e.g., after status update)
   useEffect(() => {
@@ -105,7 +107,7 @@ export function ViewBakes() {
 
       if (window.confirm(confirmMessage)) {
         try {
-          const updatedBake = await updateBakeStatus(bakeId, newStatus, {
+          const updatedBake = await bakesAPI.updateBakeStatus(bakeId, newStatus, {
             signal: abortController.signal,
           });
           addAlert(
@@ -114,7 +116,7 @@ export function ViewBakes() {
             "updateBakeStatus-success"
           );
           // Update the local bakes state to reflect the change
-          const bakesRecords = await getBakes({
+          const bakesRecords = await bakesAPI.getBakes({
             signal: abortController.signal,
           });
           setBakes(bakesRecords);
