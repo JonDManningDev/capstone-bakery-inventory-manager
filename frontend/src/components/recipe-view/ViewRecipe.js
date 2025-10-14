@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
 import { useAuth } from "../../context/AuthContext";
-import { useBakes } from "../../context/BakesContext";
+import { bakesAPI } from "../../apis";
 import { useRecipes } from "../../context/RecipesContext";
 import { useIngredients } from "../../context/IngredientsContext";
 import { useUnits } from "../../context/UnitsContext";
@@ -16,7 +16,6 @@ import { getIngredientShortages } from "../../utils/getIngredientShortages";
 export function ViewRecipe() {
   const { addAlert } = useAlerts();
   const { user } = useAuth();
-  const { createBake } = useBakes();
   const {
     ingredients,
     getIngredients,
@@ -150,7 +149,7 @@ export function ViewRecipe() {
     handleBakeAbortRef.current = abortController;
 
     try {
-      const bakeRecord = await createBake(recipeId, employeeId, {
+      const bakeRecord = await bakesAPI.createBake(recipeId, employeeId, {
         signal: abortController.signal,
       });
       await subtractBakeIngredients(recipeId, {
