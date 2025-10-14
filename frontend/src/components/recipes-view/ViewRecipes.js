@@ -3,19 +3,20 @@
 import { Link } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
-import { useRecipes } from "../../context/RecipesContext";
+import { recipesAPI } from "../../apis";
 import { RecipesList } from "./RecipesList";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function ViewRecipes() {
   const { addAlert } = useAlerts();
-  const { recipes, getRecipes, setRecipes } = useRecipes();
+
+  const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
     const abortController = new AbortController();
     async function loadRecipes() {
       try {
-        const recipesRecords = await getRecipes({
+        const recipesRecords = await recipesAPI.getRecipes({
           signal: abortController.signal,
         });
         setRecipes(recipesRecords);
@@ -32,7 +33,7 @@ export function ViewRecipes() {
     }
     loadRecipes();
     return () => abortController.abort();
-  }, [addAlert, getRecipes, setRecipes]);
+  }, [addAlert, setRecipes]);
 
   return (
     // Component container
