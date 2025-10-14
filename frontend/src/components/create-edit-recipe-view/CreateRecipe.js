@@ -5,11 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 import { RecipeForm } from "./RecipeForm";
 import { useAlerts } from "../../context/AlertsContext";
-import { useRecipes } from "../../context/RecipesContext";
+import { recipesAPI } from "../../apis";
 
 export function CreateRecipe() {
   const navigate = useNavigate();
-  const { createNewRecipe, getRecipes } = useRecipes();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
@@ -29,7 +28,7 @@ export function CreateRecipe() {
       lastAbortController = abortController;
       try {
         // Check for an existing record with the same title
-        const recipeRecords = await getRecipes({ signal: abortController.signal });
+        const recipeRecords = await recipesAPI.getRecipes({ signal: abortController.signal });
         const titleExists = recipeRecords.some(
           (recipe) => recipe.title === formData.title
         );
@@ -42,7 +41,7 @@ export function CreateRecipe() {
           return;
         }
         // Then proceed to create the new recipe
-        const record = await createNewRecipe(formData, {
+        const record = await recipesAPI.createNewRecipe(formData, {
           signal: abortController.signal,
         });
         addAlert(

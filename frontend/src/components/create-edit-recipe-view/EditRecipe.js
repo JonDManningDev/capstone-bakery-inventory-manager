@@ -5,14 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { RecipeForm } from "./RecipeForm";
 import { useAlerts } from "../../context/AlertsContext";
-import { useRecipes } from "../../context/RecipesContext";
+import { recipesAPI } from "../../apis";
 
 export function EditRecipe() {
   const navigate = useNavigate();
   const { recipeId } = useParams();
-  const { editRecipeById, getRecipeById, getRecipes, recipe, setRecipe } = useRecipes();
   const { addAlert } = useAlerts();
 
+  const [recipe, setRecipe] = useState({ ingredients: [] });
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -23,7 +23,7 @@ export function EditRecipe() {
     const abortController = new AbortController();
     async function loadRecipe(recipeId) {
       try {
-        const recipeRecord = await getRecipeById(recipeId, {
+        const recipeRecord = await recipesAPI.getRecipeById(recipeId, {
           signal: abortController.signal,
         });
         setRecipe(recipeRecord);
@@ -39,7 +39,7 @@ export function EditRecipe() {
     }
     loadRecipe(recipeId);
     return () => abortController.abort();
-  }, [addAlert, getRecipeById, recipeId, setRecipe]);
+  }, [addAlert, recipeId, setRecipe]);
 
   // Pre-load existing data
   useEffect(() => {
@@ -62,7 +62,7 @@ export function EditRecipe() {
       lastAbortController = abortController;
       try {
         // Check for a different existing record with the same title
-        const recipeRecords = await getRecipes({ signal: abortController.signal });
+        const recipeRecords = await recipesAPI.getRecipes({ signal: abortController.signal });
         const titleExists = recipeRecords.some(
           (recipe) => recipe.title === formData.title && recipe.id !== recipeId
         );
@@ -76,7 +76,7 @@ export function EditRecipe() {
         }
         const message = `Save changes to ${recipe.title}?`;
         if (window.confirm(message)) {
-          const updatedRecord = await editRecipeById(recipeId, formData, {
+          const updatedRecord = await recipesAPI.editRecipeById(recipeId, formData, {
             signal: abortController.signal,
           });
           addAlert(

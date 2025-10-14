@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
 import { useIngredients } from "../../context/IngredientsContext";
-import { useRecipes } from "../../context/RecipesContext";
+import { recipesAPI } from "../../apis";
 import { IngredientRecipesList } from "./IngredientRecipesList";
 
 export function ViewIngredient() {
@@ -14,7 +14,6 @@ export function ViewIngredient() {
   const { deleteIngredient, ingredient, getIngredientById, setIngredient } =
     useIngredients();
   const { addAlert } = useAlerts();
-  const { setRecipe } = useRecipes();
   const { name, base_unit, quantity_in_stock } = ingredient;
 
   useEffect(() => {
@@ -54,8 +53,7 @@ export function ViewIngredient() {
           await deleteIngredient(ingredientId, {
             signal: abortController.signal,
           });
-          // Reset the recipe and ingredient states to avoid errors from stale/invalid data
-          setRecipe({ ingredients: [] });
+          // Reset the ingredient state to avoid errors from stale/invalid data
           setIngredient({
             name: "",
             base_unit: "",

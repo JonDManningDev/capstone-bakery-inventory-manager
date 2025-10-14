@@ -1,7 +1,7 @@
 // Renders each individual ingredient in a recipe
 
 import { useAlerts } from "../../context/AlertsContext";
-import { useRecipes } from "../../context/RecipesContext";
+import { recipesAPI } from "../../apis";
 
 export function RecipeIngredientsListItem({
   name,
@@ -13,19 +13,18 @@ export function RecipeIngredientsListItem({
   setRecipe,
 }) {
   const { addAlert } = useAlerts();
-  const { deleteRecipeIngredient, getRecipeById } = useRecipes();
 
   async function handleDelete() {
     try {
       // Delete the ingredient
-      await deleteRecipeIngredient(ingredientId, recipeId, name, title);
+      await recipesAPI.deleteRecipeIngredient(ingredientId, recipeId, name, title);
       addAlert(
         `Successfully removed ${name} from ${title}.`,
         "info",
         "deleteRecipeIngredient-success"
       );
       // Refresh the state
-      const recipeRecord = await getRecipeById(recipeId);
+      const recipeRecord = await recipesAPI.getRecipeById(recipeId);
       setRecipe(recipeRecord);
     } catch (error) {
       addAlert(
