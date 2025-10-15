@@ -24,9 +24,12 @@ export function EditIngredient() {
     const abortController = new AbortController();
     async function loadIngredient() {
       try {
-        const ingredientRecords = await ingredientsAPI.getIngredientById(ingredientId, {
-          signal: abortController.signal,
-        });
+        const ingredientRecords = await ingredientsAPI.getIngredientById(
+          ingredientId,
+          {
+            signal: abortController.signal,
+          }
+        );
         setIngredient(ingredientRecords);
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -69,7 +72,8 @@ export function EditIngredient() {
         });
         const nameExists = ingredientRecords.some(
           (ingredient) =>
-            ingredient.name === formData.name && ingredient.id !== ingredientId
+            ingredient.name === formData.name &&
+            ingredient.id !== parseInt(ingredientId)
         );
         if (nameExists) {
           addAlert(
@@ -79,7 +83,7 @@ export function EditIngredient() {
           );
           return;
         }
-        // Then proceed to create the new ingredient
+        // Then proceed to update the ingredient
         const message = `Save changes to ${ingredient.name}?`;
         if (window.confirm(message)) {
           const updatedRecord = await ingredientsAPI.editIngredientById(
