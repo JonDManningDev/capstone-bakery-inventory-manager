@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useAlerts } from "../context/AlertsContext";
-import { bakesAPI, recipesAPI } from "../apis";
-import { useIngredients } from "../context/IngredientsContext";
+import { bakesAPI, recipesAPI, ingredientsAPI } from "../apis";
 import { getCurrentBakes } from "../utils/getCurrentBakes";
 
 export function Home() {
   const { addAlert } = useAlerts();
-  const { getIngredients } = useIngredients();
 
+  // States for stats
   const [bakesStats, setBakesStats] = useState({
     dailyStarted: 0,
     dailyComplete: 0,
@@ -52,7 +51,7 @@ export function Home() {
     return () => bakesController.abort();
   }, [addAlert]);
 
-  // Fetch recipes
+  // Fetch recipes and calculate stats
   useEffect(() => {
     const recipesController = new AbortController();
     async function loadRecipes() {
@@ -73,12 +72,12 @@ export function Home() {
     return () => recipesController.abort();
   }, [addAlert]);
 
-  // Fetch ingredients
+  // Fetch ingredients and calculate stats
   useEffect(() => {
     const ingredientsController = new AbortController();
     async function loadIngredients() {
       try {
-        const ingredients = await getIngredients({
+        const ingredients = await ingredientsAPI.getIngredients({
           signal: ingredientsController.signal,
         });
         setIngredientsTotal(ingredients.length);
@@ -94,7 +93,7 @@ export function Home() {
     }
     loadIngredients();
     return () => ingredientsController.abort();
-  }, [getIngredients, addAlert]);
+  }, [addAlert]);
 
   const dailyCount =
     bakesStats.dailyStarted +

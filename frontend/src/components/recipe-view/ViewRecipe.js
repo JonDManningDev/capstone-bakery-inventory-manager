@@ -5,8 +5,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
 import { useAuth } from "../../context/AuthContext";
-import { bakesAPI, recipesAPI } from "../../apis";
-import { useIngredients } from "../../context/IngredientsContext";
+import { bakesAPI, recipesAPI, ingredientsAPI } from "../../apis";
 import { useUnits } from "../../context/UnitsContext";
 import { RecipeIngredientsList } from "./RecipeIngredientsList";
 import { AddIngredientForm } from "./AddIngredientForm";
@@ -15,19 +14,13 @@ import { getIngredientShortages } from "../../utils/getIngredientShortages";
 export function ViewRecipe() {
   const { addAlert } = useAlerts();
   const { user } = useAuth();
-  const {
-    ingredients,
-    getIngredients,
-    setIngredient,
-    setIngredients,
-    subtractBakeIngredients,
-  } = useIngredients();
   const { units, conversions } = useUnits();
   const { recipeId } = useParams();
   const navigate = useNavigate();
   const handleBakeAbortRef = useRef(null);
 
   const [recipe, setRecipe] = useState({ ingredients: [] });
+  const [ingredients, setIngredients] = useState([]);
   const { title, description, image_url } = recipe;
 
   // Keeps track of ingredient shortages that would prevent baking the recipe
@@ -60,7 +53,7 @@ export function ViewRecipe() {
     const abortController = new AbortController();
     async function loadIngredients() {
       try {
-        const ingredientsRecords = await getIngredients({
+        const ingredientsRecords = await ingredientsAPI.getIngredients({
           signal: abortController.signal,
         });
         setIngredients(ingredientsRecords);
@@ -77,7 +70,7 @@ export function ViewRecipe() {
     }
     loadIngredients();
     return () => abortController.abort();
-  }, [addAlert, getIngredients, setIngredients]);
+  }, [addAlert]);
 
   // Check for ingredient shortages that would prevent baking the recipe
   useEffect(() => {
@@ -105,7 +98,6 @@ export function ViewRecipe() {
           // Reset all states that could become stale after the deletion
           setRecipe({ ingredients: [] });
           setShortages([]);
-          setIngredient({ name: "", base_unit: "", quantity_in_stock: 0 });
           addAlert(
             `Successfully deleted recipe: ${title}.`,
             "info",
@@ -146,10 +138,11 @@ export function ViewRecipe() {
       const bakeRecord = await bakesAPI.createBake(recipeId, employeeId, {
         signal: abortController.signal,
       });
-      await subtractBakeIngredients(recipeId, {
+      // Update ingredient inventory after a successful bake submission
+      await ingredientsAPI.subtractBakeIngredients(recipeId, {
         signal: abortController.signal,
       });
-      const updatedInventory = await getIngredients({
+      const updatedInventory = await ingredientsAPI.getIngredients({
         signal: abortController.signal,
       });
 

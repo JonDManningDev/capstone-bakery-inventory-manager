@@ -8,11 +8,13 @@ export const API_CONFIG = {
 // Error handling for API calls
 
 export async function handleResponse(response) {
-  const json = await response.json();
+  // The catch block handles successful 204 No Content responses
+  const json = await response.json().catch(() => ({}));
   if (!response.ok) {
     throw new Error(
       json.error || `HTTP ${response.status}: ${response.statusText}`
     );
-  }
+    }
+
   return json.data;
 }
