@@ -1,28 +1,30 @@
 // Displays information for a given ingredient, including links to the recipes in which it is found
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useAlerts } from "../../context/AlertsContext";
-import { useIngredients } from "../../context/IngredientsContext";
-import { recipesAPI } from "../../apis";
+import { ingredientsAPI } from "../../apis";
 import { IngredientRecipesList } from "./IngredientRecipesList";
 
 export function ViewIngredient() {
   const navigate = useNavigate();
   const { ingredientId } = useParams();
-  const { deleteIngredient, ingredient, getIngredientById, setIngredient } =
-    useIngredients();
   const { addAlert } = useAlerts();
+
+  const [ingredient, setIngredient] = useState({ recipes: [] });
   const { name, base_unit, quantity_in_stock } = ingredient;
 
   useEffect(() => {
     const abortController = new AbortController();
     async function loadIngredient() {
       try {
-        const ingredientRecords = await getIngredientById(ingredientId, {
-          signal: abortController.signal,
-        });
+        const ingredientRecords = await ingredientsAPI.getIngredientById(
+          ingredientId,
+          {
+            signal: abortController.signal,
+          }
+        );
         setIngredient(ingredientRecords);
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -37,7 +39,7 @@ export function ViewIngredient() {
     }
     loadIngredient();
     return () => abortController.abort();
-  }, [ingredientId, getIngredientById, setIngredient, addAlert]);
+  }, [ingredientId, addAlert]);
 
   const handleDelete = (() => {
     let lastAbortController = null;
@@ -50,7 +52,7 @@ export function ViewIngredient() {
       try {
         const message = `Are you sure you want to delete the ingredient ${name}?`;
         if (window.confirm(message)) {
-          await deleteIngredient(ingredientId, {
+          await ingredientsAPI.deleteIngredient(ingredientId, {
             signal: abortController.signal,
           });
           // Reset the ingredient state to avoid errors from stale/invalid data

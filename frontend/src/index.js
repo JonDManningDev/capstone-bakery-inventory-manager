@@ -6,7 +6,6 @@ import App from "./App";
 import { AlertsProvider } from "./context/AlertsContext";
 import { AuthProvider } from "./context/AuthContext";
 import { UnitsProvider } from "./context/UnitsContext";
-import { IngredientsProvider } from "./context/IngredientsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,9 +14,7 @@ root.render(
       <AlertsProvider>
         <AuthProvider>
           <UnitsProvider>
-            <IngredientsProvider>
               <App />
-            </IngredientsProvider>
           </UnitsProvider>
         </AuthProvider>
       </AlertsProvider>

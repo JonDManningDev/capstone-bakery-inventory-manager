@@ -5,19 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { IngredientForm } from "./IngredientForm";
 import { useAlerts } from "../../context/AlertsContext";
-import { useIngredients } from "../../context/IngredientsContext";
+import { ingredientsAPI } from "../../apis";
 
 export function EditIngredient() {
   const navigate = useNavigate();
   const { ingredientId } = useParams();
-  const {
-    editIngredientById,
-    getIngredientById,
-    getIngredients,
-    ingredient,
-    setIngredient,
-  } = useIngredients();
   const { addAlert } = useAlerts();
+
+  const [ingredient, setIngredient] = useState({ recipes: [] });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,7 +24,7 @@ export function EditIngredient() {
     const abortController = new AbortController();
     async function loadIngredient() {
       try {
-        const ingredientRecords = await getIngredientById(ingredientId, {
+        const ingredientRecords = await ingredientsAPI.getIngredientById(ingredientId, {
           signal: abortController.signal,
         });
         setIngredient(ingredientRecords);
@@ -46,7 +41,7 @@ export function EditIngredient() {
     }
     loadIngredient();
     return () => abortController.abort();
-  }, [addAlert, getIngredientById, ingredientId, setIngredient]);
+  }, [addAlert, ingredientId]);
 
   // Pre-load existing data
   useEffect(() => {
@@ -69,7 +64,7 @@ export function EditIngredient() {
       lastAbortController = abortController;
       try {
         // Check for a different existing record with the same name
-        const ingredientRecords = await getIngredients({
+        const ingredientRecords = await ingredientsAPI.getIngredients({
           signal: abortController.signal,
         });
         const nameExists = ingredientRecords.some(
@@ -87,7 +82,7 @@ export function EditIngredient() {
         // Then proceed to create the new ingredient
         const message = `Save changes to ${ingredient.name}?`;
         if (window.confirm(message)) {
-          const updatedRecord = await editIngredientById(
+          const updatedRecord = await ingredientsAPI.editIngredientById(
             ingredientId,
             formData,
             {

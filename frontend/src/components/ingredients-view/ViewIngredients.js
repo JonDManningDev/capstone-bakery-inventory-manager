@@ -1,21 +1,22 @@
 // Displays a list of all ingredients in the database, with an option to create a new ingredient
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { IngredientsList } from "./IngredientsList";
-import { useIngredients } from "../../context/IngredientsContext";
+import { ingredientsAPI } from "../../apis";
 import { useAlerts } from "../../context/AlertsContext";
 
 export function ViewIngredients() {
-  const { ingredients, getIngredients, setIngredients } = useIngredients();
   const { addAlert } = useAlerts();
+
+  const [ingredients, setIngredients] = useState([]);
 
   useEffect(() => {
     const abortController = new AbortController();
     async function loadIngredients() {
       try {
-        const ingredientsRecords = await getIngredients({
+        const ingredientsRecords = await ingredientsAPI.getIngredients({
           signal: abortController.signal,
         });
         setIngredients(ingredientsRecords);
@@ -32,7 +33,7 @@ export function ViewIngredients() {
     }
     loadIngredients();
     return () => abortController.abort();
-  }, [addAlert, getIngredients, setIngredients]);
+  }, [addAlert]);
 
   return (
     // Component container

@@ -5,11 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 import { IngredientForm } from "./IngredientForm";
 import { useAlerts } from "../../context/AlertsContext";
-import { useIngredients } from "../../context/IngredientsContext";
+import { ingredientsAPI } from "../../apis";
 
 export function CreateIngredient() {
   const navigate = useNavigate();
-  const { getIngredients, createIngredient } = useIngredients();
   const { addAlert } = useAlerts();
 
   const [formData, setFormData] = useState({
@@ -23,7 +22,7 @@ export function CreateIngredient() {
     const abortController = new AbortController();
     try {
       // Check for an existing record with the same name
-      const ingredientRecords = await getIngredients({
+      const ingredientRecords = await ingredientsAPI.getIngredients({
         signal: abortController.signal,
       });
       const nameExists = ingredientRecords.some(
@@ -38,7 +37,7 @@ export function CreateIngredient() {
         return;
       }
       // Then proceed to create the new ingredient
-      const record = await createIngredient(formData, {
+      const record = await ingredientsAPI.createIngredient(formData, {
         signal: abortController.signal,
       });
       addAlert(
