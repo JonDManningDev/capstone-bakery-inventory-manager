@@ -1,14 +1,8 @@
 # Bakery Inventory Manager
 
-[Live Application](https://capstone-bakery-frontend.onrender.com)
-
----
-
 ## Summary
 
 Bakery Inventory Manager is a full-stack web application designed to help bakeries (in this case, the fictional "Maeve's Fine Baked Goods") efficiently track ingredients, manage recipes, and monitor daily bakes (real-world instances of recipes in process). Users can log in, view and update ingredient inventory, create and edit recipes, and keep a real-time, detailed record of all bakes made each day. The app will even alert the user if there is not enough ingredient inventory to bake a given recipe before a record is created.
-
----
 
 ## API Documentation
 
