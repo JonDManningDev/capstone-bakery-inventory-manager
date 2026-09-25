@@ -40,7 +40,7 @@ Bakery Inventory Manager is a full-stack web application designed to help bakeri
 
 ### Units ('unit_conversions' table)
 
-- `GET /units` — List all units (eg cup, ml, gal) in the unit_conversions table.
+- `GET /units` — List all units (e.g. cup, ml, gal) in the unit_conversions table.
 - `GET /units/conversions` — Retrieve the full unit_conversions table for frontend use.
 
 ---
@@ -53,7 +53,7 @@ Bakery Inventory Manager is a full-stack web application designed to help bakeri
 
 A toolbar stays stuck to the top of the application screen with easy navigation access to various app sections. It also contains the login button, which both displays the current user's name and also allows for user login, logout, and registration. For demonstration purposes, the user is automatically logged in as "Guest". This is because the "bake" functionality of the app requires a valid user_id for proper record keeping.
 
-The user may always log out of the default "Guest" accound and register as a new user/employee, if they wish. Passwords are encrypted using bcrypt, but *please do not use any real-world email addresses and passwords*: these do get recorded in an actual database! I would suggest using something like *Helloworld1!* as a password, if you really want to try the authentication functionality out.
+The user may always log out of the default "Guest" accound and register as a new user/employee, if they wish. Passwords are encrypted using bcrypt.
 
 ### Alerts Area
 
